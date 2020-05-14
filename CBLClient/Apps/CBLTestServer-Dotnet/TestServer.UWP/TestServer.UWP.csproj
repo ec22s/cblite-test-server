@@ -106,6 +106,12 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="TestServer.UWP_TemporaryKey.pfx" />
+    <None Include="Assets\Databases\travel-sample-2.7.0.cblite2\db.sqlite3-shm" />
+    <None Include="Assets\Databases\travel-sample-2.7.0.cblite2\db.sqlite3-wal" />
+    <None Include="Assets\Databases\travel-sample-2.7.0.cblite2\db.sqlite3" />
+    <None Include="Assets\Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3-shm" />
+    <None Include="Assets\Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3-wal" />
+    <None Include="Assets\Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Databases\PrebuiltDB.cblite2\db.sqlite3" />
