@@ -3,7 +3,12 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import com.couchbase.lite.ListenerToken;
+import com.couchbase.lite.Parameters;
+import com.couchbase.lite.QueryChange;
+import com.couchbase.lite.QueryChangeListener;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.lite.ArrayExpression;
 import com.couchbase.lite.Collation;
@@ -26,6 +31,8 @@ import com.couchbase.lite.Result;
 import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.SelectResult;
 import com.couchbase.lite.VariableExpression;
+import com.couchbase.mobiletestkit.javacommon.util.ConcurrentExecutor;
+import com.couchbase.mobiletestkit.javacommon.util.Log;
 
 
 public class QueryRequestHandler {
@@ -103,7 +110,6 @@ public class QueryRequestHandler {
         }
         return resultArray;
     }
-
 
     public List<Object> docsLimitOffset(Args args) throws CouchbaseLiteException {
         Database database = args.get("database");
@@ -480,7 +486,6 @@ public class QueryRequestHandler {
         return resultArray;
     }
 
-
     public List<Object> crossJoin(Args args) throws CouchbaseLiteException {
         /*
         SELECT
@@ -837,5 +842,102 @@ public class QueryRequestHandler {
             resultArray.add(row.toMap());
         }
         return resultArray;
+    }
+
+    public QueryChangeListener addChangeListener(Args args) {
+        Query query = args.get("query");
+        MyQueryListener changeListener = new MyQueryListener();
+        ListenerToken token = query.addChangeListener(ConcurrentExecutor.EXECUTOR, changeListener);
+        changeListener.setToken(token);
+        return changeListener;
+    }
+
+    public void removeChangeListener(Args args) {
+        Query query = args.get("query");
+        MyQueryListener  changeListener = args.get("changeListener");
+        query.removeChangeListener(changeListener.getToken());
+    }
+
+    public long getLiveQueryResponseTime(Args args) throws CouchbaseLiteException, InterruptedException {
+        /**
+         * This function contains logic to pull live query response time on query changes
+         * validating CBL-172 which reported there are 200 millionseconds delay
+         */
+
+        long returnValue = 0;
+        String TAG = "LIVEQUERY";
+        final String KEY = "sequence_number";
+        Database db = args.get("database");
+        final List<Long> liveQueryActivities = new ArrayList<Long>();
+
+        // define a query with Parameters object
+        Query query = QueryBuilder
+                .select(SelectResult.all())
+                .from(DataSource.database(db))
+                .where(Expression.property(KEY).lessThanOrEqualTo(Expression.parameter("VALUE")));
+
+        Parameters params = new Parameters();
+        params.setInt("VALUE", 50);
+        query.setParameters(params);
+
+        // register a query change listener to capture live resultset changes
+        ListenerToken token = query.addChangeListener(ConcurrentExecutor.EXECUTOR, change -> {
+            final long curMillis = new Long(System.currentTimeMillis());
+            liveQueryActivities.add(curMillis);
+
+            int count = 0;
+            for (Result result : change.getResults()) {
+                Log.d(TAG, "results: " + result.getKeys());
+                count++;
+            }
+            Log.d(TAG, "results count: " + String.valueOf(count));
+            Log.d(TAG, "live query captured timestamp in milliseconds: " + String.valueOf(curMillis));
+        });
+
+        // record timestamp before submitting the change
+        long queryChangeTimestamp = System.currentTimeMillis();
+
+        // make the query change,
+        // the listener should be able to capture the changes,
+        // record timestamp of the change event
+        params = new Parameters();
+        params.setInt("VALUE", 75);
+        query.setParameters(params);
+
+        TimeUnit.MILLISECONDS.sleep(500);
+
+        query.removeChangeListener(token);
+
+        if(!liveQueryActivities.isEmpty()){
+            long liveQueryCapturedTimestamp = liveQueryActivities.get(0).longValue();
+            returnValue = liveQueryCapturedTimestamp - queryChangeTimestamp;
+
+            Log.d(TAG, "query change timestamp: {}" + String.valueOf(queryChangeTimestamp));
+            Log.d(TAG, "live query captured timestamp: {}" + String.valueOf(liveQueryCapturedTimestamp));
+        }
+
+        return returnValue;
+    }
+}
+
+class MyQueryListener implements QueryChangeListener {
+    private final List<QueryChange> changes = new ArrayList<>();
+    private ListenerToken token;
+
+    public List<QueryChange> getChanges() {
+        return changes;
+    }
+
+    public void setToken(ListenerToken token) {
+        this.token = token;
+    }
+
+    public ListenerToken getToken() {
+        return token;
+    }
+
+    @Override
+    public void changed(QueryChange change) {
+        changes.add(change);
     }
 }

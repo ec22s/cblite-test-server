@@ -44,14 +44,15 @@ public class ReplicatorRequestHandler {
     public ReplicatorChangeListener addChangeListener(Args args) {
         Replicator replicator = args.get("replicator");
         MyReplicatorListener changeListener = new MyReplicatorListener();
-        replicator.addChangeListener(ConcurrentExecutor.EXECUTOR, changeListener);
+        ListenerToken token = replicator.addChangeListener(ConcurrentExecutor.EXECUTOR, changeListener);
+        changeListener.setToken(token);
         return changeListener;
     }
 
     public void removeChangeListener(Args args) {
         Replicator replicator = args.get("replicator");
         MyReplicatorListener changeListener = args.get("changeListener");
-        replicator.addChangeListener(ConcurrentExecutor.EXECUTOR, changeListener);
+        replicator.removeChangeListener(changeListener.getToken());
     }
 
     public MyDocumentReplicatorListener addReplicatorEventChangeListener(Args args) {
@@ -177,9 +178,18 @@ public class ReplicatorRequestHandler {
 
 class MyReplicatorListener implements ReplicatorChangeListener {
     private final List<ReplicatorChange> changes = new ArrayList<>();
+    private ListenerToken token;
 
     public List<ReplicatorChange> getChanges() {
         return changes;
+    }
+
+    public void setToken(ListenerToken token) {
+        this.token = token;
+    }
+
+    public ListenerToken getToken() {
+        return token;
     }
 
     @Override
