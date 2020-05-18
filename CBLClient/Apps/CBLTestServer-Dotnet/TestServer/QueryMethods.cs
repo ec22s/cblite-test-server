@@ -1041,5 +1041,54 @@ namespace Couchbase.Lite.Testing
                 response.WriteBody(resultArray);
             });
         }
+
+        internal static void AddChangeListener([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
+        {
+            With<IQuery>(postBody, "query", rep =>
+            {
+                var listener = new QueryChangeListenerProxy();
+                rep.AddChangeListener(listener.HandleChange);
+                response.WriteBody(MemoryMap.Store(listener));
+            });
+        }
+
+        internal static void RemoveChangeListener([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
+        {
+            With<IQuery>(postBody, "query", rep =>
+            {
+                var listener = (ListenerToken)postBody["changeListener"];
+                rep.RemoveChangeListener(listener);
+            });
+        }
+    }
+
+    internal sealed class QueryChangeListenerProxy
+    {
+        #region Variables
+
+        [NotNull]
+        private readonly List<QueryChangedEventArgs> _changes = new List<QueryChangedEventArgs>();
+
+        #endregion
+
+        #region Properties
+
+        [NotNull]
+        public IReadOnlyList<QueryChangedEventArgs> Changes => _changes;
+
+        #endregion
+
+        #region Public Methods
+
+        public void HandleChange(object sender, QueryChangedEventArgs args)
+        {
+            _changes.Add(args);
+        }
+
+        #endregion
     }
 }
