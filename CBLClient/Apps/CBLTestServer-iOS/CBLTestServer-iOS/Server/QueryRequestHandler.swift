@@ -878,8 +878,34 @@ public class QueryRequestHandler {
             
             return resultArray
            
+        case "query_addChangeListener":
+            let query_obj: Query = args.get(name: "query")!
+            let changeListener = MyQueryChangeListener()
+            let listenerToken = query_obj.addChangeListener(changeListener.listener)
+            changeListener.listenerToken = listenerToken
+            return changeListener
+
+        case "query_removeChangeListener":
+            let query_obj: Query = args.get(name: "query")!
+            let changeListener : MyQueryChangeListener = (args.get(name: "changeListener"))!
+            query_obj.removeChangeListener(withToken: changeListener.listenerToken!)
+            
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
+    }
+}
+
+public class MyQueryChangeListener : NSObject  {
+    var query_changes: [QueryChange] = []
+    
+    var listenerToken: ListenerToken?
+    
+    lazy var listener: (QueryChange) -> Void = { (change: QueryChange) in
+        self.query_changes.append(change)
+    }
+    
+    public func getChanges() -> [QueryChange] {
+        return query_changes
     }
 }
