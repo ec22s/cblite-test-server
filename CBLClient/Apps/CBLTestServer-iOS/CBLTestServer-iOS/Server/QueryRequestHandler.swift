@@ -889,6 +889,7 @@ public class QueryRequestHandler {
             let query_obj: Query = args.get(name: "query")!
             let changeListener : MyQueryChangeListener = (args.get(name: "changeListener"))!
             query_obj.removeChangeListener(withToken: changeListener.listenerToken!)
+            return query_obj
             
         default:
             throw RequestHandlerError.MethodNotFound(method)
