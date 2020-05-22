@@ -43,21 +43,21 @@ namespace Couchbase.Lite.Testing
             [NotNull] HttpListenerResponse response)
         {
             var contentType = postBody["contentType"].ToString();
-            Stream stream = MemoryMap.Get<Stream>(postBody["stream"].ToString());
             if (postBody.ContainsKey("content"))
             {
-                response.WriteBody(MemoryMap.New<Blob>(contentType, postBody["content"]));
+                byte[] byteArray = MemoryMap.Get<byte[]>(postBody["content"].ToString());
+                response.WriteBody(MemoryMap.New<Blob>(contentType, byteArray));
             }
             else if (postBody.ContainsKey("stream"))
             {
-
+                Stream stream = MemoryMap.Get<Stream>(postBody["stream"].ToString());
                 response.WriteBody(MemoryMap.New<Blob>(contentType, stream));
             }
 
             else if (postBody.ContainsKey("fileURL"))
             {
-
-                response.WriteBody(MemoryMap.New<Blob>(contentType, postBody["fileURL"]));
+                Uri fileUri = MemoryMap.Get<Uri>(postBody["fileURL"].ToString());
+                response.WriteBody(MemoryMap.New<Blob>(contentType, fileUri));
             }
             #endregion
         }
@@ -66,13 +66,33 @@ namespace Couchbase.Lite.Testing
             [NotNull] IReadOnlyDictionary<string, object> postBody,
             [NotNull] HttpListenerResponse response)
         {
-
             string imageLocation = TestServer.FilePathResolver(postBody["image"].ToString(), false);
             var image = File.ReadAllBytes(imageLocation);
             MemoryStream stream = new MemoryStream(image);
             response.WriteBody(MemoryMap.Store(stream));
+        }
 
+        public static void CreateImageByteArray([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
+        {
+            string imageLocation = TestServer.FilePathResolver(postBody["image"].ToString(), false);
+            var image = File.ReadAllBytes(imageLocation);
+            MemoryStream stream = new MemoryStream(image);
+            response.WriteBody(MemoryMap.Store(stream.ToArray()));
+        }
 
+        public static void CreateImageFileUrl([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
+        {
+            string imageLocation = TestServer.FilePathResolver(postBody["image"].ToString(), false);
+            string filePath = TestServer.FilePathResolver(postBody["image"].ToString(), true);
+
+            
+
+            Uri fileUrl = new Uri(filePath);
+            response.WriteBody(MemoryMap.Store(fileUrl));
         }
 
         public static void Digest([NotNull] NameValueCollection args,

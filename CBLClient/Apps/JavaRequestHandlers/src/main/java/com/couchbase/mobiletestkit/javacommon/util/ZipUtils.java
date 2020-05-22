@@ -122,7 +122,7 @@ public class ZipUtils {
         }
     }
 
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
+    public void copyFile(InputStream in, OutputStream out) throws IOException {
         int len;
         while ((len = in.read(buffer)) > 0) { out.write(buffer, 0, len); }
     }
