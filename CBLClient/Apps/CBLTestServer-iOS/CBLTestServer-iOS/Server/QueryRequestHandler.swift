@@ -890,6 +890,14 @@ public class QueryRequestHandler {
             let changeListener : MyQueryChangeListener = (args.get(name: "changeListener"))!
             query_obj.removeChangeListener(withToken: changeListener.listenerToken!)
             return query_obj
+        
+        case "query_select_all":
+            let database: Database = args.get(name: "database")!
+            let query = QueryBuilder
+                .select(SelectResult.all())
+                .from(DataSource.database(database))
+
+            return query
             
         default:
             throw RequestHandlerError.MethodNotFound(method)
