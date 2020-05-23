@@ -858,6 +858,15 @@ public class QueryRequestHandler {
         query.removeChangeListener(changeListener.getToken());
     }
 
+    public Query select_all(Args args){
+        Database database = args.get("database");
+        Query query = QueryBuilder
+                .select(SelectResult.all())
+                .from(DataSource.database(database));
+
+        return query;
+    }
+
     public long getLiveQueryResponseTime(Args args) throws CouchbaseLiteException, InterruptedException {
         /**
          * This function contains logic to pull live query response time on query changes

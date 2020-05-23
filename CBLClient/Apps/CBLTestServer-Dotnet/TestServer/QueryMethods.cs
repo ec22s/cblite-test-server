@@ -1064,6 +1064,20 @@ namespace Couchbase.Lite.Testing
                 rep.RemoveChangeListener(listener);
             });
         }
+
+        internal static void QuerySelectAll([NotNull] NameValueCollection args,
+           [NotNull] IReadOnlyDictionary<string, object> postBody,
+           [NotNull] HttpListenerResponse response)
+        {
+            With<Database>(postBody, "database", db =>
+            {
+                using (IQuery query = QueryBuilder
+                                .Select(SelectResult.All())
+                                .From(DataSource.Database(db)))
+
+                response.WriteBody(query);
+            });
+        }
     }
 
     internal sealed class QueryChangeListenerProxy
