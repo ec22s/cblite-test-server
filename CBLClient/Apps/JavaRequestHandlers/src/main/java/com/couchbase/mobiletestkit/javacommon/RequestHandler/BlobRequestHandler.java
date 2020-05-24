@@ -34,7 +34,7 @@ public class BlobRequestHandler {
         throw new IOException("Incorrect parameters provided");
     }
 
-    public InputStream createImageContent(Args args) throws IOException {
+    public InputStream createImageStream(Args args) throws IOException {
         String filePath = args.get("image");
         if (filePath == null || filePath.isEmpty()) {
             throw new IOException("Image content file path cannot be null");
@@ -44,7 +44,7 @@ public class BlobRequestHandler {
         return RequestHandlerDispatcher.context.getAsset(imgFilePath[imgFilePath.length - 1]);
     }
 
-    public byte[] createImageByteArray(Args args) throws IOException {
+    public byte[] createImageContent(Args args) throws IOException {
         String filePath = args.get("image");
         if (filePath == null || filePath.isEmpty()) {
             throw new IOException("Image content file path cannot be null");
