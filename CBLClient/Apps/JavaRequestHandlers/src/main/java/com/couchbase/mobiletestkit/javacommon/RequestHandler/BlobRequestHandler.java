@@ -40,8 +40,7 @@ public class BlobRequestHandler {
             throw new IOException("Image content file path cannot be null");
         }
 
-        String[] imgFilePath = filePath.split("/");
-        return RequestHandlerDispatcher.context.getAsset(imgFilePath[imgFilePath.length - 1]);
+        return RequestHandlerDispatcher.context.getAsset(filePath);
     }
 
     public byte[] createImageContent(Args args) throws IOException {
@@ -50,8 +49,7 @@ public class BlobRequestHandler {
             throw new IOException("Image content file path cannot be null");
         }
 
-        String[] imgFilePath = filePath.split("/");
-        InputStream stream = RequestHandlerDispatcher.context.getAsset(imgFilePath[imgFilePath.length - 1]);
+        InputStream stream = RequestHandlerDispatcher.context.getAsset(filePath);
         byte[] targetArray = new byte[stream.available()];
         stream.read(targetArray);
 
@@ -64,12 +62,10 @@ public class BlobRequestHandler {
             throw new IOException("Image content file path cannot be null");
         }
 
-        String[] imgFilePath = filePath.split("/");
-        String imgFileName = imgFilePath[imgFilePath.length - 1];
-        InputStream stream = RequestHandlerDispatcher.context.getAsset(imgFileName);
+        InputStream stream = RequestHandlerDispatcher.context.getAsset(filePath);
 
         String directory = RequestHandlerDispatcher.context.getFilesDir().getAbsolutePath();
-        File targetFile = new File(directory, imgFileName);
+        File targetFile = new File(directory, filePath);
         OutputStream outStream = new FileOutputStream(targetFile);
         ZipUtils utils = new ZipUtils();
         utils.copyFile(stream, outStream);
