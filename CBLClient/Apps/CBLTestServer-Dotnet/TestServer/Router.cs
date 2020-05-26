@@ -260,7 +260,7 @@ namespace Couchbase.Lite.Testing
                 ["logging_getLogsInZip"] = FileLoggingMehtod.GetLogsInZip,
                 ["blob_create"] = BlobMethods.Create,
                 ["blob_createImageContent"] = BlobMethods.CreateImageContent,
-                ["blob_createImageByteArray"] = BlobMethods.CreateImageByteArray,
+                ["blob_createImageStream"] = BlobMethods.CreateImageStream,
                 ["blob_createImageFileUrl"] = BlobMethods.CreateImageFileUrl,
                 ["blob_digest"] = BlobMethods.Digest,
                 ["blob_equals"] = BlobMethods.Equals,

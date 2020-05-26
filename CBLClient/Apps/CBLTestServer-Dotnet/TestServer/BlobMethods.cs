@@ -62,7 +62,7 @@ namespace Couchbase.Lite.Testing
             #endregion
         }
 
-        public static void CreateImageContent([NotNull] NameValueCollection args,
+        public static void CreateImageStream([NotNull] NameValueCollection args,
             [NotNull] IReadOnlyDictionary<string, object> postBody,
             [NotNull] HttpListenerResponse response)
         {
@@ -72,7 +72,7 @@ namespace Couchbase.Lite.Testing
             response.WriteBody(MemoryMap.Store(stream));
         }
 
-        public static void CreateImageByteArray([NotNull] NameValueCollection args,
+        public static void CreateImageContent([NotNull] NameValueCollection args,
             [NotNull] IReadOnlyDictionary<string, object> postBody,
             [NotNull] HttpListenerResponse response)
         {
@@ -87,11 +87,8 @@ namespace Couchbase.Lite.Testing
             [NotNull] HttpListenerResponse response)
         {
             string imageLocation = TestServer.FilePathResolver(postBody["image"].ToString(), false);
-            string filePath = TestServer.FilePathResolver(postBody["image"].ToString(), true);
-
             
-
-            Uri fileUrl = new Uri(filePath);
+            Uri fileUrl = new Uri(imageLocation);
             response.WriteBody(MemoryMap.Store(fileUrl));
         }
 
