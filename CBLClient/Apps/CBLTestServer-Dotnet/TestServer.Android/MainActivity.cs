@@ -32,6 +32,11 @@ namespace Couchbase.Lite.Testing.Android
             var tmpDir = ApplicationContext.CacheDir.AbsolutePath;
             var finalPath = Path.Combine(tmpDir, "tmp");
 
+            if (System.IO.File.Exists(finalPath))
+            {
+                System.IO.File.Delete(finalPath);
+            }
+
             // Copy zip file out of the app bundle and into a temporary directory
             using (var input = ApplicationContext.Assets.Open(path))
             {

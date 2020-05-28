@@ -1,13 +1,20 @@
 package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
 import com.couchbase.lite.Blob;
+import com.couchbase.lite.utils.FileUtils;
+import com.couchbase.mobiletestkit.javacommon.util.ZipUtils;
 
 
 public class BlobRequestHandler {
@@ -27,14 +34,43 @@ public class BlobRequestHandler {
         throw new IOException("Incorrect parameters provided");
     }
 
-    public InputStream createImageContent(Args args) throws IOException {
+    public InputStream createImageStream(Args args) throws IOException {
         String filePath = args.get("image");
         if (filePath == null || filePath.isEmpty()) {
             throw new IOException("Image content file path cannot be null");
         }
 
-        String[] imgFilePath = filePath.split("/");
-        return RequestHandlerDispatcher.context.getAsset(imgFilePath[imgFilePath.length - 1]);
+        return RequestHandlerDispatcher.context.getAsset(filePath);
+    }
+
+    public byte[] createImageContent(Args args) throws IOException {
+        String filePath = args.get("image");
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IOException("Image content file path cannot be null");
+        }
+
+        InputStream stream = RequestHandlerDispatcher.context.getAsset(filePath);
+        byte[] targetArray = new byte[stream.available()];
+        stream.read(targetArray);
+
+        return targetArray;
+    }
+
+    public URL createImageFileUrl(Args args) throws IOException, MalformedURLException {
+        String filePath = args.get("image");
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IOException("Image content file path cannot be null");
+        }
+
+        InputStream stream = RequestHandlerDispatcher.context.getAsset(filePath);
+
+        String directory = RequestHandlerDispatcher.context.getFilesDir().getAbsolutePath();
+        File targetFile = new File(directory, filePath);
+        OutputStream outStream = new FileOutputStream(targetFile);
+        ZipUtils utils = new ZipUtils();
+        utils.copyFile(stream, outStream);
+
+        return targetFile.toURI().toURL();
     }
 
     public String digest(Args args) {

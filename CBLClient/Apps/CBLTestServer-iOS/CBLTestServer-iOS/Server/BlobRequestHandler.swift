@@ -22,11 +22,11 @@ public class BlobRequestHandler {
         //////////
         case "blob_create":
             let contentType: String = args.get(name: "contentType")!
-            let content: Data = args.get(name: "content")!
+            let content: Data? = args.get(name: "content")
             let stream: InputStream? = args.get(name: "stream")!
             let fileURL: URL? = args.get(name: "fileURL")!
-            if (!content.isEmpty){
-                return Blob(contentType: contentType, data: content)
+            if (content != nil){
+                return Blob(contentType: contentType, data: content!)
             } else if (stream != nil){
                 return Blob(contentType: contentType, contentStream: stream!)
             } else if (fileURL != nil){
@@ -40,6 +40,19 @@ public class BlobRequestHandler {
             let appleImage = UIImage(named: image)!
             let imageData = UIImageJPEGRepresentation(appleImage, 1)!
             return imageData
+            
+        case "blob_createImageStream":
+            let image: String = args.get(name: "image")!
+            let appleImage = UIImage(named: image)!
+            let imageData = UIImageJPEGRepresentation(appleImage, 1)!
+            
+            return InputStream(data: imageData)
+            
+        case "blob_createImageFileUrl":
+            let image: String = args.get(name: "image")!
+            let urlPath = Bundle.main.url(forResource: image, withExtension: "")
+            
+            return urlPath
             
         case "blob_digest":
             let blob: Blob = args.get(name: "blob")!
