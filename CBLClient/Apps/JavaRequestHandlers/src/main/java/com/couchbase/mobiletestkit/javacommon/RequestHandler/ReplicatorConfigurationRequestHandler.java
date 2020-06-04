@@ -107,7 +107,9 @@ public class ReplicatorConfigurationRequestHandler {
         if (headers != null) {
             config.setHeaders(headers);
         }
-        config.setAuthenticator(authenticator);
+        if (authenticator != null) {
+            config.setAuthenticator(authenticator);
+        }
         config.setReplicatorType(replType);
         /*if (conflictResolver != null) {
             config.setConflictResolver(conflictResolver);
