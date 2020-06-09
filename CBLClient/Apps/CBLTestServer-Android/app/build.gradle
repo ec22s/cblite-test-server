@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    DEF_VERSION = "2.8.0-162"
+    DEF_VERSION = "2.8.0-203"
     COUCHBASE_LITE_VERSION = System.getProperty('version', DEF_VERSION)
 
     PROJECT_DIR = "${projectDir}"
@@ -12,7 +12,8 @@ ext {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "com.couchbase.TestServerApp"
