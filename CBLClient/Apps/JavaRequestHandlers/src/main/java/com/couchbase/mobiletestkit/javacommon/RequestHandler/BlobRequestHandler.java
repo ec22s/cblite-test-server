@@ -13,7 +13,6 @@ import java.util.Map;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
 import com.couchbase.lite.Blob;
-import com.couchbase.lite.utils.FileUtils;
 import com.couchbase.mobiletestkit.javacommon.util.ZipUtils;
 
 
