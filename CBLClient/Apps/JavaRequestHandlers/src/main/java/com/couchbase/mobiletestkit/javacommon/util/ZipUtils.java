@@ -19,13 +19,19 @@ import java.util.zip.ZipOutputStream;
 
 
 public class ZipUtils {
+    private static final String TAG = "ZIP";
+
     private final byte[] buffer = new byte[1024];
 
     public void unzip(InputStream in, File destination) throws IOException {
         ZipInputStream zis = new ZipInputStream(in);
+
+        Log.d(TAG, "Unzipping to: " + destination);
         ZipEntry ze = zis.getNextEntry();
         while (ze != null) {
             String fileName = ze.getName();
+            Log.d(TAG, "Unzipping: " + fileName);
+
             File newFile = new File(destination, fileName);
             if (ze.isDirectory()) {
                 newFile.mkdirs();
@@ -54,6 +60,8 @@ public class ZipUtils {
     }
 
     public void zipDirectory(String srcDirPath, File zipFile) {
+        Log.d(TAG, "Zipping " + srcDirPath + " to: " + zipFile);
+
         List<String> zipFiles = new ArrayList<>();
         File logDir = new File(srcDirPath);
         String logDirName = logDir.getName();
@@ -104,11 +112,12 @@ public class ZipUtils {
 
     private void zipFile(String filePath, String logFileName, int rootPathLen, ZipOutputStream zos) throws IOException {
         FileInputStream fis = null;
+
+        Log.d(TAG, "Zipping: " + filePath);
         try {
             fis = new FileInputStream(filePath);
 
             String fn = filePath.substring(rootPathLen + 1, filePath.length());
-            Log.d("###", "adding as '" + fn + "': " + filePath);
             String entry = logFileName + "/" + fn;
             zos.putNextEntry(new ZipEntry(entry));
 
