@@ -3,7 +3,7 @@
 EDITION=$1
 VERSION=$2
 BLD_NUM=$3
-cd ${WORKSPACE}/mobile-testkit/CBLClient/Apps/CBLTestServer-iOS
+cd ${WORKSPACE}/mobile-testapps/CBLClient/Apps/CBLTestServer-iOS
 brew install carthage
 carthage update
 if [[ ! -d Frameworks ]]; then mkdir Frameworks; fi
@@ -17,7 +17,7 @@ SCHEME=CBLTestServer-iOS-EE
 fi
 SDK=iphonesimulator
 SDK_DEVICE=iphoneos
-FRAMEWORK_DIR=${WORKSPACE}/mobile-testkit/CBLClient/Apps/CBLTestServer-iOS/Frameworks
+FRAMEWORK_DIR=${WORKSPACE}/mobile-testapps/CBLClient/Apps/CBLTestServer-iOS/Frameworks
 
 if [[ -d build ]]; then rm -rf build/*; fi
 if [[ -d ${FRAMEWORK_DIR} ]]; then rm -rf ${FRAMEWORK_DIR}/*; fi
