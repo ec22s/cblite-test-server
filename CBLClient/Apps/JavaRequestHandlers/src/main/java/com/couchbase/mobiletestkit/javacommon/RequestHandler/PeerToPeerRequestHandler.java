@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.couchbase.lite.ConflictResolver;
+import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.ListenerAuthenticator;
+import com.couchbase.lite.URLEndpointListener;
+import com.couchbase.lite.URLEndpointListenerConfiguration;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
 import com.couchbase.lite.Database;
@@ -168,21 +172,58 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         }
     }
 
-    public ReplicatorTcpListener serverStart(Args args) throws IOException {
+    public URLEndpointListener serverStart(Args args) throws IOException, CouchbaseLiteException {
+        int port;
+        Database sourceDb = args.get("database");
+//        int securePort =  args.get("secure_port");
+        URLEndpointListenerConfiguration.Builder configBuilder;
+        configBuilder = new URLEndpointListenerConfiguration.Builder(sourceDb);
+        if (args.get("port") != null) {
+            port = args.get("port");
+            configBuilder.setPort(port);
+        }
+        configBuilder.setTlsDisabled(true);
+        if (args.get("basic_auth") != null) {
+            ListenerAuthenticator listenerAuthenticator = args.get("basic_auth");
+            System.out.println(listenerAuthenticator);
+            configBuilder.setAuthenticator(listenerAuthenticator);
+        }
+        URLEndpointListener p2ptcpListener = new URLEndpointListener(configBuilder.build(), false);
+        p2ptcpListener.start();
+        System.out.println("*******");
+        System.out.println(p2ptcpListener.getPort());
+        return p2ptcpListener;
+    }
+
+    public int getListenerPort(Args args) {
+        URLEndpointListener p2ptcpListener = args.get("listener");
+        System.out.println();
+        return p2ptcpListener.getPort();
+    }
+
+    public ReplicatorTcpListener messageEndpointListenerStart(Args args) throws IOException {
         Database sourceDb = args.get("database");
         int port = args.get("port");
         MessageEndpointListener messageEndpointListener =
-            new MessageEndpointListener(new MessageEndpointListenerConfiguration(
-            sourceDb,
-            ProtocolType.BYTE_STREAM));
+                new MessageEndpointListener(new MessageEndpointListenerConfiguration(
+                        sourceDb,
+                        ProtocolType.BYTE_STREAM));
         ReplicatorTcpListener p2ptcpListener = new ReplicatorTcpListener(sourceDb, port);
         p2ptcpListener.start();
         return p2ptcpListener;
     }
 
+
     public void serverStop(Args args) {
-        ReplicatorTcpListener p2ptcpListener = args.get("replicatorTcpListener");
-        p2ptcpListener.stop();
+        String endPointType = args.get("endPointType");
+        if (endPointType.equals("MessageEndPoint")) {
+            ReplicatorTcpListener p2ptcpListener = args.get("listener");
+            p2ptcpListener.stop();
+        } else {
+            URLEndpointListener p2ptcpListener = args.get("listener");
+            p2ptcpListener.stop();
+        }
+
     }
 
     public MessageEndpointConnection createConnection(MessageEndpoint endpoint) {
