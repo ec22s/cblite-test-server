@@ -173,12 +173,12 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
     }
 
     public URLEndpointListener serverStart(Args args) throws IOException, CouchbaseLiteException {
-        int port;
+        int port = args.get("port");
         Database sourceDb = args.get("database");
 //        int securePort =  args.get("secure_port");
         URLEndpointListenerConfiguration.Builder configBuilder;
         configBuilder = new URLEndpointListenerConfiguration.Builder(sourceDb);
-        if (args.get("port") != null) {
+        if (port > 0) {
             port = args.get("port");
             configBuilder.setPort(port);
         }
