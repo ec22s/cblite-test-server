@@ -47,18 +47,46 @@ public class PeerToPeerRequestHandler {
             // Peer to Peer Apis //
             ////////////////////////////
             
-        case "peerToPeer_serverStart":
+        case "peerToPeer_messageEndpointListenerStart":
             let database: Database = args.get(name:"database")!
             let port: Int = args.get(name:"port")!
             let peerToPeerListener: ReplicatorTcpListener = ReplicatorTcpListener(databases: [database], port: UInt32(port))
             peerToPeerListener.start()
             print("Server is getting started")
             return peerToPeerListener
-            
+       
+        case "peerToPeer_serverStart":
+            var peerToPeerListener: URLEndpointListener
+            let database: Database = args.get(name:"database")!
+            let config = URLEndpointListenerConfiguration.init(database: [database][0])
+            let port: Int = args.get(name:"port")!
+            if port > 0 {
+                config.port = UInt16(port)
+            }
+            config.disableTLS = true
+            peerToPeerListener = URLEndpointListener.init(config: config)
+            try peerToPeerListener.start()
+            print("Url Listener Started")
+            print(peerToPeerListener.urls)
+            return peerToPeerListener
+
+        case "peerToPeer_getListenerPort":
+            let listener: URLEndpointListener = args.get(name:"listener")!
+            print("*****************************")
+            print(listener.port)
+            print("*****************************")
+            return listener.port
+
         case "peerToPeer_serverStop":
-            let peerToPeerListener: ReplicatorTcpListener = args.get(name:"replicatorTcpListener")!
-            peerToPeerListener.stop()
-            
+            let listenerType: String = args.get(name:"endPointType")!
+            if listenerType == "MessageEndPoint" {
+                let listener: ReplicatorTcpListener = args.get(name:"listener")!
+                listener.stop()
+            } else {
+                let listener: URLEndpointListener = args.get(name:"listener")!
+                listener.stop()
+            }
+
         case "peerToPeer_configure":
             let host: String = args.get(name:"host")!
             let port: Int = args.get(name:"port")!
