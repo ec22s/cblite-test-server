@@ -72,9 +72,7 @@ public class PeerToPeerRequestHandler {
 
         case "peerToPeer_getListenerPort":
             let listener: URLEndpointListener = args.get(name:"listener")!
-            print("*****************************")
             print(listener.port)
-            print("*****************************")
             return listener.port
 
         case "peerToPeer_serverStop":
