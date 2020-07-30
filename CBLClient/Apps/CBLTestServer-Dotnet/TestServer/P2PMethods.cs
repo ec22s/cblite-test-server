@@ -20,8 +20,9 @@ namespace Couchbase.Lite.Testing
     {
         static private MessageEndpointListener _messageEndpointListener;
         static private ReplicatorTcpListener _broadcaster;
+        static private URLEndpointListener _urlEndpointListener;
 
-        public static void Start_Server([NotNull] NameValueCollection args,
+        public static void Message_Endpoint_Listener_Start([NotNull] NameValueCollection args,
                                 [NotNull] IReadOnlyDictionary<string, object> postBody,
                                 [NotNull] HttpListenerResponse response)
         {
@@ -35,14 +36,54 @@ namespace Couchbase.Lite.Testing
             response.WriteBody(MemoryMap.Store(_broadcaster));
         }
 
+        public static void Start_Server([NotNull] NameValueCollection args,
+                                [NotNull] IReadOnlyDictionary<string, object> postBody,
+                                [NotNull] HttpListenerResponse response)
+        {
+            ResetStatus();
+            Database db = MemoryMap.Get<Database>(postBody["database"].ToString());
+            int port = (int)postBody["port"];
+            var urlEndpointListenerConfig = new URLEndpointListenerConfiguration(db);
+
+            //_messageEndpointListener = new MessageEndpointListener(new MessageEndpointListenerConfiguration(db, ProtocolType.ByteStream));
+            if (port > 0) {
+                urlEndpointListenerConfig.Port = (ushort)port;
+            }
+            urlEndpointListenerConfig.DisableTLS = false;
+            _urlEndpointListener = new URLEndpointListener(urlEndpointListenerConfig);
+            _urlEndpointListener.Start();
+            AddStatus("Start waiting for connection..");
+            response.WriteBody(MemoryMap.Store(_urlEndpointListener));
+        }
+
         public static void Stop_Server([NotNull] NameValueCollection args,
                                 [NotNull] IReadOnlyDictionary<string, object> postBody,
                                 [NotNull] HttpListenerResponse response)
         {
-            ReplicatorTcpListener _broadcaster = MemoryMap.Get<ReplicatorTcpListener>(postBody["replicatorTcpListener"].ToString());
-            _broadcaster.Stop();
+            string listenerType = postBody["endPointType"].ToString();
+
+            if (listenerType == "MessageEndPoint")
+            {
+                ReplicatorTcpListener _broadcaster = MemoryMap.Get<ReplicatorTcpListener>(postBody["listener"].ToString());
+                _broadcaster.Stop();
+            }
+            else {
+
+                URLEndpointListener _listener = MemoryMap.Get<URLEndpointListener>(postBody["listener"].ToString());
+                _listener.Stop();
+            }
+                
             AddStatus("Stopping the server..");
             response.WriteEmptyBody();
+        }
+
+        public static ushort Get_Listener_Port([NotNull] NameValueCollection args,
+                                [NotNull] IReadOnlyDictionary<string, object> postBody,
+                                [NotNull] HttpListenerResponse response)
+        {
+            URLEndpointListener _urlEndpointListener = MemoryMap.Get<URLEndpointListener>(postBody["listener"].ToString());
+            return _urlEndpointListener.Port;
+
         }
 
         public static void Configure([NotNull] NameValueCollection args,
