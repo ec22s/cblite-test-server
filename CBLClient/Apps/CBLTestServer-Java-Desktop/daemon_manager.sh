@@ -5,6 +5,7 @@ BINARY_LOCATION=$2
 OUTPUT_LOCATION=$3
 JAVA_HOME_LOCATION=$4
 JSVC_LOCATION=$5
+WORKING_LOCATION=$6
 
 
 # Setup variables
@@ -16,10 +17,11 @@ USER=root
 PID=${OUTPUT_LOCATION}/testserver-java.pid
 LOG_OUT=${OUTPUT_LOCATION}/testserver-java.out
 LOG_ERR=${OUTPUT_LOCATION}/testserver-java.err
+WORKING_DIR=${WORKING_LOCATION}
 
 do_exec()
 {
-    $EXEC -home "$JAVA_HOME" -cp $CLASS_PATH -user $USER -outfile $LOG_OUT -errfile $LOG_ERR -pidfile $PID $1 $CLASS
+    $EXEC -home "$JAVA_HOME" -cp $CLASS_PATH -cwd $WORKING_DIR -user $USER -outfile $LOG_OUT -errfile $LOG_ERR -pidfile $PID $1 $CLASS
 }
 
 case "${SERVICE_STATUS}" in
