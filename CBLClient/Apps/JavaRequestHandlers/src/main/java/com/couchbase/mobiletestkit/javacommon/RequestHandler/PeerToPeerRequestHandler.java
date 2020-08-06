@@ -197,7 +197,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
 
     public int getListenerPort(Args args) {
         URLEndpointListener p2ptcpListener = args.get("listener");
-        System.out.println();
         return p2ptcpListener.getPort();
     }
 
