@@ -43,17 +43,25 @@ namespace Couchbase.Lite.Testing
             ResetStatus();
             Database db = MemoryMap.Get<Database>(postBody["database"].ToString());
             int port = (int)postBody["port"];
-            var urlEndpointListenerConfig = new URLEndpointListenerConfiguration(db);
-
-            //_messageEndpointListener = new MessageEndpointListener(new MessageEndpointListenerConfiguration(db, ProtocolType.ByteStream));
-            if (port > 0) {
+            URLEndpointListenerConfiguration urlEndpointListenerConfig = new URLEndpointListenerConfiguration(db);
+            Console.WriteLine(db);
+            AddStatus("URL Start SERVER");
+            if (port > 0)
+            {
                 urlEndpointListenerConfig.Port = (ushort)port;
             }
-            urlEndpointListenerConfig.DisableTLS = false;
-            _urlEndpointListener = new URLEndpointListener(urlEndpointListenerConfig);
-            _urlEndpointListener.Start();
+
+            if (postBody.ContainsKey("basic_auth"))
+            {
+               urlEndpointListenerConfig.Authenticator = MemoryMap.Get<ListenerPasswordAuthenticator>(postBody["basic_auth"].ToString());
+            }
+            urlEndpointListenerConfig.DisableTLS = true;
+            URLEndpointListener urlEndpointListener = new URLEndpointListener(urlEndpointListenerConfig);
+            urlEndpointListener.Start();
             AddStatus("Start waiting for connection..");
-            response.WriteBody(MemoryMap.Store(_urlEndpointListener));
+            Console.WriteLine(db);
+            Console.WriteLine(urlEndpointListener.Port);
+            response.WriteBody(MemoryMap.Store(urlEndpointListener));
         }
 
         public static void Stop_Server([NotNull] NameValueCollection args,
@@ -61,14 +69,15 @@ namespace Couchbase.Lite.Testing
                                 [NotNull] HttpListenerResponse response)
         {
             string listenerType = postBody["endPointType"].ToString();
-
+ 
             if (listenerType == "MessageEndPoint")
             {
-                ReplicatorTcpListener _broadcaster = MemoryMap.Get<ReplicatorTcpListener>(postBody["listener"].ToString());
-                _broadcaster.Stop();
+                Console.WriteLine("Stopping Message Endpoint");
+                ReplicatorTcpListener _listener = MemoryMap.Get<ReplicatorTcpListener>(postBody["listener"].ToString());
+                _listener.Stop();
             }
             else {
-
+                Console.WriteLine("Stopping URL Endpoint");
                 URLEndpointListener _listener = MemoryMap.Get<URLEndpointListener>(postBody["listener"].ToString());
                 _listener.Stop();
             }
@@ -77,13 +86,14 @@ namespace Couchbase.Lite.Testing
             response.WriteEmptyBody();
         }
 
-        public static ushort Get_Listener_Port([NotNull] NameValueCollection args,
+        public static void Get_Listener_Port([NotNull] NameValueCollection args,
                                 [NotNull] IReadOnlyDictionary<string, object> postBody,
                                 [NotNull] HttpListenerResponse response)
         {
             URLEndpointListener _urlEndpointListener = MemoryMap.Get<URLEndpointListener>(postBody["listener"].ToString());
-            return _urlEndpointListener.Port;
 
+            ushort port = _urlEndpointListener.Port;
+            response.WriteBody((int)port);
         }
 
         public static void Configure([NotNull] NameValueCollection args,
@@ -178,6 +188,10 @@ namespace Couchbase.Lite.Testing
                     config.PullFilter = _default_replicator_filter_callback;
                 }
 
+            }
+            if (postBody.ContainsKey("basic_auth"))
+            {
+                config.Authenticator = MemoryMap.Get<Authenticator>(postBody["basic_auth"].ToString());
             }
             switch (postBody["conflict_resolver"].ToString())
             {

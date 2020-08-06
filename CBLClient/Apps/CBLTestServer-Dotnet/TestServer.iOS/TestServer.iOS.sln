@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServer.iOS", "TestServer.iOS.csproj", "{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Debug|iPhone.Build.0 = Debug|iPhone
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Release|iPhone.ActiveCfg = Release|iPhone
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Release|iPhone.Build.0 = Release|iPhone
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{F39EE0E0-ED26-43CE-AFF8-A91F0895788F}.AppStore|iPhone.Build.0 = AppStore|iPhone
+	EndGlobalSection
+EndGlobal
