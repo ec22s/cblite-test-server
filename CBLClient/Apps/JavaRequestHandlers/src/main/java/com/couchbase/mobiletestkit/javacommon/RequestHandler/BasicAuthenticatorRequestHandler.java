@@ -12,12 +12,14 @@ public class BasicAuthenticatorRequestHandler {
     public BasicAuthenticator create(Args args) {
         String username = args.get("username");
         String password = args.get("password");
-        return new BasicAuthenticator(username, password);
+        char[] passwordData = password.toCharArray();
+        return new BasicAuthenticator(username, passwordData);
     }
 
-    public String getPassword(Args args) {
+    public char[] getPassword(Args args) {
         BasicAuthenticator authenticator = args.get("authenticator");
-        return authenticator.getPassword();
+        char[] passwordChars = authenticator.getPasswordChars();
+        return passwordChars;
     }
 
     public String getUsername(Args args) {

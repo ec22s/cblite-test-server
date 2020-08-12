@@ -15,9 +15,8 @@ public class ListenerAuthenticatorRequestHandler {
         String pass = args.get("password");
         char[] password = pass.toCharArray();
         PasswordAuthenticator passwordAuthenticator = new PasswordAuthenticator();
-        ListenerPasswordAuthenticator listenerPasswordAuthenticator = ListenerPasswordAuthenticator.create(
+        ListenerPasswordAuthenticator listenerPasswordAuthenticator = new ListenerPasswordAuthenticator(
                 passwordAuthenticator);
-        listenerPasswordAuthenticator.authenticate(username, password);
         return listenerPasswordAuthenticator;
     }
 

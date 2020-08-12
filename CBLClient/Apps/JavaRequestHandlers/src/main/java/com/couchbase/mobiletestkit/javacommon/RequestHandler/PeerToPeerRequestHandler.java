@@ -179,19 +179,18 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         int port = args.get("port");
         Database sourceDb = args.get("database");
 //        int securePort =  args.get("secure_port");
-        URLEndpointListenerConfiguration.Builder configBuilder;
-        configBuilder = new URLEndpointListenerConfiguration.Builder(sourceDb);
+        URLEndpointListenerConfiguration config = new URLEndpointListenerConfiguration(sourceDb);
         if (port > 0) {
             port = args.get("port");
-            configBuilder.setPort(port);
+            config.setPort(port);
         }
-        configBuilder.setTlsDisabled(true);
+        config.setDisableTls(true);
+
         if (args.get("basic_auth") != null) {
             ListenerAuthenticator listenerAuthenticator = args.get("basic_auth");
-            System.out.println(listenerAuthenticator);
-            configBuilder.setAuthenticator(listenerAuthenticator);
+            config.setAuthenticator(listenerAuthenticator);
         }
-        URLEndpointListener p2ptcpListener = new URLEndpointListener(configBuilder.build(), false);
+        URLEndpointListener p2ptcpListener = new URLEndpointListener(config);
         p2ptcpListener.start();
 
         System.out.println(p2ptcpListener.getPort());
