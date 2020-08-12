@@ -126,6 +126,9 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
                     break;
             }
         }
+        if (args.get("basic_auth") != null) {
+            config.setAuthenticator(args.get("basic_auth"));
+        }
         switch (conflict_resolver) {
             case "local_wins":
                 config.setConflictResolver(new LocalWinsCustomConflictResolver());

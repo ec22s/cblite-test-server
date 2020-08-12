@@ -18,8 +18,6 @@ public class ListenerAuthenticatorRequestHandler {
         ListenerPasswordAuthenticator listenerPasswordAuthenticator = ListenerPasswordAuthenticator.create(
                 passwordAuthenticator);
         listenerPasswordAuthenticator.authenticate(username, password);
-        System.out.println(listenerPasswordAuthenticator);
-        System.out.println("PASSSSSSS");
         return listenerPasswordAuthenticator;
     }
 
