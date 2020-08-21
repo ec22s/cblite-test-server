@@ -22,6 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="certs\certs.p12" />
+    <None Remove="certs\client.p12" />
+    <None Remove="certs\client-ca.der" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="Databases\PrebuiltDB.cblite2\db.sqlite3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -135,5 +140,13 @@
     <None Update="Files\golden_gate_large.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="certs\certs.p12" />
+    <BundleResource Include="certs\client.p12" />
+    <BundleResource Include="certs\client-ca.der" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="certs\" />
   </ItemGroup>
 </Project>
