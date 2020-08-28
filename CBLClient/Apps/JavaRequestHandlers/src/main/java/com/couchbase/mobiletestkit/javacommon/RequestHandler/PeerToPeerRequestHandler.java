@@ -4,26 +4,23 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
   Created by sridevi.saragadam on 7/9/18.
  */
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Calendar;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
 
-import com.couchbase.lite.ConflictResolver;
+import com.couchbase.lite.*;
 import com.couchbase.mobiletestkit.javacommon.Args;
+import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
-import com.couchbase.lite.Database;
-import com.couchbase.lite.MessageEndpoint;
-import com.couchbase.lite.MessageEndpointConnection;
-import com.couchbase.lite.MessageEndpointDelegate;
-import com.couchbase.lite.MessageEndpointListener;
-import com.couchbase.lite.MessageEndpointListenerConfiguration;
-import com.couchbase.lite.ProtocolType;
-import com.couchbase.lite.Replicator;
-import com.couchbase.lite.ReplicatorChange;
-import com.couchbase.lite.ReplicatorChangeListener;
-import com.couchbase.lite.ReplicatorConfiguration;
-import com.couchbase.lite.URLEndpoint;
 
 
 public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
@@ -50,8 +47,12 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Boolean pull_filter = args.get("pull_filter");
         String filter_callback_func = args.get("filter_callback_func");
         String conflict_resolver = args.get("conflict_resolver");
+        Boolean disableTls = args.get("tls_disable");
+        String tlsAuthType = args.get("tls_auth_type");
+        Boolean serverVerificationMode = args.get("server_verification_mode");
         ReplicatorConfiguration config;
         Replicator replicator;
+        URI uri;
 
         if (replicationType == null) {
             replicationType = "push_pull";
@@ -68,7 +69,12 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             replType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
         }
         Log.i(TAG, "serverDBName is " + serverDBName);
-        URI uri = new URI("ws://" + ipaddress + ":" + port + "/" + serverDBName);
+        if (disableTls) {
+            uri = new URI("ws://" + ipaddress + ":" + port + "/" + serverDBName);
+        } else {
+            uri = new URI("wss://" + ipaddress + ":" + port + "/" + serverDBName);
+        }
+
         if (endPointType.equals("URLEndPoint")) {
             URLEndpoint urlEndPoint = new URLEndpoint(uri);
             config = new ReplicatorConfiguration(sourceDb, urlEndPoint);
@@ -122,6 +128,16 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
                     break;
             }
         }
+        if (args.get("basic_auth") != null) {
+            config.setAuthenticator(args.get("basic_auth"));
+        }
+        if (tlsAuthType == "self_signed") {
+            InputStream ServerCert = this.getPinnedCertFile("certs.p12");
+            config.setPinnedServerCertificate(toByteArray(ServerCert));
+        }
+        if (serverVerificationMode) {
+            config.setAcceptOnlySelfSignedServerCertificate(true);
+        }
         switch (conflict_resolver) {
             case "local_wins":
                 config.setConflictResolver(new LocalWinsCustomConflictResolver());
@@ -168,7 +184,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         }
     }
 
-    public ReplicatorTcpListener serverStart(Args args) throws IOException {
+    public ReplicatorTcpListener messageEndpointListenerStart(Args args) throws IOException {
         Database sourceDb = args.get("database");
         int port = args.get("port");
         MessageEndpointListener messageEndpointListener =
@@ -180,9 +196,65 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         return p2ptcpListener;
     }
 
+    public URLEndpointListener serverStart(Args args) throws IOException, CouchbaseLiteException, CouchbaseLiteException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
+        int port = args.get("port");
+        Boolean disableTls = args.get("tls_disable");
+        Database sourceDb = args.get("database");
+        String tlsAuthType = args.get("tls_auth_type");
+        URLEndpointListenerConfiguration config = new URLEndpointListenerConfiguration(sourceDb);
+        if (port > 0) {
+            port = args.get("port");
+            config.setPort(port);
+        }
+        config.setDisableTls(disableTls);
+        if (tlsAuthType == "self_signed_create") {
+            final String EXTERNAL_KEY_STORE_TYPE = "PKCS12";
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.YEAR, 1);
+            Date certTime = calendar.getTime();
+            HashMap<String, String> X509Attributes = new HashMap<String, String>();
+            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_COMMON_NAME , "CBL Test");
+            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION, "Couchbase");
+            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION_UNIT, "Mobile");
+            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_EMAIL_ADDRESS, "lite@couchbase.com");
+
+            KeyStore externalStore = KeyStore.getInstance(EXTERNAL_KEY_STORE_TYPE);
+
+            TLSIdentity identity = TLSIdentity.createIdentity(true,
+                    X509Attributes,
+                    certTime,
+                    externalStore,
+                    "ServerCerts",
+                    "pass".toCharArray());
+            config.setTlsIdentity(identity);
+        }
+
+
+        if (args.get("basic_auth") != null) {
+            ListenerAuthenticator listenerAuthenticator = args.get("basic_auth");
+            System.out.println(listenerAuthenticator);
+            config.setAuthenticator(listenerAuthenticator);
+        }
+        URLEndpointListener p2ptcpListener = new URLEndpointListener(config);
+        p2ptcpListener.start();
+        System.out.println(p2ptcpListener.getPort());
+        return p2ptcpListener;
+    }
+
+    public int getListenerPort(Args args) {
+        URLEndpointListener p2ptcpListener = args.get("listener");
+        return p2ptcpListener.getPort();
+    }
+
     public void serverStop(Args args) {
-        ReplicatorTcpListener p2ptcpListener = args.get("replicatorTcpListener");
-        p2ptcpListener.stop();
+        String endPointType = args.get("endPointType");
+        if (endPointType.equals("MessageEndPoint")) {
+            ReplicatorTcpListener tcpListener = args.get("listener");
+            tcpListener.stop();
+        } else {
+            URLEndpointListener urlListener = args.get("listener");
+            urlListener.stop();
+        }
     }
 
     public MessageEndpointConnection createConnection(MessageEndpoint endpoint) {
@@ -204,5 +276,34 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
 
     public List<String> replicatorEventGetChanges(Args args) {
         return replicatorRequestHandlerObj.replicatorEventGetChanges(args);
+    }
+
+    private InputStream getPinnedCertFile(String fileName) {
+        InputStream is = null;
+        try {
+            is = RequestHandlerDispatcher.context.getAsset(fileName);
+            RequestHandlerDispatcher.context.getFilesDir();
+            return is;
+        }
+        finally {
+            if (is != null) { try { is.close(); } catch (IOException e) { } }
+        }
+    }
+    public static byte[] toByteArray(InputStream is) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] b = new byte[1024];
+
+        try {
+            int bytesRead = is.read(b);
+            while (bytesRead != -1) {
+                bos.write(b, 0, bytesRead);
+                bytesRead = is.read(b);
+            }
+        }
+        catch (IOException io) {
+            Log.w(TAG, "Got exception " + io.getMessage() + ", Ignoring...");
+        }
+
+        return bos.toByteArray();
     }
 }
