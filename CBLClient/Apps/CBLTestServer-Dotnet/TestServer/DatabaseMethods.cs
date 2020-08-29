@@ -167,7 +167,7 @@ namespace Couchbase.Lite.Testing
         }
 
         internal static void DatabaseDeleteDB([NotNull] NameValueCollection args,
-            NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
             [NotNull] HttpListenerResponse response)
         {
             With<Database>(postBody, "database", db => db.Delete());
