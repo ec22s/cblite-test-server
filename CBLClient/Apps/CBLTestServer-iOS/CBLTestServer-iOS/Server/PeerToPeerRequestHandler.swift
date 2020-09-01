@@ -38,6 +38,10 @@ public class PeerToPeerRequestHandler {
         }
         return true
     }
+    private func dataFromResource(name: String, ofType type: String) throws -> Data {
+        let path = Bundle(for: Swift.type(of:self)).path(forResource: name, ofType: type)
+        return try! NSData(contentsOfFile: path!, options: []) as Data
+    }
 
     public func handleRequest(method: String, args: Args) throws -> Any? {
         
@@ -60,10 +64,44 @@ public class PeerToPeerRequestHandler {
             let database: Database = args.get(name:"database")!
             let config = URLEndpointListenerConfiguration.init(database: [database][0])
             let port: Int = args.get(name:"port")!
+            let basicAuth: ListenerAuthenticator? = args.get(name: "basic_auth")!
+            let disableTls: Bool? = args.get(name: "tls_disable")
+            let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
+            let tlsAuthType: String?  = args.get(name: "tls_auth_type")!
+        
             if port > 0 {
                 config.port = UInt16(port)
             }
-            config.disableTLS = true
+            if disableTls != nil {
+                config.disableTLS = disableTls!
+            }
+            
+            if basicAuth != nil {
+                print("Listener: Setting basic authentication")
+                config.authenticator = basicAuth!
+            }
+            if (tlsAuthenticator != false) {
+                let rootCertData = try! dataFromResource(name: "identity2/client-ca", ofType: "der")
+                let rootCert = SecCertificateCreateWithData(kCFAllocatorDefault, rootCertData as CFData)!
+                let listenerAuth = ListenerCertificateAuthenticator.init(rootCerts: [rootCert])
+                config.authenticator = listenerAuth
+                print("Client TLS self_signed_create")
+            }
+            if tlsAuthType == "self_signed" {
+                let serverCertData = try! dataFromResource(name: "identity2/certs", ofType: "p12")
+                try TLSIdentity.deleteIdentity(withLabel: "CBL-Server-Cert")
+                let identity = try! TLSIdentity.importIdentity(withData: serverCertData, password: "123", label: "CBL-Server-Cert")
+                config.tlsIdentity = identity
+                print("TLS self_signed set")
+            }
+            if (tlsAuthType == "self_signed_create") {
+                let attrs = [certAttrCommonName: "testkit"]
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Server-Cert")
+                let identity = try! TLSIdentity.createIdentity(forServer: false, attributes: attrs, expiration: nil, label: "CBL-Server-Cert")
+                config.tlsIdentity = identity
+                print("TLS self_signed_create")
+                
+            }
             peerToPeerListener = URLEndpointListener.init(config: config)
             try peerToPeerListener.start()
             print("Url Listener Started")
@@ -100,6 +138,12 @@ public class PeerToPeerRequestHandler {
             let filter_callback_func: String? = args.get(name: "filter_callback_func")
             var replicatorConfig: ReplicatorConfiguration
             var replicatorType = ReplicatorType.pushAndPull
+            let basic_auth: Authenticator? = args.get(name: "basic_auth")!
+            let tlsDisable: Bool? = args.get(name: "tls_disable")!
+            let serverVerificationMode: Bool? = args.get(name: "server_verification_mode")!
+            let tlsAuthType: String = args.get(name:"tls_auth_type")!
+            let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
+            var wsPort: String = "ws"
             
             if let type = replication_type {
                 if type == "push" {
@@ -110,15 +154,41 @@ public class PeerToPeerRequestHandler {
                     replicatorType = .pushAndPull
                 }
             }
-            
-            let url = URL(string: "ws://\(host):\(port)/\(serverDBName)")!
-            if endPointType == "URLEndPoint"{
+
+            if tlsDisable == false  {
+                wsPort = "wss"
+            }
+            let url = URL(string: "\(wsPort)://\(host):\(port)/\(serverDBName)")!
+            if endPointType == "URLEndPoint" {
                 let urlEndPoint: URLEndpoint = URLEndpoint(url: url)
                 replicatorConfig = ReplicatorConfiguration(database: database, target: urlEndPoint)
-            }
-            else{
+            } else{
                 let endpoint = MessageEndpoint(uid: url.absoluteString, target: url, protocolType: ProtocolType.byteStream, delegate: self)
                 replicatorConfig = ReplicatorConfiguration(database: database, target: endpoint)
+            }
+            if basic_auth != nil {
+                replicatorConfig.authenticator = basic_auth
+            }
+
+            if serverVerificationMode != false {
+                replicatorConfig.acceptOnlySelfSignedServerCertificate = true
+                print("Replicator accept selfsigned Flag Set")
+            }
+            
+            if (tlsAuthType == "self_signed") {
+                let clientCertData = try! dataFromResource(name: "identity2/certs", ofType: "p12")
+//                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Client-Cert2")
+                let identity = try! TLSIdentity.importIdentity(withData: clientCertData, password: "123", label: "CBL-Client-Cert2")
+                replicatorConfig.pinnedServerCertificate = identity.certs[0]
+                print("Replicator Pinned selfsigned Certs Set")
+            }
+            
+            if (tlsAuthenticator != false) {
+                let clientCertData = try dataFromResource(name: "identity2/client", ofType: "p12")
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Client-Cert")
+                let identity = try! TLSIdentity.importIdentity(withData: clientCertData, password: "123", label: "CBL-Client-Cert")
+                replicatorConfig.authenticator = ClientCertificateAuthenticator(identity: identity)
+                print("Replicator Authenticator Set")
             }
             
             if continuous != nil {
