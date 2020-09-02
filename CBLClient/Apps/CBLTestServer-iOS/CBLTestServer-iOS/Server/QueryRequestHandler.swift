@@ -891,7 +891,7 @@ public class QueryRequestHandler {
             query_obj.removeChangeListener(withToken: changeListener.listenerToken!)
             return query_obj
         
-        case "query_select_all":
+        case "query_selectAll":
             let database: Database = args.get(name: "database")!
             let query = QueryBuilder
                 .select(SelectResult.all())

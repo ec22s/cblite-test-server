@@ -858,7 +858,7 @@ public class QueryRequestHandler {
         query.removeChangeListener(changeListener.getToken());
     }
 
-    public Query select_all(Args args){
+    public Query selectAll(Args args){
         Database database = args.get("database");
         Query query = QueryBuilder
                 .select(SelectResult.all())
