@@ -124,7 +124,6 @@ namespace Couchbase.Lite.Testing
                 _listener.Stop();
             }
             else {
-                Console.WriteLine("Stopping URL Endpoint");
                 URLEndpointListener _listener = MemoryMap.Get<URLEndpointListener>(postBody["listener"].ToString());
                 _listener.Stop();
             }
@@ -257,7 +256,7 @@ namespace Couchbase.Lite.Testing
                 TLSIdentity.DeleteIdentity(_store, ClientCertLabel, null);
                 string certLocation = TestServer.FilePathResolver("certs/certs.p12", false);
                 byte[] certsData = File.ReadAllBytes(certLocation);
-                TLSIdentity identity = TLSIdentity.ImportIdentity(_store, certsData, password: "123", label: ClientCertLabel, null);
+                TLSIdentity identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ClientCertLabel, null);
                 config.PinnedServerCertificate = identity.Certs[0];
             }
             if (tls_authenticator) {
