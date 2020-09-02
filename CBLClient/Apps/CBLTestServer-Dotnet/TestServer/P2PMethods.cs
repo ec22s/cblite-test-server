@@ -23,9 +23,7 @@ namespace Couchbase.Lite.Testing
     {
         static private MessageEndpointListener _messageEndpointListener;
         static private ReplicatorTcpListener _broadcaster;
-        static private URLEndpointListener _urlEndpointListener;
         private static X509Store _store;
-        private static object serverCertData;
         private const string ServerCertLabel = "CBL-Server-Cert";
         private const string ClientCertLabel = "CBL-Client-Cert";
         private const string V = "tls_disable";
