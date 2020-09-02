@@ -4,10 +4,13 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
   Created by sridevi.saragadam on 7/9/18.
  */
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ import java.util.List;
 import com.couchbase.lite.ClientCertificateAuthenticator;
 import com.couchbase.lite.ConflictResolver;
 import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.KeyStoreUtils;
 import com.couchbase.lite.ListenerAuthenticator;
 import com.couchbase.lite.ListenerCertificateAuthenticator;
 import com.couchbase.lite.ListenerCertificateAuthenticatorDelegate;
@@ -46,7 +50,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
@@ -79,8 +83,8 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Replicator replicator;
         String tlsAuthType = args.get("tls_auth_type");
         Boolean disableTls = args.get("tls_disable");
-        Boolean tls_authenticator = args.get("tls_authenticator");
-        Boolean server_verification_mode = args.get("server_verification_mode");
+        Boolean tlsAuthenticator = args.get("tls_authenticator");
+        Boolean serverVerificationMode = args.get("server_verification_mode");
         URI uri;
 
         if (replicationType == null) {
@@ -154,33 +158,67 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         if (args.get("basic_auth") != null) {
             config.setAuthenticator(args.get("basic_auth"));
         }
-        if (tlsAuthType == "self_signed") {
-            try (InputStream ClientCert = this.getCertFile("certs.p12")) {
 
-                TLSIdentity identity = TLSIdentity.importIdentity("PKCS12",
-                        ClientCert,
-                        "123".toCharArray(),
-                        "serverCerts",
-                        null, "serverCerts");
-                config.setPinnedServerCertificate(toByteArray(ClientCert));
+        if (tlsAuthType.equals("self_signed")) {
+            try (InputStream clientCert = this.getCertFile("selfsigned.jks")) {
+                try {
+                    KeyStoreUtils.importEntry("PKCS12",
+                            clientCert,
+                            "123456".toCharArray(),
+                            "testkit",
+                            "123456".toCharArray(), "ClientCertsSelfsigned");
+                } catch (KeyStoreException e) {
+                    e.printStackTrace();
+                } catch (CertificateException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (UnrecoverableEntryException e) {
+                    e.printStackTrace();
+                }
+                TLSIdentity tlsIdentity = TLSIdentity.getIdentity("ClientCertsSelfsigned");
+                if (tlsIdentity != null) {
+                    List<Certificate> certs = tlsIdentity.getCerts();
+                    X509Certificate cert = (X509Certificate) certs.get(0);
+                    System.out.println(cert.getEncoded());
+                    config.setPinnedServerCertificate(cert.getEncoded());
+                    Log.i(TAG, "Pinned the certs ... .... ");
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        if (tls_authenticator) {
-            try (InputStream ClientCert = this.getCertFile("client.p12")) {
-                TLSIdentity identity = TLSIdentity.importIdentity("PKCS12",
-                        ClientCert,
-                        "123".toCharArray(),
-                        "clientCerts",
-                        null, "clientCerts");
+        if (tlsAuthenticator) {
+            try {
+                InputStream ClientCert = this.getCertFile("client.p12");
+                try {
+                    KeyStoreUtils.importEntry("PKCS12",
+                            RequestHandlerDispatcher.context.getAsset("selfsigned.jks"),
+                            "123456".toCharArray(),
+                            "testkit",
+                            "123456".toCharArray(), "clientcerts");
+                } catch (KeyStoreException e) {
+                    e.printStackTrace();
+                } catch (CertificateException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (UnrecoverableEntryException e) {
+                    e.printStackTrace();
+                }
+                TLSIdentity identity = TLSIdentity.getIdentity("clientcerts");
                 ClientCertificateAuthenticator clientCertificateAuthenticator = new ClientCertificateAuthenticator(identity);
                 config.setAuthenticator(clientCertificateAuthenticator);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CouchbaseLiteException e) {
+                e.printStackTrace();
             }
         }
 
-        if (server_verification_mode) {
+        if (serverVerificationMode) {
             config.setAcceptOnlySelfSignedServerCertificate(true);
         }
 
@@ -236,21 +274,21 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         URLEndpointListenerConfiguration config = new URLEndpointListenerConfiguration(sourceDb);
 
         Boolean disableTls = args.get("tls_disable");
-        Boolean tls_authenticator = args.get("tls_authenticator");
+        Boolean tlsAuthenticator = args.get("tls_authenticator");
         String tlsAuthType = args.get("tls_auth_type");
 
         if (port > 0) {
             port = args.get("port");
             config.setPort(port);
         }
-        config.setDisableTls(false);
+        config.setDisableTls(disableTls);
 
         if (args.get("basic_auth") != null) {
             ListenerAuthenticator listenerAuthenticator = args.get("basic_auth");
             config.setAuthenticator(listenerAuthenticator);
         }
 
-        if (tlsAuthType == "self_signed_create") {
+        if (tlsAuthType.equals("self_signed_create")) {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.YEAR, 1);
             Date certTime = calendar.getTime();
@@ -261,35 +299,46 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_EMAIL_ADDRESS, "lite@couchbase.com");
             TLSIdentity identity = TLSIdentity.createIdentity(true, X509Attributes, certTime, "testkit");
             config.setTlsIdentity(identity);
-            config.setAuthenticator(null);
         }
 
-        if (tlsAuthType == "self_signed") {
-            try (InputStream ServerCert = this.getCertFile("certs.p12")) {
-//                TLSIdentity.deleteIdentity("Servercerts");
-                TLSIdentity identity = TLSIdentity.importIdentity("PKCS12",
-                        ServerCert,
-                        "123".toCharArray(),
-                        "ServerCerts",
-                        null, "Servercerts");
+        if (tlsAuthType.equals("self_signed")) {
+            try {
+                InputStream serverCert = this.getCertFile(("selfsigned.jks"));
+                KeyStoreUtils.importEntry("PKCS12",
+                        serverCert,
+                        "123456".toCharArray(),
+                        "testkit",
+                        "123456".toCharArray(), "Servercerts");
+                TLSIdentity identity = TLSIdentity.getIdentity("Servercerts");
                 config.setTlsIdentity(identity);
-                config.setAuthenticator(null);
+                Log.e(TAG,"ServerSide setting the identity");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CouchbaseLiteException | KeyStoreException | CertificateException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
+                e.printStackTrace();
             }
         }
-        if (tls_authenticator) {
-            try (InputStream RootCert = this.getCertFile("client-ca.der")) {
-                TLSIdentity identity = TLSIdentity.importIdentity("PKCS12",
-                        RootCert,
-                        "123".toCharArray(),
-                        "ServerCerts",
-                        null, "Servercerts");
-                ListenerCertificateAuthenticator listenerCertificateAuthenticator = new ListenerCertificateAuthenticator(identity.getCerts());
+        if (tlsAuthenticator) {
+            List<Certificate> certsList = new ArrayList<>();
+            try {
+                InputStream serverCert;
+                serverCert = this.getCertFile("client-ca.der");
+                Log.e(TAG, String.valueOf(serverCert));
+                ByteArrayInputStream derInputStream = new ByteArrayInputStream(toByteArray(serverCert));
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                X509Certificate cert = (X509Certificate) cf.generateCertificate(derInputStream);
+                serverCert.close();
+                certsList.add(cert);
+                ListenerCertificateAuthenticator listenerCertificateAuthenticator = new ListenerCertificateAuthenticator(certsList);
                 config.setAuthenticator(listenerCertificateAuthenticator);
+            } catch (CertificateException e) {
+                e.printStackTrace();
             }
         }
 
         URLEndpointListener p2ptcpListener = new URLEndpointListener(config);
         p2ptcpListener.start();
+        System.out.println(p2ptcpListener.getTlsIdentity());
 
         System.out.println(p2ptcpListener.getPort());
         return p2ptcpListener;
@@ -350,15 +399,11 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         InputStream is = null;
         try {
             is = RequestHandlerDispatcher.context.getAsset(name);
-            return is;
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                }
-            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return is;
     }
 
     public static byte[] toByteArray(InputStream is) {
@@ -373,6 +418,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             }
         } catch (IOException io) {
             Log.w(TAG, "Got exception " + io.getMessage() + ", Ignoring...");
+            io.printStackTrace();
         }
 
         return bos.toByteArray();
