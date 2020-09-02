@@ -75,7 +75,7 @@ namespace Couchbase.Lite.Testing
                 TLSIdentity.DeleteIdentity(_store, ServerCertLabel, null);
                 string certLocation = TestServer.FilePathResolver("certs/certs.p12", false);
                 byte[] certsData = File.ReadAllBytes(certLocation);
-                TLSIdentity identity = TLSIdentity.ImportIdentity(_store, certsData, password: "123", label: ServerCertLabel, null);
+                TLSIdentity identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ServerCertLabel, null);
                 urlEndpointListenerConfig.TlsIdentity = identity;
                 
 
@@ -265,7 +265,7 @@ namespace Couchbase.Lite.Testing
                 TLSIdentity.DeleteIdentity(_store, ClientCertLabel, null);
                 string certLocation = TestServer.FilePathResolver("certs/client.p12", false);
                 byte[] certsData = File.ReadAllBytes(certLocation);
-                var identity = TLSIdentity.ImportIdentity(_store, certsData, password: "123", label: ClientCertLabel, null);
+                var identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ClientCertLabel, null);
                 config.Authenticator = new ClientCertificateAuthenticator(identity);
 
             } if (server_verification_mode) {
