@@ -53,6 +53,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.util.UUID;
 
 
 public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
@@ -160,7 +161,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         }
 
         if (tlsAuthType.equals("self_signed")) {
-            try (InputStream clientCert = this.getCertFile("selfsigned.jks")) {
+            try (InputStream clientCert = this.getCertFile("certs.p12")) {
                 try {
                     KeyStoreUtils.importEntry("PKCS12",
                             clientCert,
@@ -192,10 +193,10 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
 
         if (tlsAuthenticator) {
             try {
-                InputStream ClientCert = this.getCertFile("client.p12");
+                InputStream clientCert = this.getCertFile("client.p12");
                 try {
                     KeyStoreUtils.importEntry("PKCS12",
-                            RequestHandlerDispatcher.context.getAsset("selfsigned.jks"),
+                            clientCert,
                             "123456".toCharArray(),
                             "testkit",
                             "123456".toCharArray(), "clientcerts");
@@ -211,6 +212,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
                 TLSIdentity identity = TLSIdentity.getIdentity("clientcerts");
                 ClientCertificateAuthenticator clientCertificateAuthenticator = new ClientCertificateAuthenticator(identity);
                 config.setAuthenticator(clientCertificateAuthenticator);
+                config.setAcceptOnlySelfSignedServerCertificate(true);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (CouchbaseLiteException e) {
@@ -297,13 +299,14 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION, "Couchbase");
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION_UNIT, "Mobile");
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_EMAIL_ADDRESS, "lite@couchbase.com");
-            TLSIdentity identity = TLSIdentity.createIdentity(true, X509Attributes, certTime, "testkit");
+            String alias = UUID.randomUUID().toString();
+            TLSIdentity identity = TLSIdentity.createIdentity(true, X509Attributes, certTime, alias);
             config.setTlsIdentity(identity);
         }
 
         if (tlsAuthType.equals("self_signed")) {
             try {
-                InputStream serverCert = this.getCertFile(("selfsigned.jks"));
+                InputStream serverCert = this.getCertFile(("certs.p12"));
                 KeyStoreUtils.importEntry("PKCS12",
                         serverCert,
                         "123456".toCharArray(),
