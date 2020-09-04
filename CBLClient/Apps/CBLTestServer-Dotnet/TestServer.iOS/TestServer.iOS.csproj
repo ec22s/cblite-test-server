@@ -117,10 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Couchbase.Lite.Enterprise.Support.iOS">
-      <Version>2.8.0-b0109</Version>
+      <Version>2.8.0-b0133</Version>
     </PackageReference>
     <PackageReference Include="Couchbase.Lite.Enterprise">
-      <Version>2.8.0-b0108</Version>
+      <Version>2.8.0-b0133</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
