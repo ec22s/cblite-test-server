@@ -182,8 +182,6 @@ public class PeerToPeerRequestHandler {
                 let identity = try! TLSIdentity.importIdentity(withData: certData, password: "123", label: "CBL-Cert")
                 replicatorConfig.pinnedServerCertificate = identity.certs[0]
             }
-            print(tlsAuthenticator)
-            print("Authenticator")
             if tlsAuthenticator != false {
                 let clientCertData = try dataFromResource(name: "identity/client", ofType: "p12")
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
