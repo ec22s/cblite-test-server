@@ -38,7 +38,8 @@ public class PeerToPeerRequestHandler {
         }
         return true
     }
-    private func dataFromResource(name: String, ofType type: String) throws -> Data {
+    
+    func dataFromResource(name: String, ofType type: String) throws -> Data {
         let path = Bundle(for: Swift.type(of:self)).path(forResource: name, ofType: type)
         return try! NSData(contentsOfFile: path!, options: []) as Data
     }
@@ -56,73 +57,69 @@ public class PeerToPeerRequestHandler {
             let port: Int = args.get(name:"port")!
             let peerToPeerListener: ReplicatorTcpListener = ReplicatorTcpListener(databases: [database], port: UInt32(port))
             peerToPeerListener.start()
-            print("Server is getting started")
-            return peerToPeerListener
-       
-        case "peerToPeer_serverStart":
-            var peerToPeerListener: URLEndpointListener
-            let database: Database = args.get(name:"database")!
-            let config = URLEndpointListenerConfiguration.init(database: [database][0])
-            let port: Int = args.get(name:"port")!
-            let basicAuth: ListenerAuthenticator? = args.get(name: "basic_auth")!
-            let disableTls: Bool? = args.get(name: "tls_disable")
-            let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
-            let tlsAuthType: String?  = args.get(name: "tls_auth_type")!
-        
-            if port > 0 {
-                config.port = UInt16(port)
-            }
-            if disableTls != nil {
-                config.disableTLS = disableTls!
-            }
-            
-            if basicAuth != nil {
-                print("Listener: Setting basic authentication")
-                config.authenticator = basicAuth!
-            }
-            if (tlsAuthenticator != false) {
-                let rootCertData = try! dataFromResource(name: "identity2/client-ca", ofType: "der")
-                let rootCert = SecCertificateCreateWithData(kCFAllocatorDefault, rootCertData as CFData)!
-                let listenerAuth = ListenerCertificateAuthenticator.init(rootCerts: [rootCert])
-                config.authenticator = listenerAuth
-                print("Client TLS self_signed_create")
-            }
-            if tlsAuthType == "self_signed" {
-                let serverCertData = try! dataFromResource(name: "identity2/certs", ofType: "p12")
-                try TLSIdentity.deleteIdentity(withLabel: "CBL-Server-Cert")
-                let identity = try! TLSIdentity.importIdentity(withData: serverCertData, password: "123", label: "CBL-Server-Cert")
-                config.tlsIdentity = identity
-                print("TLS self_signed set")
-            }
-            if (tlsAuthType == "self_signed_create") {
-                let attrs = [certAttrCommonName: "testkit"]
-                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Server-Cert")
-                let identity = try! TLSIdentity.createIdentity(forServer: false, attributes: attrs, expiration: nil, label: "CBL-Server-Cert")
-                config.tlsIdentity = identity
-                print("TLS self_signed_create")
-                
-            }
-            peerToPeerListener = URLEndpointListener.init(config: config)
-            try peerToPeerListener.start()
-            print("Url Listener Started")
-            print(peerToPeerListener.urls)
             return peerToPeerListener
 
         case "peerToPeer_getListenerPort":
             let listener: URLEndpointListener = args.get(name:"listener")!
-            print(listener.port)
             return listener.port
+    
+        case "peerToPeer_serverStart":
+            var peerToPeerListener: URLEndpointListener?
+            let database: Database = args.get(name:"database")!
+            let wsPort: Int = args.get(name: "port")!
+            let tls_disable: Bool? = args.get(name: "tls_disable")!
+            let config = URLEndpointListenerConfiguration.init(database: [database][0])
+            let tlsAuthType: String = args.get(name:"tls_auth_type")!
+            let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
+            config.port = UInt16(wsPort)
+            config.disableTLS = tls_disable!
+            
+            if (tlsAuthenticator != false) {
+                let rootCertData = try dataFromResource(name: "identity/client-ca", ofType: "der")
+                let rootCert = SecCertificateCreateWithData(kCFAllocatorDefault, rootCertData as CFData)!
+                let listenerAuth = ListenerCertificateAuthenticator.init(rootCerts: [rootCert])
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
+                config.authenticator = listenerAuth
+                print("Authenticator Listener >>>>>>>>>>>>>>>")
+            }
+            
+            if tlsAuthType == "self_signed" {
+                let serverCertData = try! dataFromResource(name: "identity/certs", ofType: "p12")
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
+                let identity = try! TLSIdentity.importIdentity(withData: serverCertData, password: "123", label: "CBL-Cert")
+                config.tlsIdentity = identity
+                print("Setting dentity >>>>>>>>>>>>>>>")
 
-        case "peerToPeer_serverStop":
-            let listenerType: String = args.get(name:"endPointType")!
-            if listenerType == "MessageEndPoint" {
-                let listener: ReplicatorTcpListener = args.get(name:"listener")!
-                listener.stop()
-            } else {
-                let listener: URLEndpointListener = args.get(name:"listener")!
-                listener.stop()
+            } else if tlsAuthType == "self_signed_create" {
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
+                let id = try! TLSIdentity.createIdentity(forServer: true , attributes: [certAttrCommonName: "CBL-Server"], expiration: nil, label: "CBL-Cert")
+                config.tlsIdentity = id
+                print("Setting created dentity >>>>>>>>>>>>>>")
             }
 
+             print(args.get(name: "basic_auth")!)
+             if let auth: ListenerAuthenticator = args.get(name: "basic_auth") {
+                config.authenticator = auth
+             }
+                        
+            print("Server is getting started")
+            peerToPeerListener = URLEndpointListener.init(config: config)
+            try peerToPeerListener?.start()
+            print(peerToPeerListener?.urls)
+            print(peerToPeerListener?.config)
+            return peerToPeerListener
+            
+        case "peerToPeer_serverStop":
+            let type: String? = args.get(name:"endPointType")!
+            print(args.get(name: "listener")!)
+            if (type == "MessageEndPoint") {
+                let listener_obj: ReplicatorTcpListener = args.get(name: "listener")!
+                listener_obj.stop()
+            } else {
+                let listener_obj: URLEndpointListener = args.get(name: "listener")!
+                listener_obj.stop()
+            }
+            
         case "peerToPeer_configure":
             let host: String = args.get(name:"host")!
             let port: Int = args.get(name:"port")!
@@ -136,15 +133,16 @@ public class PeerToPeerRequestHandler {
             let push_filter: Bool? = args.get(name: "push_filter")!
             let conflict_resolver: String? = args.get(name: "conflict_resolver")!
             let filter_callback_func: String? = args.get(name: "filter_callback_func")
+            let auth: Authenticator? = args.get(name: "basic_auth")!
+            
+            let serverVerificationMode: Bool? = args.get(name: "server_verification_mode")!
+            let tls_disable: Bool? = args.get(name: "tls_disable")!
+            let tlsAuthType: String? = args.get(name: "tls_auth_type")!
+            let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
             var replicatorConfig: ReplicatorConfiguration
             var replicatorType = ReplicatorType.pushAndPull
-            let basic_auth: Authenticator? = args.get(name: "basic_auth")!
-            let tlsDisable: Bool? = args.get(name: "tls_disable")!
-            let serverVerificationMode: Bool? = args.get(name: "server_verification_mode")!
-            let tlsAuthType: String = args.get(name:"tls_auth_type")!
-            let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
-            var wsPort: String = "ws"
-            
+            var wsPort: String?
+
             if let type = replication_type {
                 if type == "push" {
                     replicatorType = .push
@@ -154,47 +152,49 @@ public class PeerToPeerRequestHandler {
                     replicatorType = .pushAndPull
                 }
             }
-
-            if tlsDisable == false  {
-                wsPort = "wss"
+            
+            if tls_disable != true {
+               wsPort = "wss"
+            } else {
+                wsPort = "ws"
             }
-            let url = URL(string: "\(wsPort)://\(host):\(port)/\(serverDBName)")!
-            if endPointType == "URLEndPoint" {
+
+            let url = URL(string: "\(wsPort ?? "ws")://\(host):\(port)/\(serverDBName)")!
+            if endPointType == "URLEndPoint"{
                 let urlEndPoint: URLEndpoint = URLEndpoint(url: url)
                 replicatorConfig = ReplicatorConfiguration(database: database, target: urlEndPoint)
-            } else{
+            }
+            else{
                 let endpoint = MessageEndpoint(uid: url.absoluteString, target: url, protocolType: ProtocolType.byteStream, delegate: self)
                 replicatorConfig = ReplicatorConfiguration(database: database, target: endpoint)
             }
-            if basic_auth != nil {
-                replicatorConfig.authenticator = basic_auth
+            
+            if auth != nil {
+               replicatorConfig.authenticator = auth
             }
-
             if serverVerificationMode != false {
                 replicatorConfig.acceptOnlySelfSignedServerCertificate = true
-                print("Replicator accept selfsigned Flag Set")
             }
             
-            if (tlsAuthType == "self_signed") {
-                let clientCertData = try! dataFromResource(name: "identity2/certs", ofType: "p12")
-//                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Client-Cert2")
-                let identity = try! TLSIdentity.importIdentity(withData: clientCertData, password: "123", label: "CBL-Client-Cert2")
+            if tlsAuthType == "self_signed" {
+                let certData = try! dataFromResource(name: "identity/certs", ofType: "p12")
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
+                let identity = try! TLSIdentity.importIdentity(withData: certData, password: "123", label: "CBL-Cert")
                 replicatorConfig.pinnedServerCertificate = identity.certs[0]
-                print("Replicator Pinned selfsigned Certs Set")
             }
-            
-            if (tlsAuthenticator != false) {
-                let clientCertData = try dataFromResource(name: "identity2/client", ofType: "p12")
-                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Client-Cert")
-                let identity = try! TLSIdentity.importIdentity(withData: clientCertData, password: "123", label: "CBL-Client-Cert")
+            print(tlsAuthenticator)
+            print("Authenticator")
+            if tlsAuthenticator != false {
+                let clientCertData = try dataFromResource(name: "identity/client", ofType: "p12")
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
+                let identity = try TLSIdentity.importIdentity(withData: clientCertData, password: "123", label: "CBL-Cert")
                 replicatorConfig.authenticator = ClientCertificateAuthenticator(identity: identity)
-                print("Replicator Authenticator Set")
+                replicatorConfig.acceptOnlySelfSignedServerCertificate = true
+                print("Authenticator REplicator >>>>>>>>>>>>>>>")
             }
-            
+
             if continuous != nil {
                 replicatorConfig.continuous = continuous!
-            } else {
-                replicatorConfig.continuous = false
             }
             if documentIDs != nil {
                 replicatorConfig.documentIDs = documentIDs
