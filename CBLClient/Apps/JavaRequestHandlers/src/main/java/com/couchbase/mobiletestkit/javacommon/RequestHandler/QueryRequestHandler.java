@@ -3,6 +3,8 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.couchbase.lite.ListenerToken;
@@ -858,7 +860,7 @@ public class QueryRequestHandler {
         query.removeChangeListener(changeListener.getToken());
     }
 
-    public Query select_all(Args args){
+    public Query selectAll(Args args){
         Database database = args.get("database");
         Query query = QueryBuilder
                 .select(SelectResult.all())
@@ -890,7 +892,8 @@ public class QueryRequestHandler {
         query.setParameters(params);
 
         // register a query change listener to capture live resultset changes
-        ListenerToken token = query.addChangeListener(ConcurrentExecutor.EXECUTOR, change -> {
+        final Executor exec = Executors.newSingleThreadExecutor();
+        ListenerToken token = query.addChangeListener(exec, change -> {
             final long curMillis = new Long(System.currentTimeMillis());
             liveQueryActivities.add(curMillis);
 
@@ -914,15 +917,18 @@ public class QueryRequestHandler {
         query.setParameters(params);
 
         TimeUnit.MILLISECONDS.sleep(500);
-
         query.removeChangeListener(token);
 
-        if(!liveQueryActivities.isEmpty()){
-            long liveQueryCapturedTimestamp = liveQueryActivities.get(0).longValue();
+        if(liveQueryActivities.isEmpty()) {
+            Log.d(TAG, "liveQueryActivities is empty");
+        }
+        else {
+            Log.d(TAG, "liveQueryActivities.size is " + String.valueOf(liveQueryActivities.size()));
+            long liveQueryCapturedTimestamp = liveQueryActivities.get(liveQueryActivities.size() - 1).longValue();
             returnValue = liveQueryCapturedTimestamp - queryChangeTimestamp;
 
-            Log.d(TAG, "query change timestamp: {}" + String.valueOf(queryChangeTimestamp));
-            Log.d(TAG, "live query captured timestamp: {}" + String.valueOf(liveQueryCapturedTimestamp));
+            Log.d(TAG, "query change timestamp: " + String.valueOf(queryChangeTimestamp));
+            Log.d(TAG, "live query captured timestamp: " + String.valueOf(liveQueryCapturedTimestamp));
         }
 
         return returnValue;

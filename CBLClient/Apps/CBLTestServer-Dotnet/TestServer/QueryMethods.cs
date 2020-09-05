@@ -1069,14 +1069,14 @@ namespace Couchbase.Lite.Testing
            [NotNull] IReadOnlyDictionary<string, object> postBody,
            [NotNull] HttpListenerResponse response)
         {
+            IQuery query = null;
             With<Database>(postBody, "database", db =>
             {
-                using (IQuery query = QueryBuilder
-                                .Select(SelectResult.All())
-                                .From(DataSource.Database(db)))
-
-                response.WriteBody(query);
+                query = QueryBuilder
+                            .Select(SelectResult.All())
+                            .From(DataSource.Database(db));
             });
+            response.WriteBody(MemoryMap.Store(query));
         }
     }
 
