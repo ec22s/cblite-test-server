@@ -221,7 +221,7 @@ namespace Couchbase.Lite.Testing
                 ["query_multipleSelectsDoubleValue"] = QueryMethods.MultipleSelectsDoubleValue,
                 ["query_multipleSelectsOrderByLocaleValue"] = QueryMethods.MultipleSelectsOrderByLocaleValue,
                 ["query_arthimetic"] = QueryMethods.QueryArthimetic,
-                ["query_select_all"] = QueryMethods.QuerySelectAll,
+                ["query_selectAll"] = QueryMethods.QuerySelectAll,
                 ["query_addChangeListener"] = QueryMethods.AddChangeListener,
                 ["query_removeChangeListener"] = QueryMethods.RemoveChangeListener,
                 ["datatype_setLong"] = DataTypeMethods.DataTypeSetLong,
