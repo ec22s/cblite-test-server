@@ -5,7 +5,7 @@ plugins {
 group 'com.couchbase.mobiletestkit'
 
 ext {
-    DEF_VERSION = "2.7.0-94"
+    DEF_VERSION = "2.8.0-248"
     COUCHBASE_LITE_JAVA_VERSION = System.getProperty('version', DEF_VERSION)
 
     JAVA_COMMON_DIR = "${projectDir}/../JavaRequestHandlers"

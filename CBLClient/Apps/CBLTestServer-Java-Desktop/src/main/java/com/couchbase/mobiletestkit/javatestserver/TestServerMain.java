@@ -15,7 +15,7 @@ import java.io.IOException;
 
 
 public class TestServerMain implements Daemon {
-    private static final int PORT = 8080;
+    private static final int PORT = 8090;
     private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
     private static final String TAG = "TestServer-Java";
     private static Context context;
