@@ -33,7 +33,7 @@ public class ListenerAuthenticatorRequestHandler {
         case "listenerAuthenticator_create":
             let li_username: String = args.get(name: "username")!
             let li_password: String = args.get(name: "password")!
-            let listenerAuth = ListenerPasswordAuthenticator{
+            let listenerAuth = ListenerPasswordAuthenticator {
                 (username, password) -> Bool in
                 return (username as NSString).isEqual(to: li_username) &&
                        (password as NSString).isEqual(to: li_password)
