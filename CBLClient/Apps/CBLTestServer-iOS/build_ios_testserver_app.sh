@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash
 
 EDITION=$1
 VERSION=$2
