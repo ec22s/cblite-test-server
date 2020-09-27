@@ -41,7 +41,6 @@ public class ListenerAuthenticatorRequestHandler {
             return listenerAuth
 
         case "listenerAuth_listenerCertificateAuthenticator_create":
-            print("In the listener")
             let rootCertData = try dataFromResource(name: "identity2/client-ca", ofType: "der")
             let rootCert = SecCertificateCreateWithData(kCFAllocatorDefault, rootCertData as CFData)!
 
