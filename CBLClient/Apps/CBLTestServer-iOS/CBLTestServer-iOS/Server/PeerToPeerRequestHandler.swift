@@ -80,7 +80,7 @@ public class PeerToPeerRequestHandler {
                 let listenerAuth = ListenerCertificateAuthenticator.init(rootCerts: [rootCert])
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 config.authenticator = listenerAuth
-                print("Authenticator Listener >>>>>>>>>>>>>>>")
+                print("Setting Authenticator >>>>>>>>>>>>>>>")
             }
             
             if tlsAuthType == "self_signed" {
@@ -88,13 +88,13 @@ public class PeerToPeerRequestHandler {
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 let identity = try! TLSIdentity.importIdentity(withData: serverCertData, password: "123", label: "CBL-Cert")
                 config.tlsIdentity = identity
-                print("Setting dentity >>>>>>>>>>>>>>>")
+                print("Setting identity >>>>>>>>>>>>>>>")
 
             } else if tlsAuthType == "self_signed_create" {
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 let id = try! TLSIdentity.createIdentity(forServer: true , attributes: [certAttrCommonName: "CBL-Server"], expiration: nil, label: "CBL-Cert")
                 config.tlsIdentity = id
-                print("Setting created dentity >>>>>>>>>>>>>>")
+                print("Setting CreateIdentity >>>>>>>>>>>>>>")
             }
 
              print(args.get(name: "basic_auth")!)
