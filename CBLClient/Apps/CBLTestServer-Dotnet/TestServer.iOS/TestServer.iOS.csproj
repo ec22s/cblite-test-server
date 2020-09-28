@@ -98,6 +98,10 @@
     <None Include="Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3-shm" />
     <None Include="Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3-wal" />
     <None Include="Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3" />
+    <None Include="certs\.DS_Store" />
+    <None Include="certs\certs.p12" />
+    <None Include="certs\client.p12" />
+    <None Include="certs\client-ca.der" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -113,7 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Couchbase.Lite.Enterprise.Support.iOS">
-      <Version>2.6.0-b0126</Version>
+      <Version>2.8.0-b0143</Version>
+    </PackageReference>
+    <PackageReference Include="Couchbase.Lite.Enterprise">
+      <Version>2.8.0-b0143</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +131,17 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Files\" />
+    <Folder Include="certs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="certs\certs.p12" />
+    <EmbeddedResource Include="certs\client.p12" />
+    <EmbeddedResource Include="certs\client-ca.der" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="certs\certs.p12" />
+    <BundleResource Include="certs\client.p12" />
+    <BundleResource Include="certs\client-ca.der" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Databases\PrebuiltDB-encrypted.cblite2\db.sqlite3" />

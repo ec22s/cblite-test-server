@@ -49,7 +49,7 @@ namespace Couchbase.Lite.Testing
                                      [NotNull] IReadOnlyDictionary<string, object> postBody,
                                      [NotNull] HttpListenerResponse response)
         {
-            With<Replicator>(postBody, "replicator", rep => response.WriteBody(rep.Config)); 
+            With<Replicator>(postBody, "replicator", rep => response.WriteBody(MemoryMap.Store(rep.Config)));
         }
 
         public static void GetActivityLevel([NotNull] NameValueCollection args,
