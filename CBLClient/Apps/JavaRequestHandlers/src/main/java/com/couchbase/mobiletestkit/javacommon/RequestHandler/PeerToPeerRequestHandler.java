@@ -273,10 +273,11 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         int port = args.get("port");
         Database sourceDb = args.get("database");
         URLEndpointListenerConfiguration config = new URLEndpointListenerConfiguration(sourceDb);
-
         Boolean disableTls = args.get("tls_disable");
         Boolean tlsAuthenticator = args.get("tls_authenticator");
         String tlsAuthType = args.get("tls_auth_type");
+        System.out.println(tlsAuthType);
+        System.out.println("Manasa");
 
         if (port > 0) {
             port = args.get("port");
@@ -291,7 +292,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
 
         if (tlsAuthType.equals("self_signed_create")) {
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR, 1);
+            calendar.add(Calendar.YEAR, 2);
             Date certTime = calendar.getTime();
             HashMap<String, String> X509Attributes = new HashMap<String, String>();
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_COMMON_NAME, "CBL Test");
@@ -299,7 +300,9 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION_UNIT, "Mobile");
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_EMAIL_ADDRESS, "lite@couchbase.com");
             String alias = UUID.randomUUID().toString();
+            System.out.println(certTime);
             TLSIdentity identity = TLSIdentity.createIdentity(true, X509Attributes, certTime, alias);
+            System.out.println("CreateIdentity API");
             config.setTlsIdentity(identity);
         }
 
@@ -325,7 +328,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             try {
                 InputStream serverCert;
                 serverCert = this.getCertFile("client-ca.der");
-                Log.e(TAG, String.valueOf(serverCert));
                 ByteArrayInputStream derInputStream = new ByteArrayInputStream(toByteArray(serverCert));
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 X509Certificate cert = (X509Certificate) cf.generateCertificate(derInputStream);
@@ -340,8 +342,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
 
         URLEndpointListener p2ptcpListener = new URLEndpointListener(config);
         p2ptcpListener.start();
-        System.out.println(p2ptcpListener.getTlsIdentity());
-
         System.out.println(p2ptcpListener.getPort());
         return p2ptcpListener;
     }
