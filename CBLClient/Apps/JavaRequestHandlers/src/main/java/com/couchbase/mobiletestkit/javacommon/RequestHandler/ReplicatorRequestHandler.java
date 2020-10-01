@@ -14,9 +14,11 @@ import com.couchbase.lite.ReplicatorChange;
 import com.couchbase.lite.ReplicatorChangeListener;
 import com.couchbase.lite.ReplicatorConfiguration;
 import com.couchbase.mobiletestkit.javacommon.util.ConcurrentExecutor;
+import com.couchbase.mobiletestkit.javacommon.util.Log;
 
 
 public class ReplicatorRequestHandler {
+    private static final String TAG = "Replicator";
     /* -------------- */
     /* - Replicator - */
     /* -------------- */
@@ -137,6 +139,10 @@ public class ReplicatorRequestHandler {
 
     public CouchbaseLiteException replicatorGetError(Args args) {
         Replicator replicator = args.get("replicator");
+        System.out.println("Get ERRORS");
+        System.out.println(replicator.getStatus().getError());
+        Log.i(TAG, "Replication Error... ");
+        Log.i(TAG, "replicator.getStatus().getError()");
         return replicator.getStatus().getError();
     }
 

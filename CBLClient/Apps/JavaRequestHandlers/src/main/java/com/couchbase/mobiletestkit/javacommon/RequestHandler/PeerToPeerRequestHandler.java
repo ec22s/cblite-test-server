@@ -9,18 +9,19 @@ import java.net.URI;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableEntryException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Calendar;
+import java.security.cert.CertificateFactory;
+import java.util.*;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 
 import com.couchbase.lite.*;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
+
+import static java.security.KeyStore.*;
 
 
 public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
@@ -50,6 +51,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Boolean disableTls = args.get("tls_disable");
         String tlsAuthType = args.get("tls_auth_type");
         Boolean serverVerificationMode = args.get("server_verification_mode");
+        Boolean tlsAuthenticator = args.get("tls_authenticator");
         ReplicatorConfiguration config;
         Replicator replicator;
         URI uri;
@@ -61,11 +63,9 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         ReplicatorConfiguration.ReplicatorType replType;
         if (replicationType.equals("push")) {
             replType = ReplicatorConfiguration.ReplicatorType.PUSH;
-        }
-        else if (replicationType.equals("pull")) {
+        } else if (replicationType.equals("pull")) {
             replType = ReplicatorConfiguration.ReplicatorType.PULL;
-        }
-        else {
+        } else {
             replType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
         }
         Log.i(TAG, "serverDBName is " + serverDBName);
@@ -78,19 +78,16 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         if (endPointType.equals("URLEndPoint")) {
             URLEndpoint urlEndPoint = new URLEndpoint(uri);
             config = new ReplicatorConfiguration(sourceDb, urlEndPoint);
-        }
-        else if (endPointType.equals("MessageEndPoint")) {
+        } else if (endPointType.equals("MessageEndPoint")) {
             MessageEndpoint messageEndPoint = new MessageEndpoint("p2p", uri, ProtocolType.BYTE_STREAM, this);
             config = new ReplicatorConfiguration(sourceDb, messageEndPoint);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Incorrect EndPoint type");
         }
         config.setReplicatorType(replType);
         if (continuous != null) {
             config.setContinuous(continuous);
-        }
-        else {
+        } else {
             config.setContinuous(false);
         }
         if (documentIds != null) {
@@ -131,12 +128,54 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         if (args.get("basic_auth") != null) {
             config.setAuthenticator(args.get("basic_auth"));
         }
-        if (tlsAuthType == "self_signed") {
-            InputStream ServerCert = this.getPinnedCertFile("certs.p12");
-            config.setPinnedServerCertificate(toByteArray(ServerCert));
+        if (tlsAuthType.equals("self_signed")) {
+            try (InputStream ServerCert = this.getCertFile("certs.p12")) {
+                char[] pass = "123456".toCharArray();
+                KeyStore trustStore = KeyStore.getInstance("PKCS12");
+                trustStore.load(null,null);
+                trustStore.load(ServerCert, pass);
+                KeyStore.ProtectionParameter protParam =
+                        new KeyStore.PasswordProtection(pass);
+                KeyStore.Entry newEntry = trustStore.getEntry("testkit", protParam);
+                trustStore.setEntry("Clientcerts", newEntry, protParam);
+                TLSIdentity identity = TLSIdentity.getIdentity(trustStore, "Clientcerts", pass);
+                if (identity != null) {
+                    List<Certificate> certs = identity.getCerts();
+                    X509Certificate cert = (X509Certificate) certs.get(0);
+                    config.setPinnedServerCertificate(cert.getEncoded());
+                    Log.i(TAG, "Pinned the certs ... .... ");
+                }
+            } catch (UnrecoverableEntryException e) {
+                e.printStackTrace();
+            }
         }
+
         if (serverVerificationMode) {
             config.setAcceptOnlySelfSignedServerCertificate(true);
+        }
+        if (tlsAuthenticator) {
+            try (InputStream ClientCert = this.getCertFile("client.p12")) {
+                char[] pass = "123456".toCharArray();
+                KeyStore trustStore = KeyStore.getInstance("PKCS12");
+                trustStore.load(null,null);
+                trustStore.load(ClientCert, pass);
+                KeyStore.ProtectionParameter protParam =
+                        new KeyStore.PasswordProtection(pass);
+                KeyStore.Entry newEntry = trustStore.getEntry("testkit", protParam);
+                trustStore.setEntry("Clientcerts", newEntry, protParam);
+                TLSIdentity identity = TLSIdentity.getIdentity(trustStore, "Clientcerts", pass);
+                ClientCertificateAuthenticator clientCertificateAuthenticator = new ClientCertificateAuthenticator(identity);
+                config.setAuthenticator(clientCertificateAuthenticator);
+
+            } catch (KeyStoreException e) {
+                    e.printStackTrace();
+            } catch (CertificateException e) {
+                    e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+            }
+
+
         }
         switch (conflict_resolver) {
             case "local_wins":
@@ -188,9 +227,9 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Database sourceDb = args.get("database");
         int port = args.get("port");
         MessageEndpointListener messageEndpointListener =
-            new MessageEndpointListener(new MessageEndpointListenerConfiguration(
-            sourceDb,
-            ProtocolType.BYTE_STREAM));
+                new MessageEndpointListener(new MessageEndpointListenerConfiguration(
+                        sourceDb,
+                        ProtocolType.BYTE_STREAM));
         ReplicatorTcpListener p2ptcpListener = new ReplicatorTcpListener(sourceDb, port);
         p2ptcpListener.start();
         return p2ptcpListener;
@@ -201,32 +240,69 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Boolean disableTls = args.get("tls_disable");
         Database sourceDb = args.get("database");
         String tlsAuthType = args.get("tls_auth_type");
+        Boolean tlsAuthenticator = args.get("tls_authenticator");
+
         URLEndpointListenerConfiguration config = new URLEndpointListenerConfiguration(sourceDb);
         if (port > 0) {
             port = args.get("port");
             config.setPort(port);
         }
         config.setDisableTls(disableTls);
-        if (tlsAuthType == "self_signed_create") {
+
+        if (tlsAuthType.equals("self_signed_create")) {
             final String EXTERNAL_KEY_STORE_TYPE = "PKCS12";
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.YEAR, 1);
             Date certTime = calendar.getTime();
             HashMap<String, String> X509Attributes = new HashMap<String, String>();
-            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_COMMON_NAME , "CBL Test");
+            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_COMMON_NAME, "CBL Test");
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION, "Couchbase");
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION_UNIT, "Mobile");
             X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_EMAIL_ADDRESS, "lite@couchbase.com");
 
             KeyStore externalStore = KeyStore.getInstance(EXTERNAL_KEY_STORE_TYPE);
+            externalStore.load(null, null);
+            String alias = UUID.randomUUID().toString();
 
             TLSIdentity identity = TLSIdentity.createIdentity(true,
                     X509Attributes,
                     certTime,
                     externalStore,
-                    "ServerCerts",
+                    alias,
                     "pass".toCharArray());
             config.setTlsIdentity(identity);
+
+        } else if (tlsAuthType.equals("self_signed")) {
+            try (InputStream ServerCert = this.getCertFile("certs.p12")) {
+                char[] pass = "123456".toCharArray();
+                KeyStore trustStore = KeyStore.getInstance("PKCS12");
+                trustStore.load(null,null);
+                trustStore.load(ServerCert, pass);
+                KeyStore.ProtectionParameter protParam =
+                        new KeyStore.PasswordProtection(pass);
+                KeyStore.Entry newEntry = trustStore.getEntry("testkit", protParam);
+                trustStore.setEntry("Servercerts", newEntry, protParam);
+                TLSIdentity identity = TLSIdentity.getIdentity(trustStore, "Servercerts", pass);
+                config.setTlsIdentity(identity);
+            } catch (UnrecoverableEntryException e) {
+                e.printStackTrace();
+            }
+        }
+        if (tlsAuthenticator) {
+            try (InputStream ClientCert = this.getCertFile("client-ca.der")) {
+                try {
+                    CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                    Certificate cert;
+                    List<Certificate> certsList = new ArrayList<>();
+                    cert = cf.generateCertificate(new BufferedInputStream(ClientCert));
+                    certsList.add(cert);
+                    ListenerCertificateAuthenticator listenerCertificateAuthenticator = new ListenerCertificateAuthenticator(certsList);
+                    config.setAuthenticator(listenerCertificateAuthenticator);
+                } catch (CertificateException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
 
 
@@ -278,17 +354,17 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         return replicatorRequestHandlerObj.replicatorEventGetChanges(args);
     }
 
-    private InputStream getPinnedCertFile(String fileName) {
+    private InputStream getCertFile(String fileName) {
         InputStream is = null;
         try {
             is = RequestHandlerDispatcher.context.getAsset(fileName);
-            RequestHandlerDispatcher.context.getFilesDir();
             return is;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        finally {
-            if (is != null) { try { is.close(); } catch (IOException e) { } }
-        }
+        return is;
     }
+
     public static byte[] toByteArray(InputStream is) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] b = new byte[1024];
@@ -299,8 +375,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
                 bos.write(b, 0, bytesRead);
                 bytesRead = is.read(b);
             }
-        }
-        catch (IOException io) {
+        } catch (IOException io) {
             Log.w(TAG, "Got exception " + io.getMessage() + ", Ignoring...");
         }
 
