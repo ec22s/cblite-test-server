@@ -112,6 +112,7 @@
     <None Include="Assets\Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3-shm" />
     <None Include="Assets\Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3-wal" />
     <None Include="Assets\Databases\travel-sample-encrypted-2.7.0.cblite2\db.sqlite3" />
+    <None Include="Assets\certs\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Databases\PrebuiltDB.cblite2\db.sqlite3" />
@@ -172,6 +173,14 @@
       <Project>{ca1db44f-9a07-40c1-b305-f0b5d797ee6a}</Project>
       <Name>TestServer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Assets\certs\certs.p12" />
+    <BundleResource Include="Assets\certs\client.p12" />
+    <BundleResource Include="Assets\certs\client-ca.der" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\certs\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
