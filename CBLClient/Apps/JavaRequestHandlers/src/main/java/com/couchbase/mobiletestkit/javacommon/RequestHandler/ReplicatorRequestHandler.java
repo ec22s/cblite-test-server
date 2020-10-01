@@ -139,8 +139,6 @@ public class ReplicatorRequestHandler {
 
     public CouchbaseLiteException replicatorGetError(Args args) {
         Replicator replicator = args.get("replicator");
-        System.out.println("Get ERRORS");
-        System.out.println(replicator.getStatus().getError());
         Log.i(TAG, "Replication Error... ");
         Log.i(TAG, "replicator.getStatus().getError()");
         return replicator.getStatus().getError();

@@ -365,20 +365,4 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         return is;
     }
 
-    public static byte[] toByteArray(InputStream is) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] b = new byte[1024];
-
-        try {
-            int bytesRead = is.read(b);
-            while (bytesRead != -1) {
-                bos.write(b, 0, bytesRead);
-                bytesRead = is.read(b);
-            }
-        } catch (IOException io) {
-            Log.w(TAG, "Got exception " + io.getMessage() + ", Ignoring...");
-        }
-
-        return bos.toByteArray();
-    }
 }
