@@ -13,6 +13,9 @@ using JetBrains.Annotations;
 
 using Newtonsoft.Json.Linq;
 using Couchbase.Lite.Sync;
+using System.Security.Cryptography.X509Certificates;
+using System.IO;
+using System.Reflection;
 
 namespace Couchbase.Lite.Testing
 {
@@ -20,8 +23,12 @@ namespace Couchbase.Lite.Testing
     {
         static private MessageEndpointListener _messageEndpointListener;
         static private ReplicatorTcpListener _broadcaster;
+        private static X509Store _store;
+        private const string ServerCertLabel = "CBL-Server-Cert";
+        private const string ClientCertLabel = "CBL-Client-Cert";
+        private const string V = "tls_disable";
 
-        public static void Start_Server([NotNull] NameValueCollection args,
+        public static void Message_Endpoint_Listener_Start([NotNull] NameValueCollection args,
                                 [NotNull] IReadOnlyDictionary<string, object> postBody,
                                 [NotNull] HttpListenerResponse response)
         {
@@ -35,14 +42,104 @@ namespace Couchbase.Lite.Testing
             response.WriteBody(MemoryMap.Store(_broadcaster));
         }
 
+        public static void Start_Server([NotNull] NameValueCollection args,
+                                [NotNull] IReadOnlyDictionary<string, object> postBody,
+                                [NotNull] HttpListenerResponse response)
+        {
+            ResetStatus();
+            
+            Database db = MemoryMap.Get<Database>(postBody["database"].ToString());
+            int port = (int)postBody["port"];
+            URLEndpointListenerConfiguration urlEndpointListenerConfig = new URLEndpointListenerConfiguration(db);
+            string tlsAuthType = postBody["tls_auth_type"].ToString();
+            Boolean disableTls = Convert.ToBoolean(postBody[V].ToString());
+            Boolean tls_authenticator = Convert.ToBoolean(postBody["tls_authenticator"].ToString());
+
+
+            AddStatus("URL Start SERVER");
+            if (port > 0)
+            {
+                urlEndpointListenerConfig.Port = (ushort)port;
+            }
+
+            if (postBody.ContainsKey("basic_auth"))
+            {
+               urlEndpointListenerConfig.Authenticator = MemoryMap.Get<ListenerPasswordAuthenticator>(postBody["basic_auth"].ToString());
+            }
+            urlEndpointListenerConfig.DisableTLS = disableTls;
+            if (tlsAuthType == "self_signed")
+            {
+                Stream stream;
+                _store = new X509Store(StoreName.My);
+                byte[] cert = null;
+                TLSIdentity.DeleteIdentity(_store, ServerCertLabel, null);
+                string certLocation = TestServer.FilePathResolver("certs/certs.p12", false);
+                byte[] certsData = File.ReadAllBytes(certLocation);
+                TLSIdentity identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ServerCertLabel, null);
+                urlEndpointListenerConfig.TlsIdentity = identity;
+                
+
+            } else if (tlsAuthType == "self_signed_create")
+            {
+                AddStatus("CreateIdentity");
+                _store = new X509Store(StoreName.My);
+                TLSIdentity.DeleteIdentity(_store, ServerCertLabel, null);
+                TLSIdentity identity = TLSIdentity.CreateIdentity(false,
+                    new Dictionary<string, string>() { { Certificate.CommonNameAttribute, ServerCertLabel } },
+                    null,
+                    _store,
+                    ServerCertLabel,
+                    null);
+
+                urlEndpointListenerConfig.TlsIdentity = identity;
+            }
+            if (tls_authenticator) {
+                _store = new X509Store(StoreName.My);
+                TLSIdentity.DeleteIdentity(_store, ServerCertLabel, null);
+                string certLocation = TestServer.FilePathResolver("certs/client-ca.der", false);
+                byte[] caData = File.ReadAllBytes(certLocation);
+
+                var rootCert = new X509Certificate2(caData);
+                var auth = new ListenerCertificateAuthenticator(new X509Certificate2Collection(rootCert));
+                urlEndpointListenerConfig.Authenticator = auth;
+            }
+
+            URLEndpointListener urlEndpointListener = new URLEndpointListener(urlEndpointListenerConfig);
+            urlEndpointListener.Start();
+            AddStatus("Started the url listener and waiting for connection..On the below port");
+            Console.WriteLine(urlEndpointListener.Port);
+            response.WriteBody(MemoryMap.Store(urlEndpointListener));
+        }
+
         public static void Stop_Server([NotNull] NameValueCollection args,
                                 [NotNull] IReadOnlyDictionary<string, object> postBody,
                                 [NotNull] HttpListenerResponse response)
         {
-            ReplicatorTcpListener _broadcaster = MemoryMap.Get<ReplicatorTcpListener>(postBody["replicatorTcpListener"].ToString());
-            _broadcaster.Stop();
+            string listenerType = postBody["endPointType"].ToString();
+ 
+            if (listenerType == "MessageEndPoint")
+            {
+                Console.WriteLine("Stopping Message Endpoint");
+                ReplicatorTcpListener _listener = MemoryMap.Get<ReplicatorTcpListener>(postBody["listener"].ToString());
+                _listener.Stop();
+            }
+            else {
+                URLEndpointListener _listener = MemoryMap.Get<URLEndpointListener>(postBody["listener"].ToString());
+                _listener.Stop();
+            }
+                
             AddStatus("Stopping the server..");
             response.WriteEmptyBody();
+        }
+
+        public static void Get_Listener_Port([NotNull] NameValueCollection args,
+                                [NotNull] IReadOnlyDictionary<string, object> postBody,
+                                [NotNull] HttpListenerResponse response)
+        {
+            URLEndpointListener _urlEndpointListener = MemoryMap.Get<URLEndpointListener>(postBody["listener"].ToString());
+
+            ushort port = _urlEndpointListener.Port;
+            response.WriteBody((int)port);
         }
 
         public static void Configure([NotNull] NameValueCollection args,
@@ -59,9 +156,20 @@ namespace Couchbase.Lite.Testing
             string filter_callback_func = postBody["filter_callback_func"].ToString();
             Boolean push_filter = Convert.ToBoolean(postBody["push_filter"].ToString());
             Boolean pull_filter = Convert.ToBoolean(postBody["pull_filter"].ToString());
+            Boolean tls_disable = Convert.ToBoolean(postBody["tls_disable"].ToString());
             ReplicatorConfiguration config = null;
+            string tlsAuthType = postBody["tls_auth_type"].ToString();
+            Boolean tls_authenticator = Convert.ToBoolean(postBody["tls_authenticator"].ToString());
+            
+            Boolean server_verification_mode = Convert.ToBoolean(postBody["server_verification_mode"].ToString());
 
-            Uri host = new Uri("ws://" + targetIP + ":" + port);
+            Uri host;
+            if (tls_disable)
+            {
+                host = new Uri("ws://" + targetIP + ":" + port);
+            } else {
+                host = new Uri("wss://" + targetIP + ":" + port);
+            }
             var dbUrl = new Uri(host, remote_DBName);
             AddStatus("Connecting " + host + "...");
             if (endPointType == "URLEndPoint")
@@ -70,7 +178,7 @@ namespace Couchbase.Lite.Testing
                 config = new ReplicatorConfiguration(db, _endpoint);
                 
             }
-            else{
+            else {
                 TcpMessageEndpointDelegate endpointDelegate = new TcpMessageEndpointDelegate();
                 var _endpoint = new MessageEndpoint(dbUrl.AbsoluteUri, dbUrl, ProtocolType.ByteStream, endpointDelegate);
                 config = new ReplicatorConfiguration(db, _endpoint);
@@ -138,6 +246,34 @@ namespace Couchbase.Lite.Testing
                 }
 
             }
+            if (postBody.ContainsKey("basic_auth"))
+            {
+                config.Authenticator = MemoryMap.Get<Authenticator>(postBody["basic_auth"].ToString());
+            }
+            if (tlsAuthType == "self_signed")
+            {
+                _store = new X509Store(StoreName.My);
+                TLSIdentity.DeleteIdentity(_store, ClientCertLabel, null);
+                string certLocation = TestServer.FilePathResolver("certs/certs.p12", false);
+                byte[] certsData = File.ReadAllBytes(certLocation);
+                TLSIdentity identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ClientCertLabel, null);
+                config.PinnedServerCertificate = identity.Certs[0];
+            }
+            if (tls_authenticator) {
+                _store = new X509Store(StoreName.My);
+                TLSIdentity.DeleteIdentity(_store, ClientCertLabel, null);
+                string certLocation = TestServer.FilePathResolver("certs/client.p12", false);
+                byte[] certsData = File.ReadAllBytes(certLocation);
+                var identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ClientCertLabel, null);
+                config.Authenticator = new ClientCertificateAuthenticator(identity);
+
+            } if (server_verification_mode) {
+                config.AcceptOnlySelfSignedServerCertificate = true;
+                
+                AddStatus(config.ToString().ToString());
+                System.Console.WriteLine(config.ToString());
+            }
+
             switch (postBody["conflict_resolver"].ToString())
             {
                 case "local_wins":
@@ -169,6 +305,7 @@ namespace Couchbase.Lite.Testing
                     break;
             }
             Replicator replicator = new Replicator(config);
+
             response.WriteBody(MemoryMap.Store(replicator));
 
         }
