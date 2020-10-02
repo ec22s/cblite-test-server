@@ -211,7 +211,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
                 TLSIdentity identity = TLSIdentity.getIdentity("clientcerts");
                 ClientCertificateAuthenticator clientCertificateAuthenticator = new ClientCertificateAuthenticator(identity);
                 config.setAuthenticator(clientCertificateAuthenticator);
-                config.setAcceptOnlySelfSignedServerCertificate(true);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (CouchbaseLiteException e) {
