@@ -80,7 +80,7 @@ public class PeerToPeerRequestHandler {
                 let listenerAuth = ListenerCertificateAuthenticator.init(rootCerts: [rootCert])
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 config.authenticator = listenerAuth
-                print("Setting Authenticator >>>>>>>>>>>>>>>")
+                print("========== Setting Authenticator ===========")
             }
             
             if tlsAuthType == "self_signed" {
@@ -88,16 +88,15 @@ public class PeerToPeerRequestHandler {
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 let identity = try! TLSIdentity.importIdentity(withData: serverCertData, password: "123", label: "CBL-Cert")
                 config.tlsIdentity = identity
-                print("Setting identity >>>>>>>>>>>>>>>")
+                print("============= Setting identity ================")
 
             } else if tlsAuthType == "self_signed_create" {
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 let id = try! TLSIdentity.createIdentity(forServer: true , attributes: [certAttrCommonName: "CBL-Server"], expiration: nil, label: "CBL-Cert")
                 config.tlsIdentity = id
-                print("Setting CreateIdentity >>>>>>>>>>>>>>")
+                print("========== Setting CreateIdentity =========")
             }
 
-             print(args.get(name: "basic_auth")!)
              if let auth: ListenerAuthenticator = args.get(name: "basic_auth") {
                 config.authenticator = auth
              }
@@ -105,13 +104,10 @@ public class PeerToPeerRequestHandler {
             print("Server is getting started")
             peerToPeerListener = URLEndpointListener.init(config: config)
             try peerToPeerListener?.start()
-            print(peerToPeerListener?.urls)
-            print(peerToPeerListener?.config)
             return peerToPeerListener
             
         case "peerToPeer_serverStop":
             let type: String? = args.get(name:"endPointType")!
-            print(args.get(name: "listener")!)
             if (type == "MessageEndPoint") {
                 let listener_obj: ReplicatorTcpListener = args.get(name: "listener")!
                 listener_obj.stop()
@@ -181,14 +177,14 @@ public class PeerToPeerRequestHandler {
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 let identity = try! TLSIdentity.importIdentity(withData: certData, password: "123", label: "CBL-Cert")
                 replicatorConfig.pinnedServerCertificate = identity.certs[0]
-                print("pinned the certs to Replicator >>>>>>>>>>>>>>>")
+                print("======= pinned the certs to Replicator ============")
             }
             if tlsAuthenticator != false {
                 let clientCertData = try dataFromResource(name: "identity/client", ofType: "p12")
                 try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
                 let identity = try TLSIdentity.importIdentity(withData: clientCertData, password: "123", label: "CBL-Cert")
                 replicatorConfig.authenticator = ClientCertificateAuthenticator(identity: identity)
-                print("Added Autheticator to Replicator >>>>>>>>>>>>>>>")
+                print("====== Added Autheticator to Replicator ========")
             }
 
             if continuous != nil {

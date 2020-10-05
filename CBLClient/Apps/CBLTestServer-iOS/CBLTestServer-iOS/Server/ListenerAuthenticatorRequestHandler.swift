@@ -50,6 +50,5 @@ public class ListenerAuthenticatorRequestHandler {
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
-
-}
+    }
 }
