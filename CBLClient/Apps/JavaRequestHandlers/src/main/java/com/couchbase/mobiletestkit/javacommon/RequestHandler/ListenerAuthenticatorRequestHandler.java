@@ -2,6 +2,7 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 
 import com.couchbase.lite.ListenerPasswordAuthenticator;
 import com.couchbase.mobiletestkit.javacommon.Args;
+import com.couchbase.mobiletestkit.javacommon.util.PasswordAuthenticator;
 
 public class ListenerAuthenticatorRequestHandler {
 
@@ -12,8 +13,6 @@ public class ListenerAuthenticatorRequestHandler {
         PasswordAuthenticator passwordAuthenticator = new PasswordAuthenticator();
         ListenerPasswordAuthenticator listenerPasswordAuthenticator = new ListenerPasswordAuthenticator(
                 passwordAuthenticator);
-//        listenerPasswordAuthenticator.authenticate(username, password);
-        System.out.println("*******");
         return listenerPasswordAuthenticator;
     }
 

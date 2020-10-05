@@ -1,4 +1,4 @@
-package com.couchbase.mobiletestkit.javacommon.RequestHandler;
+package com.couchbase.mobiletestkit.javacommon.util;
 
 import com.couchbase.lite.ListenerPasswordAuthenticatorDelegate;
 import java.util.Arrays;
