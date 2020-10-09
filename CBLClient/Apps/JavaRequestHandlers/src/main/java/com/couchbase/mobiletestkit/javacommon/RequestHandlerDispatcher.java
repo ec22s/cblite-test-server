@@ -106,6 +106,10 @@ public class RequestHandlerDispatcher {
                         target = PeerToPeerRequestHandler.class.getMethod(method, Args.class);
                         requestHandler = new PeerToPeerRequestHandler();
                         break;
+                    case "listenerAuthenticator":
+                        target = ListenerAuthenticatorRequestHandler.class.getMethod(method, Args.class);
+                        requestHandler = new ListenerAuthenticatorRequestHandler();
+                        break;
                     case "predictiveQuery":
                         target = PredictiveQueriesRequestHandler.class.getMethod(method, Args.class);
                         requestHandler = new PredictiveQueriesRequestHandler();
