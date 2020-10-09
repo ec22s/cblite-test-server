@@ -125,8 +125,7 @@ namespace Couchbase.Lite.Testing
             }
             else if (value.StartsWith("\"") && value.EndsWith("\""))
             {
-                string trimVal = value.Substring(1, value.Length - 2);
-                return trimVal;
+                return value.Substring(1, value.Length - 2);
             }
             else if (value.StartsWith("{"))
             {
