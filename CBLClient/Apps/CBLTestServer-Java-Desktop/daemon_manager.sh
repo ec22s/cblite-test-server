@@ -13,11 +13,15 @@ EXEC=${JSVC_LOCATION}
 JAVA_HOME=${JAVA_HOME_LOCATION}
 CLASS_PATH=${BINARY_LOCATION}
 CLASS=com.couchbase.mobiletestkit.javatestserver.TestServerMain
-USER=root
 PID=${OUTPUT_LOCATION}/testserver-java.pid
 LOG_OUT=${OUTPUT_LOCATION}/testserver-java.out
 LOG_ERR=${OUTPUT_LOCATION}/testserver-java.err
 WORKING_DIR=${WORKING_LOCATION}
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	USER=couchbase
+else
+	USER=root
+fi
 
 do_exec()
 {
