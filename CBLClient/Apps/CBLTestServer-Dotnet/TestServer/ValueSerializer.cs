@@ -38,9 +38,15 @@ namespace Couchbase.Lite.Testing
             {
                 return "L" + value;
             }
-            else if (t.Equals(typeof(float)) || t.Equals(typeof(double)))
+            else if (t.Equals(typeof(float)))
             {
-                return "F" + value;
+                float val = (float)value;
+                return "F" + val.ToString();
+            }
+            else if (t.Equals(typeof(double)))
+            {
+                double val = (double)value;
+                return "D" + val.ToString();
             }
             else if ((value is IDictionary) || (value is IEnumerable<KeyValuePair<string, object>>))
             {
@@ -60,6 +66,7 @@ namespace Couchbase.Lite.Testing
                 {
                     stringMap.Add(key, Serialize(dictionary[key], dictionary[key]?.GetType()));
                 }
+                
                 return JsonConvert.SerializeObject(stringMap);
             }
             else if (value is IList list)
@@ -70,6 +77,7 @@ namespace Couchbase.Lite.Testing
                 {
                     stringList.Add(Serialize(item, item.GetType()));
                 }
+                
                 return JsonConvert.SerializeObject(stringList);
             }
             else if (value is ICollection ilist)
@@ -117,7 +125,8 @@ namespace Couchbase.Lite.Testing
             }
             else if (value.StartsWith("\"") && value.EndsWith("\""))
             {
-                return value.Replace("\"", String.Empty);
+                string trimVal = value.Substring(1, value.Length - 2);
+                return trimVal;
             }
             else if (value.StartsWith("{"))
             {
