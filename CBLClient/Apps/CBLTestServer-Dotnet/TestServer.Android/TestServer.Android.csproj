@@ -76,6 +76,7 @@
     <Folder Include="Resources\mipmap-xhdpi\" />
     <Folder Include="Resources\mipmap-xxhdpi\" />
     <Folder Include="Resources\mipmap-xxxhdpi\" />
+    <Folder Include="Assets\certs\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestServer\TestServer.csproj">
@@ -100,6 +101,10 @@
     <AndroidAsset Include="Assets\travel-sample-encrypted-2.5.0.cblite2.zip" />
     <AndroidAsset Include="Assets\travel-sample-2.7.0.cblite2.zip" />
     <AndroidAsset Include="Assets\travel-sample-encrypted-2.7.0.cblite2.zip" />
+    <AndroidAsset Include="Assets\certs\.DS_Store" />
+    <AndroidAsset Include="Assets\certs\certs.p12" />
+    <AndroidAsset Include="Assets\certs\client.p12" />
+    <AndroidAsset Include="Assets\certs\client-ca.der" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
