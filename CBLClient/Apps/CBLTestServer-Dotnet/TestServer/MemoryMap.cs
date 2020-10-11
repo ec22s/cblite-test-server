@@ -76,7 +76,7 @@ namespace Couchbase.Lite.Testing
         #region Public Methods
 
         public static void Clear()
-        { 
+        {
             Map.Clear();
             Interlocked.Exchange(ref _NextId, 0L);
         }
