@@ -71,6 +71,7 @@ public class PeerToPeerRequestHandler {
             let config = URLEndpointListenerConfiguration.init(database: [database][0])
             let tlsAuthType: String = args.get(name:"tls_auth_type")!
             let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
+            let enable_delta_sync: Bool? = args.get(name: "enable_delta_sync")!
             config.port = UInt16(wsPort)
             config.disableTLS = tls_disable!
             
@@ -100,10 +101,11 @@ public class PeerToPeerRequestHandler {
              if let auth: ListenerAuthenticator = args.get(name: "basic_auth") {
                 config.authenticator = auth
              }
-                        
-            print("Server is getting started")
+
+            config.enableDeltaSync = enable_delta_sync!
             peerToPeerListener = URLEndpointListener.init(config: config)
             try peerToPeerListener?.start()
+            print("Server is getting started")
             return peerToPeerListener
             
         case "peerToPeer_serverStop":
