@@ -241,6 +241,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Database sourceDb = args.get("database");
         String tlsAuthType = args.get("tls_auth_type");
         Boolean tlsAuthenticator = args.get("tls_authenticator");
+        Boolean enableDeltaSync = args.get("enable_delta_sync");
 
         URLEndpointListenerConfiguration config = new URLEndpointListenerConfiguration(sourceDb);
         if (port > 0) {
@@ -248,6 +249,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             config.setPort(port);
         }
         config.setDisableTls(disableTls);
+        config.setEnableDeltaSync(enableDeltaSync);
 
         if (tlsAuthType.equals("self_signed_create")) {
             final String EXTERNAL_KEY_STORE_TYPE = "PKCS12";
