@@ -3,33 +3,22 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 /*
   Created by sridevi.saragadam on 7/9/18.
  */
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-
 import com.couchbase.lite.ClientCertificateAuthenticator;
 import com.couchbase.lite.ConflictResolver;
 import com.couchbase.lite.CouchbaseLiteException;
-import com.couchbase.lite.KeyStoreUtils;
 import com.couchbase.lite.ListenerAuthenticator;
 import com.couchbase.lite.ListenerCertificateAuthenticator;
-import com.couchbase.lite.ListenerCertificateAuthenticatorDelegate;
 import com.couchbase.lite.TLSIdentity;
 import com.couchbase.lite.URLEndpointListener;
 import com.couchbase.lite.URLEndpointListenerConfiguration;
-import com.couchbase.lite.internal.KeyStoreManager;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
@@ -45,16 +34,6 @@ import com.couchbase.lite.ReplicatorChange;
 import com.couchbase.lite.ReplicatorChangeListener;
 import com.couchbase.lite.ReplicatorConfiguration;
 import com.couchbase.lite.URLEndpoint;
-
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.util.UUID;
-
 
 public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
     private static final String TAG = "P2PHANDLER";
@@ -161,61 +140,19 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         }
 
         if (tlsAuthType.equals("self_signed")) {
-            try (InputStream clientCert = this.getCertFile("certs.p12")) {
-                try {
-                    KeyStoreUtils.importEntry("PKCS12",
-                            clientCert,
-                            "123456".toCharArray(),
-                            "testkit",
-                            "123456".toCharArray(), "ClientCertsSelfsigned");
-                } catch (KeyStoreException e) {
-                    e.printStackTrace();
-                } catch (CertificateException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (UnrecoverableEntryException e) {
-                    e.printStackTrace();
-                }
-                TLSIdentity tlsIdentity = TLSIdentity.getIdentity("ClientCertsSelfsigned");
-                if (tlsIdentity != null) {
-                    List<Certificate> certs = tlsIdentity.getCerts();
-                    X509Certificate cert = (X509Certificate) certs.get(0);
-                    config.setPinnedServerCertificate(cert.getEncoded());
-                    Log.i(TAG, "Pinned the certs ... .... ");
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            TLSIdentity tlsIdentity = RequestHandlerDispatcher.context.getSelfSignedIdentity();
+            if (tlsIdentity != null) {
+                List<Certificate> certs = tlsIdentity.getCerts();
+                X509Certificate cert = (X509Certificate) certs.get(0);
+                config.setPinnedServerCertificate(cert.getEncoded());
+                Log.i(TAG, "Pinned the certs ... .... ");
             }
         }
 
         if (tlsAuthenticator) {
-            try {
-                InputStream clientCert = this.getCertFile("client.p12");
-                try {
-                    KeyStoreUtils.importEntry("PKCS12",
-                            clientCert,
-                            "123456".toCharArray(),
-                            "testkit",
-                            "123456".toCharArray(), "clientcerts");
-                } catch (KeyStoreException e) {
-                    e.printStackTrace();
-                } catch (CertificateException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (UnrecoverableEntryException e) {
-                    e.printStackTrace();
-                }
-                TLSIdentity identity = TLSIdentity.getIdentity("clientcerts");
-                ClientCertificateAuthenticator clientCertificateAuthenticator = new ClientCertificateAuthenticator(identity);
-                config.setAuthenticator(clientCertificateAuthenticator);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (CouchbaseLiteException e) {
-                e.printStackTrace();
-            }
+            TLSIdentity identity = RequestHandlerDispatcher.context.getClientCertsIdentity();
+            ClientCertificateAuthenticator clientCertificateAuthenticator = new ClientCertificateAuthenticator(identity);
+            config.setAuthenticator(clientCertificateAuthenticator);
         }
 
         if (serverVerificationMode) {
@@ -276,7 +213,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Boolean tlsAuthenticator = args.get("tls_authenticator");
         String tlsAuthType = args.get("tls_auth_type");
         System.out.println(tlsAuthType);
-        System.out.println("Manasa");
 
         if (port > 0) {
             port = args.get("port");
@@ -290,53 +226,19 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         }
 
         if (tlsAuthType.equals("self_signed_create")) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.YEAR, 2);
-            Date certTime = calendar.getTime();
-            HashMap<String, String> X509Attributes = new HashMap<String, String>();
-            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_COMMON_NAME, "CBL Test");
-            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION, "Couchbase");
-            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION_UNIT, "Mobile");
-            X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_EMAIL_ADDRESS, "lite@couchbase.com");
-            String alias = UUID.randomUUID().toString();
-            System.out.println(certTime);
-            TLSIdentity identity = TLSIdentity.createIdentity(true, X509Attributes, certTime, alias);
-            System.out.println("CreateIdentity API");
+            TLSIdentity identity = RequestHandlerDispatcher.context.getCreateIdentity();
             config.setTlsIdentity(identity);
         }
 
         if (tlsAuthType.equals("self_signed")) {
-            try {
-                InputStream serverCert = this.getCertFile(("certs.p12"));
-                KeyStoreUtils.importEntry("PKCS12",
-                        serverCert,
-                        "123456".toCharArray(),
-                        "testkit",
-                        "123456".toCharArray(), "Servercerts");
-                TLSIdentity identity = TLSIdentity.getIdentity("Servercerts");
-                config.setTlsIdentity(identity);
-                Log.e(TAG,"ServerSide setting the identity");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (CouchbaseLiteException | KeyStoreException | CertificateException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-                e.printStackTrace();
-            }
+            TLSIdentity identity = RequestHandlerDispatcher.context.getSelfSignedIdentity();
+            config.setTlsIdentity(identity);
+            Log.e(TAG,"ServerSide setting the identity");
         }
         if (tlsAuthenticator) {
-            List<Certificate> certsList = new ArrayList<>();
-            try {
-                InputStream serverCert;
-                serverCert = this.getCertFile("client-ca.der");
-                ByteArrayInputStream derInputStream = new ByteArrayInputStream(toByteArray(serverCert));
-                CertificateFactory cf = CertificateFactory.getInstance("X.509");
-                X509Certificate cert = (X509Certificate) cf.generateCertificate(derInputStream);
-                serverCert.close();
-                certsList.add(cert);
-                ListenerCertificateAuthenticator listenerCertificateAuthenticator = new ListenerCertificateAuthenticator(certsList);
-                config.setAuthenticator(listenerCertificateAuthenticator);
-            } catch (CertificateException e) {
-                e.printStackTrace();
-            }
+            List<Certificate> certsList = RequestHandlerDispatcher.context.getAuthenticatorCertsList();
+            ListenerCertificateAuthenticator listenerCertificateAuthenticator = new ListenerCertificateAuthenticator(certsList);
+            config.setAuthenticator(listenerCertificateAuthenticator);
         }
 
         URLEndpointListener p2ptcpListener = new URLEndpointListener(config);
@@ -394,35 +296,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
 
     public List<String> replicatorEventGetChanges(Args args) {
         return replicatorRequestHandlerObj.replicatorEventGetChanges(args);
-    }
-
-    private InputStream getCertFile(String name) {
-        InputStream is = null;
-        try {
-            is = RequestHandlerDispatcher.context.getAsset(name);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return is;
-    }
-
-    public static byte[] toByteArray(InputStream is) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] b = new byte[1024];
-
-        try {
-            int bytesRead = is.read(b);
-            while (bytesRead != -1) {
-                bos.write(b, 0, bytesRead);
-                bytesRead = is.read(b);
-            }
-        } catch (IOException io) {
-            Log.w(TAG, "Got exception " + io.getMessage() + ", Ignoring...");
-            io.printStackTrace();
-        }
-
-        return bos.toByteArray();
     }
 
 }

@@ -6,6 +6,11 @@ import javax.servlet.ServletRequest;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Base64;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.*;
+import java.security.cert.X509Certificate;
 
 public class TestServerContext implements Context {
     private ServletRequest servletRequest;
@@ -74,4 +79,94 @@ public class TestServerContext implements Context {
         // load java.util.Base64 in java webservice app
         return Base64.getEncoder().encodeToString(hashBytes);
     }
+
+    @Override
+    public TLSIdentity getCreateIdentity() {
+        final String EXTERNAL_KEY_STORE_TYPE = "PKCS12";
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, 1);
+        Date certTime = calendar.getTime();
+        HashMap<String, String> X509Attributes = new HashMap<String, String>();
+        X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_COMMON_NAME, "CBL Test");
+        X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION, "Couchbase");
+        X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_ORGANIZATION_UNIT, "Mobile");
+        X509Attributes.put(TLSIdentity.CERT_ATTRIBUTE_EMAIL_ADDRESS, "lite@couchbase.com");
+        KeyStore externalStore = KeyStore.getInstance(EXTERNAL_KEY_STORE_TYPE);
+        externalStore.load(null, null);
+        String alias = UUID.randomUUID().toString();
+        TLSIdentity identity = TLSIdentity.createIdentity(true,
+                    X509Attributes,
+                    certTime,
+                    externalStore,
+                    alias,
+                    "pass".toCharArray()
+                    );
+        return identity
+    }
+
+    @Override
+    public TLSIdentity getSelfSignedIdentity() {
+        try (InputStream ServerCert = this.getCertFile("certs.p12")) {
+            char[] pass = "123456".toCharArray();
+            KeyStore trustStore = KeyStore.getInstance("PKCS12");
+            trustStore.load(null,null);
+            trustStore.load(ServerCert, pass);
+                KeyStore.ProtectionParameter protParam =
+                        new KeyStore.PasswordProtection(pass);
+                KeyStore.Entry newEntry = trustStore.getEntry("testkit", protParam);
+                trustStore.setEntry("Servercerts", newEntry, protParam);
+                TLSIdentity identity = TLSIdentity.getIdentity(trustStore, "Servercerts", pass);
+        return identity
+    }
+
+    @Override
+    public List<Certificate> getAuthenticatorCertsList() {
+        List<Certificate> certsList = new ArrayList<>();
+        try (InputStream ClientCert = this.getCertFile("client-ca.der")) {
+            try {
+                CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                Certificate cert;
+                cert = cf.generateCertificate(new BufferedInputStream(ClientCert));
+                certsList.add(cert);
+                } catch (CertificateException e) {
+                    e.printStackTrace();
+            }
+        }
+        return certsList
+    }
+
+    @Override
+    public TLSIdentity getClientCertsIdentity() {
+        try (InputStream ClientCert = this.getCertFile("client.p12")) {
+            char[] pass = "123456".toCharArray();
+            KeyStore trustStore = KeyStore.getInstance("PKCS12");
+            trustStore.load(null,null);
+            trustStore.load(ClientCert, pass);
+            KeyStore.ProtectionParameter protParam = new KeyStore.PasswordProtection(pass);
+            KeyStore.Entry newEntry = trustStore.getEntry("testkit", protParam);
+            trustStore.setEntry("Clientcerts", newEntry, protParam);
+            TLSIdentity identity = TLSIdentity.getIdentity(trustStore, "Clientcerts", pass);
+
+            } catch (KeyStoreException e) {
+                    e.printStackTrace();
+            } catch (CertificateException e) {
+                    e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+            }
+        return identity
+    }
+
+    private InputStream getCertFile(String fileName) {
+        InputStream is = null;
+        try {
+            is = RequestHandlerDispatcher.context.getAsset(fileName);
+            return is;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return is;
+    }
+
+
 }
