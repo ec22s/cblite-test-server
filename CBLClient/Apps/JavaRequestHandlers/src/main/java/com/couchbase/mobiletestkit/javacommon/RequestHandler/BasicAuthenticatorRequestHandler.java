@@ -18,8 +18,7 @@ public class BasicAuthenticatorRequestHandler {
 
     public char[] getPassword(Args args) {
         BasicAuthenticator authenticator = args.get("authenticator");
-        char[] passwordChars = authenticator.getPasswordChars();
-        return passwordChars;
+        return authenticator.getPasswordChars();
     }
 
     public String getUsername(Args args) {

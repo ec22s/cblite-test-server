@@ -3,9 +3,8 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 /*
   Created by sridevi.saragadam on 7/9/18.
  */
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -19,21 +18,11 @@ import com.couchbase.lite.ListenerCertificateAuthenticator;
 import com.couchbase.lite.TLSIdentity;
 import com.couchbase.lite.URLEndpointListener;
 import com.couchbase.lite.URLEndpointListenerConfiguration;
+import com.couchbase.lite.*;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
-import com.couchbase.lite.Database;
-import com.couchbase.lite.MessageEndpoint;
-import com.couchbase.lite.MessageEndpointConnection;
-import com.couchbase.lite.MessageEndpointDelegate;
-import com.couchbase.lite.MessageEndpointListener;
-import com.couchbase.lite.MessageEndpointListenerConfiguration;
-import com.couchbase.lite.ProtocolType;
-import com.couchbase.lite.Replicator;
-import com.couchbase.lite.ReplicatorChange;
-import com.couchbase.lite.ReplicatorChangeListener;
-import com.couchbase.lite.ReplicatorConfiguration;
-import com.couchbase.lite.URLEndpoint;
+
 
 public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
     private static final String TAG = "P2PHANDLER";
@@ -59,12 +48,12 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Boolean pull_filter = args.get("pull_filter");
         String filter_callback_func = args.get("filter_callback_func");
         String conflict_resolver = args.get("conflict_resolver");
+        Boolean disableTls = args.get("tls_disable");
+        String tlsAuthType = args.get("tls_auth_type");
+        Boolean serverVerificationMode = args.get("server_verification_mode");
+        Boolean tlsAuthenticator = args.get("tls_authenticator");
         ReplicatorConfiguration config;
         Replicator replicator;
-        String tlsAuthType = args.get("tls_auth_type");
-        Boolean disableTls = args.get("tls_disable");
-        Boolean tlsAuthenticator = args.get("tls_authenticator");
-        Boolean serverVerificationMode = args.get("server_verification_mode");
         URI uri;
 
         if (replicationType == null) {
@@ -85,6 +74,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         } else {
             uri = new URI("wss://" + ipaddress + ":" + port + "/" + serverDBName);
         }
+
         if (endPointType.equals("URLEndPoint")) {
             URLEndpoint urlEndPoint = new URLEndpoint(uri);
             config = new ReplicatorConfiguration(sourceDb, urlEndPoint);
@@ -158,7 +148,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         if (serverVerificationMode) {
             config.setAcceptOnlySelfSignedServerCertificate(true);
         }
-
         switch (conflict_resolver) {
             case "local_wins":
                 config.setConflictResolver(new LocalWinsCustomConflictResolver());
@@ -264,7 +253,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         return p2ptcpListener;
     }
 
-
     public void serverStop(Args args) {
         String endPointType = args.get("endPointType");
         if (endPointType.equals("MessageEndPoint")) {
@@ -274,7 +262,6 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             URLEndpointListener p2ptcpListener = args.get("listener");
             p2ptcpListener.stop();
         }
-
     }
 
     public MessageEndpointConnection createConnection(MessageEndpoint endpoint) {
@@ -297,5 +284,4 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
     public List<String> replicatorEventGetChanges(Args args) {
         return replicatorRequestHandlerObj.replicatorEventGetChanges(args);
     }
-
 }

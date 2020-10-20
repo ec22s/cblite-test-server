@@ -47,6 +47,7 @@ public class Server {
     let basicAuthenticatorRequestHandler: BasicAuthenticatorRequestHandler!
     let databaseConfigurationRequestHandler: DatabaseConfigurationRequestHandler!
     let peerToPeerRequestHandler: PeerToPeerRequestHandler!
+    let listenerAuthenticatorRequestHandler: ListenerAuthenticatorRequestHandler!
     let predictiveQueryRequestHandler: PredictiveQueriesRequestHandler!
     let fileLoggingRequestHandler: FileLoggingRequestHandler!
     let memory = Memory()
@@ -73,6 +74,7 @@ public class Server {
         basicAuthenticatorRequestHandler = BasicAuthenticatorRequestHandler()
         databaseConfigurationRequestHandler = DatabaseConfigurationRequestHandler()
         peerToPeerRequestHandler = PeerToPeerRequestHandler()
+        listenerAuthenticatorRequestHandler = ListenerAuthenticatorRequestHandler()
         predictiveQueryRequestHandler = PredictiveQueriesRequestHandler()
         fileLoggingRequestHandler = FileLoggingRequestHandler()
         server = GCDWebServer()
@@ -165,6 +167,8 @@ public class Server {
                         result = try self.basicAuthenticatorRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("peerToPeer") {
                         result = try self.peerToPeerRequestHandler.handleRequest(method: method, args: args)
+                    } else if method.hasPrefix("listenerAuthenticator") {
+                        result = try self.listenerAuthenticatorRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("predictiveQuery") {
                         result = try self.predictiveQueryRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("logging") {

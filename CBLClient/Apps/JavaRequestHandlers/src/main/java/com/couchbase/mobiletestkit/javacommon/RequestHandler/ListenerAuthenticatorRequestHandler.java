@@ -1,12 +1,8 @@
 package com.couchbase.mobiletestkit.javacommon.RequestHandler;
-
-import com.couchbase.lite.DocumentChange;
-import com.couchbase.lite.DocumentChangeListener;
 import com.couchbase.lite.ListenerPasswordAuthenticator;
 import com.couchbase.mobiletestkit.javacommon.Args;
-import com.couchbase.lite.ListenerPasswordAuthenticator;
+import com.couchbase.mobiletestkit.javacommon.util.PasswordAuthenticator;
 
-import java.util.List;
 
 public class ListenerAuthenticatorRequestHandler {
 
@@ -15,13 +11,9 @@ public class ListenerAuthenticatorRequestHandler {
         String pass = args.get("password");
         char[] password = pass.toCharArray();
         PasswordAuthenticator passwordAuthenticator = new PasswordAuthenticator();
-        passwordAuthenticator.authenticate(username, password);
         ListenerPasswordAuthenticator listenerPasswordAuthenticator = new ListenerPasswordAuthenticator(
                 passwordAuthenticator);
         return listenerPasswordAuthenticator;
     }
 
-
 }
-
-
