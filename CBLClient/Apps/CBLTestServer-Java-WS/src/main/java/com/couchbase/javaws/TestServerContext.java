@@ -13,6 +13,7 @@ import java.util.Base64;
 
 import com.couchbase.lite.TLSIdentity;
 
+import javax.servlet.ServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.cert.Certificate;

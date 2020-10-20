@@ -35,7 +35,7 @@ public class TestServerWS extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Context context = new TestServerContext(request);
+        Context context = new com.couchbase.mobiletestkit.javatestserver.TestServerContext(request);
         memory.setIpAddress(context.getLocalIpAddress());
         RequestHandlerDispatcher.setDispatcherProperties(context, memory);
 
