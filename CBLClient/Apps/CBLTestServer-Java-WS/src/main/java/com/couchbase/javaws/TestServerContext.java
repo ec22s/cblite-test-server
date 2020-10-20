@@ -177,7 +177,7 @@ public class TestServerContext implements Context {
     public List<Certificate> getAuthenticatorCertsList() {
         List<Certificate> certsList = new ArrayList<>();
         try {
-            InputStream ClientCert = this.getCertFile("client-ca.der")
+            InputStream ClientCert = this.getCertFile("client-ca.der");
             try {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 Certificate cert;
