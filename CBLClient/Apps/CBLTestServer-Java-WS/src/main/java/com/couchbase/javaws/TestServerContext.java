@@ -187,7 +187,7 @@ public class TestServerContext implements Context {
             } catch (CertificateException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
