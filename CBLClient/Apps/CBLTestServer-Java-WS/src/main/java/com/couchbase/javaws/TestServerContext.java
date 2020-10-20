@@ -166,6 +166,7 @@ public class TestServerContext implements Context {
                 e.printStackTrace();
             } catch (KeyStoreException e) {
                 e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -175,7 +176,8 @@ public class TestServerContext implements Context {
     @Override
     public List<Certificate> getAuthenticatorCertsList() {
         List<Certificate> certsList = new ArrayList<>();
-        try (InputStream ClientCert = this.getCertFile("client-ca.der")) {
+        try {
+            InputStream ClientCert = this.getCertFile("client-ca.der")
             try {
                 CertificateFactory cf = CertificateFactory.getInstance("X.509");
                 Certificate cert;
@@ -187,6 +189,7 @@ public class TestServerContext implements Context {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return certsList;
     }
 
@@ -227,17 +230,5 @@ public class TestServerContext implements Context {
         }
         return is;
     }
-
-    private InputStream getCertFile(String fileName) {
-        InputStream is = null;
-        try {
-            is = RequestHandlerDispatcher.context.getAsset(fileName);
-            return is;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return is;
-    }
-
 
 }

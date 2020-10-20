@@ -182,6 +182,7 @@ public class TestServerContext implements Context {
                 e.printStackTrace();
             } catch (KeyStoreException e) {
                 e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
