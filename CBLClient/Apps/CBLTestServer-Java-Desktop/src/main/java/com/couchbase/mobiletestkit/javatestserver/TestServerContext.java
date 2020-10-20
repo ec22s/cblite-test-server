@@ -1,5 +1,4 @@
 package com.couchbase.mobiletestkit.javatestserver;
-
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
