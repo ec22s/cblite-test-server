@@ -1,4 +1,4 @@
-package com.couchbase.mobiletestkit.javatestserver;
+package com.couchbase.javaws;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
