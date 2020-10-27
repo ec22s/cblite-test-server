@@ -1,5 +1,6 @@
 package com.couchbase.mobiletestkit.javacommon;
 
+import com.couchbase.lite.ListenerAuthenticator;
 import com.couchbase.mobiletestkit.javacommon.RequestHandler.*;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
 

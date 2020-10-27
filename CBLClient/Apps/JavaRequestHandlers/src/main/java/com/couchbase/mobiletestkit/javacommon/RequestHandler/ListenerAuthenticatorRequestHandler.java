@@ -1,8 +1,8 @@
 package com.couchbase.mobiletestkit.javacommon.RequestHandler;
-
 import com.couchbase.lite.ListenerPasswordAuthenticator;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.util.PasswordAuthenticator;
+
 
 public class ListenerAuthenticatorRequestHandler {
 

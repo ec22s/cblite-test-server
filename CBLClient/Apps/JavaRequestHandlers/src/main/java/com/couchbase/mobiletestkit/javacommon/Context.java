@@ -1,7 +1,11 @@
 package com.couchbase.mobiletestkit.javacommon;
 
+import com.couchbase.lite.TLSIdentity;
+
 import java.io.File;
 import java.io.InputStream;
+import java.security.cert.Certificate;
+import java.util.List;
 
 public interface Context {
     File getFilesDir();
@@ -9,6 +13,10 @@ public interface Context {
     InputStream getAsset(String name);
     String getPlatform();
     String getLocalIpAddress();
+    TLSIdentity getCreateIdentity();
+    TLSIdentity getSelfSignedIdentity();
+    List<Certificate> getAuthenticatorCertsList();
+    TLSIdentity getClientCertsIdentity();
     /*
      * the customEncode method allows custom Base64 package
      * is loaded by platform specific:
