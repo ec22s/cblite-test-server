@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.couchbase.lite.MaintenanceType;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
@@ -74,7 +75,7 @@ public class DatabaseRequestHandler {
 
     public void compact(Args args) throws CouchbaseLiteException {
         Database database = args.get("database");
-        database.compact();
+        database.performMaintenance(MaintenanceType.COMPACT);
     }
 
     public String getPath(Args args) {
