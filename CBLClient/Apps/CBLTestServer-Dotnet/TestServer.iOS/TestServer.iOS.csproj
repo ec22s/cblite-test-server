@@ -23,7 +23,7 @@
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
+    <CodesignKey>Apple Development: Eunice Huang (K2M5L697M6)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -35,7 +35,7 @@
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
+    <CodesignKey>Apple Development: Eunice Huang (K2M5L697M6)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +48,7 @@
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
+    <CodesignKey>Apple Development: Eunice Huang (K2M5L697M6)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
   </PropertyGroup>
@@ -61,7 +61,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
+    <CodesignKey>Apple Development: Eunice Huang (K2M5L697M6)</CodesignKey>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
@@ -75,7 +75,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <BuildIpa>True</BuildIpa>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
+    <CodesignKey>Apple Development: Eunice Huang (K2M5L697M6)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>none</DebugType>
@@ -87,7 +87,7 @@
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
+    <CodesignKey>Apple Development: Eunice Huang (K2M5L697M6)</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -123,10 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Couchbase.Lite.Enterprise.Support.iOS">
-      <Version>3.0.0-b0015</Version>
+      <Version>2.8.2-b0001</Version>
     </PackageReference>
     <PackageReference Include="Couchbase.Lite.Enterprise">
-      <Version>3.0.0-b0015</Version>
+      <Version>2.8.2-b0001</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
