@@ -206,7 +206,7 @@ public class DatabaseRequestHandler {
             try database.inBatch {
                 for doc in documents {
                     let id = doc.key
-                    let data: Dictionary<String, Any> = doc.value
+                    var data: Dictionary<String, Any> = doc.value
                     data.removeValue(forKey: "_id")
                     let document = MutableDocument(id: id, data: data)
                     try! database.saveDocument(document)
@@ -220,7 +220,7 @@ public class DatabaseRequestHandler {
             try database.inBatch {
                 for doc in documents {
                     let id = doc.key
-                    let data: Dictionary<String, Any> = doc.value
+                    var data: Dictionary<String, Any> = doc.value
                     data.removeValue(forKey: "_id")
                     let updated_doc = database.document(withID: id)!.toMutable()
                     updated_doc.setData(data)
