@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.couchbase.lite.MaintenanceType;
+import com.couchbase.lite.internal.utils.Fn;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
@@ -144,7 +145,7 @@ public class DatabaseRequestHandler {
     public void updateDocuments(Args args) throws CouchbaseLiteException {
         final Database database = args.get("database");
         final Map<String, Map<String, Object>> documents = args.get("documents");
-        database.inBatch(new Runnable() {
+        database.inBatch(new Fn.TaskThrows<RuntimeException>() {
             @Override
             public void run() {
                 for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
@@ -173,7 +174,7 @@ public class DatabaseRequestHandler {
         final Database database = args.get("database");
         final Map<String, Map<String, Object>> documents = args.get("documents");
 
-        database.inBatch(new Runnable() {
+        database.inBatch(new Fn.TaskThrows<RuntimeException>() {
             @Override
             public void run() {
                 for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
@@ -261,7 +262,7 @@ public class DatabaseRequestHandler {
     public void deleteBulkDocs(Args args) throws CouchbaseLiteException {
         final Database db = args.get("database");
         final List<String> docIds = args.get("doc_ids");
-        db.inBatch(new Runnable() {
+        db.inBatch(new Fn.TaskThrows<RuntimeException>() {
             @Override
             public void run() {
                 for (String id : docIds) {
