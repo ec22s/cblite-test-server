@@ -145,20 +145,17 @@ public class DatabaseRequestHandler {
     public void updateDocuments(Args args) throws CouchbaseLiteException {
         final Database database = args.get("database");
         final Map<String, Map<String, Object>> documents = args.get("documents");
-        database.inBatch(new Fn.TaskThrows<RuntimeException>() {
-            @Override
-            public void run() {
-                for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
-                    String id = entry.getKey();
-                    Map<String, Object> data = entry.getValue();
-                    MutableDocument updatedDoc = database.getDocument(id).toMutable();
-                    updatedDoc.setData(data);
-                    try {
-                        database.save(updatedDoc);
-                    }
-                    catch (CouchbaseLiteException e) {
-                        Log.e(TAG, "DB Save failed", e);
-                    }
+        database.inBatch(() -> {
+            for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
+                String id = entry.getKey();
+                Map<String, Object> data = entry.getValue();
+                MutableDocument updatedDoc = database.getDocument(id).toMutable();
+                updatedDoc.setData(data);
+                try {
+                    database.save(updatedDoc);
+                }
+                catch (CouchbaseLiteException e) {
+                    Log.e(TAG, "DB Save failed", e);
                 }
             }
         });
@@ -174,19 +171,16 @@ public class DatabaseRequestHandler {
         final Database database = args.get("database");
         final Map<String, Map<String, Object>> documents = args.get("documents");
 
-        database.inBatch(new Fn.TaskThrows<RuntimeException>() {
-            @Override
-            public void run() {
-                for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
-                    String id = entry.getKey();
-                    Map<String, Object> data = entry.getValue();
-                    MutableDocument document = new MutableDocument(id, data);
-                    try {
-                        database.save(document);
-                    }
-                    catch (CouchbaseLiteException e) {
-                        Log.e(TAG, "DB Save failed", e);
-                    }
+        database.inBatch(() -> {
+            for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
+                String id = entry.getKey();
+                Map<String, Object> data = entry.getValue();
+                MutableDocument document = new MutableDocument(id, data);
+                try {
+                    database.save(document);
+                }
+                catch (CouchbaseLiteException e) {
+                    Log.e(TAG, "DB Save failed", e);
                 }
             }
         });
@@ -262,17 +256,14 @@ public class DatabaseRequestHandler {
     public void deleteBulkDocs(Args args) throws CouchbaseLiteException {
         final Database db = args.get("database");
         final List<String> docIds = args.get("doc_ids");
-        db.inBatch(new Fn.TaskThrows<RuntimeException>() {
-            @Override
-            public void run() {
-                for (String id : docIds) {
-                    Document document = db.getDocument(id);
-                    try {
-                        db.delete(document);
-                    }
-                    catch (CouchbaseLiteException e) {
-                        Log.e(TAG, "DB Delete failed", e);
-                    }
+        db.inBatch(() -> {
+            for (String id : docIds) {
+                Document document = db.getDocument(id);
+                try {
+                    db.delete(document);
+                }
+                catch (CouchbaseLiteException e) {
+                    Log.e(TAG, "DB Delete failed", e);
                 }
             }
         });
