@@ -76,10 +76,6 @@ public class LoggingRequestHandler {
         return Database.log.getFile().getConfig().getDirectory();
     }
 
-    public int getLogLevel(Args args) {
-        return Database.log.getFile().getLevel().getValue();
-    }
-
     public LogFileConfiguration getConfig(Args args) {
         return Database.log.getFile().getConfig();
     }
