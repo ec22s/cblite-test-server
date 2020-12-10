@@ -145,7 +145,7 @@ public final class ReplicatorTcpListener: NSObject {
         }
         return true
     }
-    #if COUCHBASE_ENTERPRISE
+    
     @objc fileprivate func acceptConnection(streams: [Any]) {
         let i = streams[0] as! InputStream
         let o = streams[1] as! OutputStream
@@ -153,7 +153,6 @@ public final class ReplicatorTcpListener: NSObject {
         connections.append(connection)
         connection.openStream()
     }
-    #endif
 }
 
 extension ReplicatorTcpListener: NetServiceDelegate {
@@ -167,9 +166,8 @@ extension ReplicatorTcpListener: NetServiceDelegate {
         }
         perform(#selector(doStop), on: thread!, with: nil, waitUntilDone: false)
     }
-    #if COUCHBASE_ENTERPRISE
+    
     public func netService(_ sender: NetService, didAcceptConnectionWith inputStream: InputStream, outputStream: OutputStream) {
         perform(#selector(acceptConnection(streams:)), on: thread!, with: [inputStream, outputStream], waitUntilDone: false)
     }
-    #endif
 }

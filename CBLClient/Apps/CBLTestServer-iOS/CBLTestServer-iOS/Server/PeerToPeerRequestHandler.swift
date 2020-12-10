@@ -20,7 +20,7 @@ public class PeerToPeerRequestHandler {
         }
         return true
     }
-    
+
     private func _defaultReplicatorFilterCallback(document: Document, flags: DocumentFlags) -> Bool {
         return true;
     }
@@ -51,7 +51,7 @@ public class PeerToPeerRequestHandler {
             /////////////////////////////
             // Peer to Peer Apis //
             ////////////////////////////
-        #if COUCHBASE_ENTERPRISE
+            
         case "peerToPeer_messageEndpointListenerStart":
             let database: Database = args.get(name:"database")!
             let port: Int = args.get(name:"port")!
@@ -282,21 +282,20 @@ public class PeerToPeerRequestHandler {
                 }
             }
             return event_list
-        #endif
+
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
         return PeerToPeerRequestHandler.VOID
     }
 }
-#if COUCHBASE_ENTERPRISE
+
 extension PeerToPeerRequestHandler: MessageEndpointDelegate {
     public func createConnection(endpoint: MessageEndpoint) -> MessageEndpointConnection {
         let url = endpoint.target as! URL
         return ReplicatorTcpClientConnection.init(url: url)
     }
 }
-#endif
 
 private class LocalWinCustomConflictResolver: ConflictResolverProtocol {
     func resolve(conflict: Conflict) -> Document? {
@@ -411,3 +410,4 @@ private func checkMismatchDocId(localDoc: Document?, remoteDoc: Document?, docId
         }
     }
 }
+

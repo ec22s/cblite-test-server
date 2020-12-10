@@ -74,14 +74,13 @@ public class ReplicatorTcpConnection : NSObject {
     public func openConnection(completion: @escaping (Bool, MessagingError?) -> Void) {
         
     }
-
-    #if COUCHBASE_ENTERPRISE
+    
     /// Closes stream and replication connection.
     public func closeConnection(error: Error?) {
         closeStream()
         replConnection!.close(error: error?.toMessagingError(isRecoverable: false))
     }
-    #endif
+    
     /// Writes data to the remote peer.
     public func write(data: Data, completion: CompletionHandler?) {
         queue.async {
@@ -89,25 +88,21 @@ public class ReplicatorTcpConnection : NSObject {
             self.doWrite()
         }
     }
-
-    #if COUCHBASE_ENTERPRISE
+    
     /// Tells the replicator to consume the data.
     public func receive(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
         let data = Data(bytes: bytes, count: count)
         replConnection!.receive(message: Message.fromData(data))
     }
-    #endif
 }
 
 /// MessageEndpointConnection
-#if COUCHBASE_ENTERPRISE
-extension ReplicatorTcpConnection: MessageEndpointConnection {
 
+extension ReplicatorTcpConnection: MessageEndpointConnection {
     public func open(connection: ReplicatorConnection, completion: @escaping (Bool, MessagingError?) -> Void) {
         replConnection = connection
         openConnection(completion: completion)
     }
-    
     
     public func close(error: Error?, completion: @escaping () -> Void) {
         closeStream()
@@ -120,7 +115,6 @@ extension ReplicatorTcpConnection: MessageEndpointConnection {
         }
     }
 }
-#endif
 
 /// StreamDelegate
 
@@ -129,12 +123,10 @@ extension ReplicatorTcpConnection: StreamDelegate {
         switch eventCode {
         case Stream.Event.hasBytesAvailable:
             doRead()
-        #if COUCHBASE_ENTERPRISE
         case Stream.Event.endEncountered:
             closeConnection(error: nil)
         case Stream.Event.errorOccurred:
             closeConnection(error: aStream.streamError)
-        #endif
         case Stream.Event.hasSpaceAvailable:
             hasSpace = true
             doWrite()
@@ -175,9 +167,7 @@ extension ReplicatorTcpConnection: StreamDelegate {
             if count <= 0 {
                 break
             }
-            #if COUCHBASE_ENTERPRISE
             receive(bytes: buffer, count: count)
-            #endif
         }
         buffer.deallocate()
     }
