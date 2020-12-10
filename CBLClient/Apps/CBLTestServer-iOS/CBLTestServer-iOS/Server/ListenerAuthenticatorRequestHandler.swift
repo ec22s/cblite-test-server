@@ -24,13 +24,13 @@ public class ListenerAuthenticatorRequestHandler {
         let path = Bundle(for: Swift.type(of:self)).path(forResource: res, ofType: type)
         return try! NSData(contentsOfFile: path!, options: []) as Data
     }
-
+    #if COUCHBASE_ENTERPRISE
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
         ////////////////////////
         // Authenticator Request Handler //
         ////////////////////////
-        #if COUCHBASE_ENTERPRISE
+        
         case "listenerAuthenticator_create":
             let li_username: String = args.get(name: "username")!
             let li_password: String = args.get(name: "password")!
@@ -46,9 +46,10 @@ public class ListenerAuthenticatorRequestHandler {
 
             let listenerAuth = ListenerCertificateAuthenticator.init(rootCerts: [rootCert])
             return listenerAuth
-        #endif
+        
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
     }
+    #endif
 }
