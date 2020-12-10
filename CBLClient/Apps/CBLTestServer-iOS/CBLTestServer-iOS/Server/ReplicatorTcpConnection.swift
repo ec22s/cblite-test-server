@@ -25,6 +25,7 @@ private class PendingWrite {
 /// Base ReplicatorTcpConnection that implements MessageEndpointConnection
 /// and StreamDelegate. Subclassed by ReplicatorTcpClientConnection and
 /// ReplicatorTcpServerConnection.
+#if COUCHBASE_ENTERPRISE
 public class ReplicatorTcpConnection : NSObject {
     fileprivate let kReadBufferSize = 1024
     
@@ -38,9 +39,9 @@ public class ReplicatorTcpConnection : NSObject {
     
     fileprivate var hasSpace = false
     
-    #if COUCHBASE_ENTERPRISE
+    
     fileprivate var replConnection: ReplicatorConnection?
-    #endif
+
     /// Initializes with input and output stream.
     public init(inputStream: InputStream, outputStream: OutputStream) {
         self.inputStream = inputStream
@@ -83,7 +84,7 @@ public class ReplicatorTcpConnection : NSObject {
         }
     }
     
-    #if COUCHBASE_ENTERPRISE
+    
     /// Closes stream and replication connection.
     public func closeConnection(error: Error?) {
         closeStream()
@@ -95,21 +96,23 @@ public class ReplicatorTcpConnection : NSObject {
         let data = Data(bytes: bytes, count: count)
         replConnection!.receive(message: Message.fromData(data))
     }
-    #endif
+    
 }
+#endif
 
 /// MessageEndpointConnection
-
+#if COUCHBASE_ENTERPRISE
 extension ReplicatorTcpConnection: MessageEndpointConnection {
 
     
     public func open(connection: ReplicatorConnection, completion: @escaping (Bool, MessagingError?) -> Void) {
         #if COUCHBASE_ENTERPRISE
         replConnection = connection
-        #endif
         openConnection(completion: completion)
+        #endif
+       
     }
-    
+   
     public func close(error: Error?, completion: @escaping () -> Void) {
         closeStream()
         completion()
@@ -120,7 +123,10 @@ extension ReplicatorTcpConnection: MessageEndpointConnection {
             completion(success, error?.toMessagingError(isRecoverable: false))
         }
     }
+    
+    
 }
+
 
 /// StreamDelegate
 
@@ -182,7 +188,7 @@ extension ReplicatorTcpConnection: StreamDelegate {
         buffer.deallocate()
     }
 }
-
+#endif
 /// Utilities
 
 extension String {
