@@ -39,14 +39,14 @@ public class ListenerAuthenticatorRequestHandler {
                        (password as NSString).isEqual(to: li_password)
             }
             return listenerAuth
-
+        #if COUCHBASE_ENTERPRISE
         case "listenerAuth_listenerCertificateAuthenticator_create":
             let rootCertData = try dataFromResource(name: "identity2/client-ca", ofType: "der")
             let rootCert = SecCertificateCreateWithData(kCFAllocatorDefault, rootCertData as CFData)!
 
             let listenerAuth = ListenerCertificateAuthenticator.init(rootCerts: [rootCert])
             return listenerAuth
-
+        #endif
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
