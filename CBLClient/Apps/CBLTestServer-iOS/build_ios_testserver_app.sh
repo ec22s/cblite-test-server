@@ -10,7 +10,8 @@ carthage update
 if [[ ! -d Frameworks ]]; then mkdir Frameworks; fi
 
 # Prepare framework
-if [ EDITION = "community" ]
+if [[ EDITION == "community" ]]
+echo EDITION
 then
 SCHEME=CBLTestServer-iOS
 else
@@ -45,7 +46,7 @@ TESTSERVER_APP_DEVICE_CP=${SCHEME}-${VERSION}-${BLD_NUM}-Device.app
 TESTSERVER_DEBUG_APP_CP=${SCHEME}-${VERSION}-${BLD_NUM}-debug.app
 TESTSERVER_DEBUG_APP_DEVICE_CP=${SCHEME}-${VERSION}-${BLD_NUM}-Device-debug.app
 TESTSERVER_ZIP=CBLTestServer-iOS-${EDITION}-${VERSION}-${BLD_NUM}.zip
-if [ EDITION = "community" ]
+if [[ EDITION == "community" ]]
 then
 configuration=Release
 product_location=Release-${SDK}
