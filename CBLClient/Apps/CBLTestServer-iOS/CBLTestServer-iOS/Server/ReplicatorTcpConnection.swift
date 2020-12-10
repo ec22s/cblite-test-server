@@ -9,6 +9,7 @@
 import Foundation
 import CouchbaseLiteSwift
 
+#if COUCHBASE_ENTERPRISE
 public typealias CompletionHandler = (Bool, Error?) -> Void
 
 private class PendingWrite {
@@ -25,7 +26,6 @@ private class PendingWrite {
 /// Base ReplicatorTcpConnection that implements MessageEndpointConnection
 /// and StreamDelegate. Subclassed by ReplicatorTcpClientConnection and
 /// ReplicatorTcpServerConnection.
-#if COUCHBASE_ENTERPRISE
 public class ReplicatorTcpConnection : NSObject {
     fileprivate let kReadBufferSize = 1024
     
@@ -98,10 +98,9 @@ public class ReplicatorTcpConnection : NSObject {
     }
     
 }
-#endif
 
 /// MessageEndpointConnection
-#if COUCHBASE_ENTERPRISE
+
 extension ReplicatorTcpConnection: MessageEndpointConnection {
 
     
@@ -188,7 +187,7 @@ extension ReplicatorTcpConnection: StreamDelegate {
         buffer.deallocate()
     }
 }
-#endif
+
 /// Utilities
 
 extension String {
@@ -205,3 +204,4 @@ extension Error {
         return MessagingError.init(error: self, isRecoverable: isRecoverable)
     }
 }
+#endif
