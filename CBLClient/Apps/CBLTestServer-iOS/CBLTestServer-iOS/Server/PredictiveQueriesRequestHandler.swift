@@ -8,7 +8,7 @@
 
 import Foundation
 import CouchbaseLiteSwift
-
+#if COUCHBASE_ENTERPRISE
 
 public class PredictiveQueriesRequestHandler {
     public static let VOID: String? = nil
@@ -16,7 +16,7 @@ public class PredictiveQueriesRequestHandler {
     
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
-        #if COUCHBASE_ENTERPRISE
+        
         case "predictiveQuery_registerModel":
             let modelName: String = args.get(name: "model_name")!
             let echoModel = EchoModel(name: modelName)
@@ -116,7 +116,7 @@ public class PredictiveQueriesRequestHandler {
             }
             
             return resultArray
-        #endif
+        
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
@@ -139,3 +139,4 @@ class EchoModel: PredictiveModel {
     }
     
 }
+#endif
