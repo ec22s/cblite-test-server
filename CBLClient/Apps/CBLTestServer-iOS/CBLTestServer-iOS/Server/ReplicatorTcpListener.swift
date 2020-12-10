@@ -19,6 +19,7 @@
 import Foundation
 import CouchbaseLiteSwift
 
+#if COUCHBASE_ENTERPRISE
 private enum ListenerState {
     case stopped
     case starting
@@ -160,7 +161,7 @@ extension ReplicatorTcpListener: NetServiceDelegate {
     public func netServiceDidPublish(_ sender: NetService) {
         state = .ready
     }
-    #if COUCHBASE_ENTERPRISE
+   
     public func netService(_ sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
         if let code = errorDict[NetService.errorCode]?.intValue {
             self.error = NSError.init(domain: "NetService", code: code, userInfo: nil)
@@ -171,5 +172,6 @@ extension ReplicatorTcpListener: NetServiceDelegate {
     public func netService(_ sender: NetService, didAcceptConnectionWith inputStream: InputStream, outputStream: OutputStream) {
         perform(#selector(acceptConnection(streams:)), on: thread!, with: [inputStream, outputStream], waitUntilDone: false)
     }
-    #endif
+   
 }
+#endif
