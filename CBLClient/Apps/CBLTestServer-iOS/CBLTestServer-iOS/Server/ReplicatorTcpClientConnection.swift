@@ -19,6 +19,7 @@
 import Foundation
 import CouchbaseLiteSwift
 
+#if COUCHBASE_ENTERPRISE
 /// MessageEndpointConnection implemenation used by the ReplicatorTcpListener.
 public class ReplicatorTcpClientConnection : ReplicatorTcpConnection {
     fileprivate var url: URL!
@@ -77,7 +78,7 @@ public class ReplicatorTcpClientConnection : ReplicatorTcpConnection {
         let data = CFHTTPMessageCopySerializedMessage(request)!.takeRetainedValue() as Data
         write(data: data, completion: nil)
     }
-    #if COUCHBASE_ENTERPRISE
+    
     public override func receive(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
         if connected {
             super.receive(bytes: bytes, count: count)
@@ -125,5 +126,6 @@ public class ReplicatorTcpClientConnection : ReplicatorTcpConnection {
         connected = true
         openCompletion!(true, nil)
     }
-    #endif
+   
 }
+#endif

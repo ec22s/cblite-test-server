@@ -19,6 +19,7 @@
 import Foundation
 import CouchbaseLiteSwift
 
+#if COUCHBASE_ENTERPRISE
 /// MessageEndpointConnection implemenation used by the ReplicatorTcpListener.
 public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
     fileprivate var request = CFHTTPMessageCreateEmpty(kCFAllocatorDefault, true).takeRetainedValue()
@@ -43,7 +44,6 @@ public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
             completion(success, error?.toMessagingError(isRecoverable: false))
         }
     }
-    #if COUCHBASE_ENTERPRISE
     public override func receive(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
         if !connected {
             receivedHTTPRequest(bytes: bytes, count: count)
@@ -51,7 +51,7 @@ public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
             super.receive(bytes: bytes, count: count)
         }
     }
-    #endif
+    
     
     
     private func receivedHTTPRequest(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
@@ -105,12 +105,12 @@ public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
         }
 
         let db = String(path[begin...end])
-        #if COUCHBASE_ENTERPRISE
+
         if !(listener!.accept(connection: self, database: db)) {
             response = nil
             sendFailureResponse(code: 404, message: "Not Found")
         }
-        #endif
+
     }
     
     private func sendFailureResponse(code: Int, message: String) {
@@ -119,3 +119,4 @@ public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
         write(data: data) { (success, error) in self.closeStream() }
     }
 }
+#endif
