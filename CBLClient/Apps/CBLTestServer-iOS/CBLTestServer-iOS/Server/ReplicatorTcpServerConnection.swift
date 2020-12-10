@@ -43,7 +43,7 @@ public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
             completion(success, error?.toMessagingError(isRecoverable: false))
         }
     }
-    
+    #if COUCHBASE_ENTERPRISE
     public override func receive(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
         if connected {
             super.receive(bytes: bytes, count: count)
@@ -51,6 +51,7 @@ public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
             receivedHTTPRequest(bytes: bytes, count: count)
         }
     }
+    #endif
     
     private func receivedHTTPRequest(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
         if !CFHTTPMessageAppendBytes(request, bytes, count) {
@@ -103,10 +104,12 @@ public class ReplicatorTcpServerConnection : ReplicatorTcpConnection {
         }
 
         let db = String(path[begin...end])
+        #if COUCHBASE_ENTERPRISE
         if !(listener!.accept(connection: self, database: db)) {
             response = nil
             sendFailureResponse(code: 404, message: "Not Found")
         }
+        #endif
     }
     
     private func sendFailureResponse(code: Int, message: String) {
