@@ -75,12 +75,6 @@ public class ReplicatorTcpConnection : NSObject {
         
     }
     
-    /// Closes stream and replication connection.
-    public func closeConnection(error: Error?) {
-        closeStream()
-        replConnection!.close(error: error?.toMessagingError(isRecoverable: false))
-    }
-    
     /// Writes data to the remote peer.
     public func write(data: Data, completion: CompletionHandler?) {
         queue.async {
@@ -89,18 +83,30 @@ public class ReplicatorTcpConnection : NSObject {
         }
     }
     
+    #if COUCHBASE_ENTERPRISE
+    /// Closes stream and replication connection.
+    public func closeConnection(error: Error?) {
+        closeStream()
+        replConnection!.close(error: error?.toMessagingError(isRecoverable: false))
+    }
+    
     /// Tells the replicator to consume the data.
     public func receive(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
         let data = Data(bytes: bytes, count: count)
         replConnection!.receive(message: Message.fromData(data))
     }
+    #endif
 }
 
 /// MessageEndpointConnection
 
 extension ReplicatorTcpConnection: MessageEndpointConnection {
+
+    
     public func open(connection: ReplicatorConnection, completion: @escaping (Bool, MessagingError?) -> Void) {
+        #if COUCHBASE_ENTERPRISE
         replConnection = connection
+        #endif
         openConnection(completion: completion)
     }
     
@@ -123,10 +129,12 @@ extension ReplicatorTcpConnection: StreamDelegate {
         switch eventCode {
         case Stream.Event.hasBytesAvailable:
             doRead()
+        #if COUCHBASE_ENTERPRISE
         case Stream.Event.endEncountered:
             closeConnection(error: nil)
         case Stream.Event.errorOccurred:
             closeConnection(error: aStream.streamError)
+        #endif
         case Stream.Event.hasSpaceAvailable:
             hasSpace = true
             doWrite()
@@ -167,7 +175,9 @@ extension ReplicatorTcpConnection: StreamDelegate {
             if count <= 0 {
                 break
             }
+            #if COUCHBASE_ENTERPRISE
             receive(bytes: buffer, count: count)
+            #endif
         }
         buffer.deallocate()
     }
