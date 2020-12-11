@@ -46,9 +46,11 @@ public class Server {
     let resultRequestHandler: ResultRequestHandler!
     let basicAuthenticatorRequestHandler: BasicAuthenticatorRequestHandler!
     let databaseConfigurationRequestHandler: DatabaseConfigurationRequestHandler!
+    #if COUCHBASE_ENTERPRISE
     let peerToPeerRequestHandler: PeerToPeerRequestHandler!
     let listenerAuthenticatorRequestHandler: ListenerAuthenticatorRequestHandler!
     let predictiveQueryRequestHandler: PredictiveQueriesRequestHandler!
+    #endif
     let fileLoggingRequestHandler: FileLoggingRequestHandler!
     let memory = Memory()
     
@@ -73,9 +75,11 @@ public class Server {
         resultRequestHandler = ResultRequestHandler()
         basicAuthenticatorRequestHandler = BasicAuthenticatorRequestHandler()
         databaseConfigurationRequestHandler = DatabaseConfigurationRequestHandler()
+        #if COUCHBASE_ENTERPRISE
         peerToPeerRequestHandler = PeerToPeerRequestHandler()
         listenerAuthenticatorRequestHandler = ListenerAuthenticatorRequestHandler()
         predictiveQueryRequestHandler = PredictiveQueriesRequestHandler()
+        #endif
         fileLoggingRequestHandler = FileLoggingRequestHandler()
         server = GCDWebServer()
         Database.log.console.level = LogLevel.verbose
