@@ -9,6 +9,7 @@
 import Foundation
 import CouchbaseLiteSwift
 
+#if COUCHBASE_ENTERPRISE
 public typealias CompletionHandler = (Bool, Error?) -> Void
 
 private class PendingWrite {
@@ -38,9 +39,9 @@ public class ReplicatorTcpConnection : NSObject {
     
     fileprivate var hasSpace = false
     
-    #if COUCHBASE_ENTERPRISE
+    
     fileprivate var replConnection: ReplicatorConnection?
-    #endif
+
     /// Initializes with input and output stream.
     public init(inputStream: InputStream, outputStream: OutputStream) {
         self.inputStream = inputStream
@@ -75,12 +76,6 @@ public class ReplicatorTcpConnection : NSObject {
         
     }
     
-    /// Closes stream and replication connection.
-    public func closeConnection(error: Error?) {
-        closeStream()
-        replConnection!.close(error: error?.toMessagingError(isRecoverable: false))
-    }
-    
     /// Writes data to the remote peer.
     public func write(data: Data, completion: CompletionHandler?) {
         queue.async {
@@ -89,21 +84,31 @@ public class ReplicatorTcpConnection : NSObject {
         }
     }
     
+    
+    /// Closes stream and replication connection.
+    public func closeConnection(error: Error?) {
+        closeStream()
+        replConnection!.close(error: error?.toMessagingError(isRecoverable: false))
+    }
+    
     /// Tells the replicator to consume the data.
     public func receive(bytes: UnsafeMutablePointer<UInt8>, count: Int) {
         let data = Data(bytes: bytes, count: count)
         replConnection!.receive(message: Message.fromData(data))
     }
+    
 }
 
 /// MessageEndpointConnection
 
 extension ReplicatorTcpConnection: MessageEndpointConnection {
+
+    
     public func open(connection: ReplicatorConnection, completion: @escaping (Bool, MessagingError?) -> Void) {
         replConnection = connection
         openConnection(completion: completion)
     }
-    
+   
     public func close(error: Error?, completion: @escaping () -> Void) {
         closeStream()
         completion()
@@ -114,7 +119,10 @@ extension ReplicatorTcpConnection: MessageEndpointConnection {
             completion(success, error?.toMessagingError(isRecoverable: false))
         }
     }
+    
+    
 }
+
 
 /// StreamDelegate
 
@@ -123,10 +131,12 @@ extension ReplicatorTcpConnection: StreamDelegate {
         switch eventCode {
         case Stream.Event.hasBytesAvailable:
             doRead()
+        #if COUCHBASE_ENTERPRISE
         case Stream.Event.endEncountered:
             closeConnection(error: nil)
         case Stream.Event.errorOccurred:
             closeConnection(error: aStream.streamError)
+        #endif
         case Stream.Event.hasSpaceAvailable:
             hasSpace = true
             doWrite()
@@ -167,7 +177,9 @@ extension ReplicatorTcpConnection: StreamDelegate {
             if count <= 0 {
                 break
             }
+            #if COUCHBASE_ENTERPRISE
             receive(bytes: buffer, count: count)
+            #endif
         }
         buffer.deallocate()
     }
@@ -189,3 +201,4 @@ extension Error {
         return MessagingError.init(error: self, isRecoverable: isRecoverable)
     }
 }
+#endif

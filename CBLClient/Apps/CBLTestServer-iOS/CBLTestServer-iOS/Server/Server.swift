@@ -46,9 +46,11 @@ public class Server {
     let resultRequestHandler: ResultRequestHandler!
     let basicAuthenticatorRequestHandler: BasicAuthenticatorRequestHandler!
     let databaseConfigurationRequestHandler: DatabaseConfigurationRequestHandler!
+    #if COUCHBASE_ENTERPRISE
     let peerToPeerRequestHandler: PeerToPeerRequestHandler!
     let listenerAuthenticatorRequestHandler: ListenerAuthenticatorRequestHandler!
     let predictiveQueryRequestHandler: PredictiveQueriesRequestHandler!
+    #endif
     let fileLoggingRequestHandler: FileLoggingRequestHandler!
     let memory = Memory()
     
@@ -73,9 +75,11 @@ public class Server {
         resultRequestHandler = ResultRequestHandler()
         basicAuthenticatorRequestHandler = BasicAuthenticatorRequestHandler()
         databaseConfigurationRequestHandler = DatabaseConfigurationRequestHandler()
+        #if COUCHBASE_ENTERPRISE
         peerToPeerRequestHandler = PeerToPeerRequestHandler()
         listenerAuthenticatorRequestHandler = ListenerAuthenticatorRequestHandler()
         predictiveQueryRequestHandler = PredictiveQueriesRequestHandler()
+        #endif
         fileLoggingRequestHandler = FileLoggingRequestHandler()
         server = GCDWebServer()
         Database.log.console.level = LogLevel.verbose
@@ -165,15 +169,19 @@ public class Server {
                         result = try self.resultRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("basicAuthenticator") {
                         result = try self.basicAuthenticatorRequestHandler.handleRequest(method: method, args: args)
-                    } else if method.hasPrefix("peerToPeer") {
-                        result = try self.peerToPeerRequestHandler.handleRequest(method: method, args: args)
-                    } else if method.hasPrefix("listenerAuthenticator") {
-                        result = try self.listenerAuthenticatorRequestHandler.handleRequest(method: method, args: args)
-                    } else if method.hasPrefix("predictiveQuery") {
-                        result = try self.predictiveQueryRequestHandler.handleRequest(method: method, args: args)
+                    
                     } else if method.hasPrefix("logging") {
                         result = try self.fileLoggingRequestHandler.handleRequest(method: method, args: args)
                     } else {
+                        #if COUCHBASE_ENTERPRISE
+                        if method.hasPrefix("peerToPeer") {
+                            result = try self.peerToPeerRequestHandler.handleRequest(method: method, args: args)
+                        } else if method.hasPrefix("listenerAuthenticator") {
+                            result = try self.listenerAuthenticatorRequestHandler.handleRequest(method: method, args: args)
+                        } else if method.hasPrefix("predictiveQuery") {
+                            result = try self.predictiveQueryRequestHandler.handleRequest(method: method, args: args)
+                        }
+                        #endif
                         throw ServerError.MethodNotImplemented(method)
                     }
                     if result != nil {

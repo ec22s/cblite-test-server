@@ -19,6 +19,7 @@
 import Foundation
 import CouchbaseLiteSwift
 
+#if COUCHBASE_ENTERPRISE
 private enum ListenerState {
     case stopped
     case starting
@@ -60,7 +61,7 @@ public final class ReplicatorTcpListener: NSObject {
     fileprivate var thread: Thread?
     
     fileprivate var state = ListenerState.stopped
-    
+    #if COUCHBASE_ENTERPRISE
     /// Initializes an instances.
     ///
     /// - Parameter databases: The databases to be served for replication.
@@ -145,7 +146,7 @@ public final class ReplicatorTcpListener: NSObject {
         }
         return true
     }
-    
+
     @objc fileprivate func acceptConnection(streams: [Any]) {
         let i = streams[0] as! InputStream
         let o = streams[1] as! OutputStream
@@ -153,13 +154,14 @@ public final class ReplicatorTcpListener: NSObject {
         connections.append(connection)
         connection.openStream()
     }
+    #endif
 }
 
 extension ReplicatorTcpListener: NetServiceDelegate {
     public func netServiceDidPublish(_ sender: NetService) {
         state = .ready
     }
-    
+   
     public func netService(_ sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
         if let code = errorDict[NetService.errorCode]?.intValue {
             self.error = NSError.init(domain: "NetService", code: code, userInfo: nil)
@@ -170,4 +172,6 @@ extension ReplicatorTcpListener: NetServiceDelegate {
     public func netService(_ sender: NetService, didAcceptConnectionWith inputStream: InputStream, outputStream: OutputStream) {
         perform(#selector(acceptConnection(streams:)), on: thread!, with: [inputStream, outputStream], waitUntilDone: false)
     }
+   
 }
+#endif
