@@ -11,7 +11,6 @@ if [[ ! -d Frameworks ]]; then mkdir Frameworks; fi
 
 # Prepare framework
 if [[ $EDITION == "community" ]]
-echo
 then
 SCHEME=CBLTestServer-iOS
 else
