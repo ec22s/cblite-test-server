@@ -105,11 +105,8 @@ extension ReplicatorTcpConnection: MessageEndpointConnection {
 
     
     public func open(connection: ReplicatorConnection, completion: @escaping (Bool, MessagingError?) -> Void) {
-        #if COUCHBASE_ENTERPRISE
         replConnection = connection
         openConnection(completion: completion)
-        #endif
-       
     }
    
     public func close(error: Error?, completion: @escaping () -> Void) {
