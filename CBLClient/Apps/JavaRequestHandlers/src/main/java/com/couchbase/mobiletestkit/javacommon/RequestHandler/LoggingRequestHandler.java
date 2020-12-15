@@ -114,6 +114,10 @@ public class LoggingRequestHandler {
         return config;
     }
 
+    public int getLogLevel(Args args) {
+        return Database.log.getFile().getLevel().ordinal();
+    }
+
     public LogFileConfiguration setLogLevel(Args args) {
         LogFileConfiguration config = args.get("config");
         String log_level = args.get("log_level");
