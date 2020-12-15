@@ -72,7 +72,7 @@ public class Server extends NanoHTTPD {
         String method = (path.startsWith("/") ? path.substring(1) : path);
 
         Database.log.getConsole().setLevel(LogLevel.DEBUG);
-        Database.log.getConsole().setDomains(EnumSet.of(LogDomain.ALL));
+        Database.log.getConsole().setDomains(LogDomain.ALL_DOMAINS);
         // Get args from query string.
         Map<String, String> rawArgs = new HashMap<>();
 

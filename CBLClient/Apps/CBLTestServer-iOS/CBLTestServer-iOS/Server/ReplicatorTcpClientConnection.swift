@@ -19,6 +19,7 @@
 import Foundation
 import CouchbaseLiteSwift
 
+#if COUCHBASE_ENTERPRISE
 /// MessageEndpointConnection implemenation used by the ReplicatorTcpListener.
 public class ReplicatorTcpClientConnection : ReplicatorTcpConnection {
     fileprivate var url: URL!
@@ -125,4 +126,6 @@ public class ReplicatorTcpClientConnection : ReplicatorTcpConnection {
         connected = true
         openCompletion!(true, nil)
     }
+   
 }
+#endif
