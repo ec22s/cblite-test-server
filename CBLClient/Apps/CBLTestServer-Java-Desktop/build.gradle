@@ -5,7 +5,7 @@ plugins {
 group 'com.couchbase.mobiletestkit'
 
 ext {
-    DEF_VERSION = "2.8.0-273"
+    DEF_VERSION = "3.0.0-38"
     COUCHBASE_LITE_JAVA_VERSION = System.getProperty('version', DEF_VERSION)
 
     JAVA_COMMON_DIR = "${projectDir}/../JavaRequestHandlers"
@@ -32,7 +32,7 @@ jar {
 repositories {
     mavenCentral()
     maven {
-        url "http://mobile.maven.couchbase.com/maven2/internalmaven/"
+        url "http://proget.build.couchbase.com/maven2/internalmaven/"
     }
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
