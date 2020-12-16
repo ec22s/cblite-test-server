@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    DEF_VERSION = "3.0.0-37"
+    DEF_VERSION = "3.0.0-40"
     COUCHBASE_LITE_VERSION = System.getProperty('version', DEF_VERSION)
 
     PROJECT_DIR = "${projectDir}"
@@ -68,7 +68,7 @@ android {
 
 
 repositories {
-    maven { url "http://mobile.maven.couchbase.com/maven2/internalmaven" }
+    maven { url "http://proget.build.couchbase.com/maven2/internalmaven" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     google()
     jcenter()
