@@ -8,12 +8,12 @@
 
 import Foundation
 import CouchbaseLiteSwift
-#if COUCHBASE_ENTERPRISE
+
 
 public class PredictiveQueriesRequestHandler {
     public static let VOID: String? = nil
     fileprivate var _pushPullReplListener:NSObjectProtocol?
-    
+    #if COUCHBASE_ENTERPRISE
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
         
@@ -122,6 +122,7 @@ public class PredictiveQueriesRequestHandler {
         }
         return PredictiveQueriesRequestHandler.VOID
     }
+    #endif
 }
 
 class EchoModel: PredictiveModel {
@@ -139,4 +140,4 @@ class EchoModel: PredictiveModel {
     }
     
 }
-#endif
+
