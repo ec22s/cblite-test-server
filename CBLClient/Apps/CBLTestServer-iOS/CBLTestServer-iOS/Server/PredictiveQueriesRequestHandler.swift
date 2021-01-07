@@ -127,6 +127,7 @@ public class PredictiveQueriesRequestHandler {
 
 }
 
+#if COUCHBASE_ENTERPRISE
 class EchoModel: PredictiveModel {
     
     let name: String
@@ -142,4 +143,4 @@ class EchoModel: PredictiveModel {
     }
     
 }
-
+#endif
