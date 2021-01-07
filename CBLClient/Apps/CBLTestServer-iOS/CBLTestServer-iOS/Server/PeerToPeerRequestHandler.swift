@@ -8,7 +8,6 @@
 import Foundation
 import CouchbaseLiteSwift
 
-
 public class PeerToPeerRequestHandler {
     public static let VOID: String? = nil
     fileprivate var _pushPullReplListener:NSObjectProtocol?
