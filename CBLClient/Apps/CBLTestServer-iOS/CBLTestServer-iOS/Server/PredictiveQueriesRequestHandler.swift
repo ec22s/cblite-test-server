@@ -13,10 +13,11 @@ import CouchbaseLiteSwift
 public class PredictiveQueriesRequestHandler {
     public static let VOID: String? = nil
     fileprivate var _pushPullReplListener:NSObjectProtocol?
-    #if COUCHBASE_ENTERPRISE
+    
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
-        
+
+        #if COUCHBASE_ENTERPRISE
         case "predictiveQuery_registerModel":
             let modelName: String = args.get(name: "model_name")!
             let echoModel = EchoModel(name: modelName)
@@ -116,13 +117,14 @@ public class PredictiveQueriesRequestHandler {
             }
             
             return resultArray
+        #endif
         
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
         return PredictiveQueriesRequestHandler.VOID
     }
-    #endif
+
 }
 
 class EchoModel: PredictiveModel {
