@@ -61,15 +61,11 @@ debug_configuration=Debug-EE
 debug_product_location=Debug-EE-${SDK}
 debug_device_prod_loc=Debug-EE-${SDK_DEVICE}
 fi
-xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK} -configuration ${configuration} -derivedDataPath build
 xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK_DEVICE} -configuration ${configuration} -derivedDataPath build-device -allowProvisioningUpdates
-xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK} -configuration ${debug_configuration} -derivedDataPath build
 xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK_DEVICE} -configuration ${debug_configuration} -derivedDataPath build-device -allowProvisioningUpdates
 
 rm -f *.zip
-cp -rf build/Build/Products/${product_location}/${TESTSERVER_APP} ./${TESTSERVER_APP_CP}
 cp -rf build-device/Build/Products/${device_prod_loc}/${TESTSERVER_APP} ./${TESTSERVER_APP_DEVICE_CP}
-cp -rf build/Build/Products/${debug_product_location}/${TESTSERVER_APP} ./${TESTSERVER_DEBUG_APP_CP}
 cp -rf build-device/Build/Products/${debug_device_prod_loc}/${TESTSERVER_APP} ./${TESTSERVER_DEBUG_APP_DEVICE_CP}
 zip -ry ${WORKSPACE}/artifacts/${TESTSERVER_ZIP} *.app
 
