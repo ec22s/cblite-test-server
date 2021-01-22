@@ -61,6 +61,9 @@ debug_configuration=Debug-EE
 debug_product_location=Debug-EE-${SDK}
 debug_device_prod_loc=Debug-EE-${SDK_DEVICE}
 fi
+
+lipo Carthage/Build/iOS/Zip.framework/Zip -thin x86_64 -output  Carthage/Build/iOS/Zip.framework/Zip
+lipo Frameworks/CouchbaseLiteSwift.framework/CouchbaseLiteSwift -thin x86_64 -output Frameworks/CouchbaseLiteSwift.framework/CouchbaseLiteSwift
 xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK_DEVICE} -configuration ${configuration} -derivedDataPath build-device -allowProvisioningUpdates
 xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK_DEVICE} -configuration ${debug_configuration} -derivedDataPath build-device -allowProvisioningUpdates
 
