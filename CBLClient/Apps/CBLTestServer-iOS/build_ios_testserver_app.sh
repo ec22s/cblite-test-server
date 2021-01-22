@@ -37,8 +37,10 @@ else
 fi
 popd
 
+echo pwd
 lipo Carthage/Build/iOS/Zip.framework/Zip -thin x86_64 -output Carthage/Build/iOS/Zip.framework/Zip
 lipo Frameworks/CouchbaseLiteSwift.framework/CouchbaseLiteSwift -thin x86_64 -output Frameworks/CouchbaseLiteSwift.framework/CouchbaseLiteSwift
+lipo Frameworks/CouchbaseLiteSwift.framework/CouchbaseLiteSwift -thin arm64 -output Frameworks/CouchbaseLiteSwift.framework/CouchbaseLiteSwift
 
 # Build CBLTestServer-iOS
 
