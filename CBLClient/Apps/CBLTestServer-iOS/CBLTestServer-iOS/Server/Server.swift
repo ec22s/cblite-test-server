@@ -166,11 +166,11 @@ public class Server {
                     } else if method.hasPrefix("basicAuthenticator") {
                         result = try self.basicAuthenticatorRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("peerToPeer") {
-                        result = try self.peerToPeerRequestHandler.handleRequest(method: method, args: args)
+                            result = try self.peerToPeerRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("listenerAuthenticator") {
-                        result = try self.listenerAuthenticatorRequestHandler.handleRequest(method: method, args: args)
+                            result = try self.listenerAuthenticatorRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("predictiveQuery") {
-                        result = try self.predictiveQueryRequestHandler.handleRequest(method: method, args: args)
+                            result = try self.predictiveQueryRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("logging") {
                         result = try self.fileLoggingRequestHandler.handleRequest(method: method, args: args)
                     } else {

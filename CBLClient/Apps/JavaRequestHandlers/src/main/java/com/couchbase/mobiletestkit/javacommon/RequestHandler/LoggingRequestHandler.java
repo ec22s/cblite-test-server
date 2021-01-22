@@ -76,10 +76,6 @@ public class LoggingRequestHandler {
         return Database.log.getFile().getConfig().getDirectory();
     }
 
-    public int getLogLevel(Args args) {
-        return Database.log.getFile().getLevel().getValue();
-    }
-
     public LogFileConfiguration getConfig(Args args) {
         return Database.log.getFile().getConfig();
     }
@@ -116,6 +112,10 @@ public class LoggingRequestHandler {
         LogFileConfiguration config = new LogFileConfiguration(directory);
         Database.log.getFile().setConfig(config);
         return config;
+    }
+
+    public int getLogLevel(Args args) {
+        return Database.log.getFile().getLevel().ordinal();
     }
 
     public LogFileConfiguration setLogLevel(Args args) {

@@ -16,7 +16,8 @@ public class PredictiveQueriesRequestHandler {
     
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
-            
+
+        #if COUCHBASE_ENTERPRISE
         case "predictiveQuery_registerModel":
             let modelName: String = args.get(name: "model_name")!
             let echoModel = EchoModel(name: modelName)
@@ -116,14 +117,17 @@ public class PredictiveQueriesRequestHandler {
             }
             
             return resultArray
+        #endif
         
         default:
             throw RequestHandlerError.MethodNotFound(method)
         }
         return PredictiveQueriesRequestHandler.VOID
     }
+
 }
 
+#if COUCHBASE_ENTERPRISE
 class EchoModel: PredictiveModel {
     
     let name: String
@@ -139,3 +143,4 @@ class EchoModel: PredictiveModel {
     }
     
 }
+#endif

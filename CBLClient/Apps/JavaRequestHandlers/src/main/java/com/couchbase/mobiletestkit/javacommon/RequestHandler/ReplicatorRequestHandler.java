@@ -175,7 +175,7 @@ public class ReplicatorRequestHandler {
 
     public void resetCheckpoint(Args args) {
         Replicator replicator = args.get("replicator");
-        replicator.resetCheckpoint();
+        replicator.start(true);
     }
 
 }

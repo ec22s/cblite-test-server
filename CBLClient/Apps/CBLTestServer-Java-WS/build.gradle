@@ -5,7 +5,7 @@ apply plugin: 'com.bmuschko.tomcat'
 sourceCompatibility = 1.8
 
 ext {
-    COUCHBASE_LITE_JAVA_VERSION = System.getProperty('version', "2.7.0-94")
+    COUCHBASE_LITE_JAVA_VERSION = System.getProperty('version', "3.0.0-38")
 
     JAVA_COMMON_DIR = "${projectDir}/../JavaRequestHandlers"
     ASSET_DIR = "${JAVA_COMMON_DIR}/src/main/assets"
@@ -22,7 +22,7 @@ repositories {
     jcenter()
     mavenCentral()
     maven {
-        url "http://mobile.maven.couchbase.com/maven2/internalmaven/"
+        url "http://proget.build.couchbase.com/maven2/internalmaven/"
     }
 }
 
