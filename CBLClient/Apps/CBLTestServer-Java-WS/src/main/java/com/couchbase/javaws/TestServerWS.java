@@ -59,9 +59,16 @@ public class TestServerWS extends HttpServlet {
         the path has pattern of handlerType_methodName
         split the underscore to extract the request handler name and its method
         */
-        String[] methodArgs = pathLevels[pathLevels.length - 1].split("_");
-        String handlerType = methodArgs.length > 1 ? methodArgs[0] : "nohandler";
-        String method = methodArgs.length > 1 ? methodArgs[1] : methodArgs[0];
+        String handlerType = "";
+        String method_to_call = "";
+
+        if(pathLevels[pathLevels.length - 1].equalsIgnoreCase("copy_files")){
+            method_to_call = pathLevels[pathLevels.length - 1];
+        } else {
+            String[] methodArgs = pathLevels[pathLevels.length - 1].split("_");
+            handlerType = methodArgs.length > 1 ? methodArgs[0] : "nohandler";
+            method_to_call = methodArgs.length > 1 ? methodArgs[1] : methodArgs[0];
+        }
 
         /*
         process request body
@@ -81,7 +88,7 @@ public class TestServerWS extends HttpServlet {
                 no deserialization is needed,
                 the original object memory address is required
                 */
-                if("release".equals(method)){
+                if("release".equals(method_to_call)){
                     args.put(key, value);
                 }
                 else {
@@ -94,7 +101,7 @@ public class TestServerWS extends HttpServlet {
         }
 
         try{
-            Object body = RequestHandlerDispatcher.handle(handlerType, method, args);
+            Object body = RequestHandlerDispatcher.handle(handlerType, method_to_call, args);
 
             if (body == null) {
                 response.setStatus(HttpServletResponse.SC_OK);
