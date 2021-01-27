@@ -29,8 +29,7 @@ pwd
 IOS_ZIP=${WORKSPACE}/artifacts/couchbase-lite-swift_${EDITION}_${VERSION}-${BLD_NUM}.zip
 if [[ -f ${IOS_ZIP} ]]; then
     unzip ${IOS_ZIP}
-    cp -r iOS/CouchbaseLiteSwift.framework .
-    cp -r iOS/CouchbaseLiteSwift.framework.dSYM .
+    cp -r iOS/CouchbaseLiteSwift.xcframework .
 else
     echo "Required file ${IOS_ZIP} not found!"
     exit 1
