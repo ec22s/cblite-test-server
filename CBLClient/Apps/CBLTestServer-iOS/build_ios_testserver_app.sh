@@ -26,10 +26,12 @@ if [[ -d ${FRAMEWORK_DIR} ]]; then rm -rf ${FRAMEWORK_DIR}/*; fi
 
 pushd ${FRAMEWORK_DIR}
 pwd
+echo ${WORKSPACE}
 IOS_ZIP=${WORKSPACE}/artifacts/couchbase-lite-swift_xc_${EDITION}_${VERSION}-${BLD_NUM}.zip
 if [[ -f ${IOS_ZIP} ]]; then
     unzip ${IOS_ZIP}
-    cp -r iOS/CouchbaseLiteSwift.xcframework .
+    cp -r CouchbaseLiteSwift.xcframework/os-arm64_x86_64-maccatalyst/CouchbaseLiteSwift.framework .
+    cp -r CouchbaseLiteSwift.xcframework/os-arm64_x86_64-maccatalyst/dSYMs/CouchbaseLiteSwift.framework.dSYM
 else
     echo "Required file ${IOS_ZIP} not found!"
     exit 1
