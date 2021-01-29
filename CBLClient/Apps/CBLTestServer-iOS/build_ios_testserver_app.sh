@@ -32,6 +32,7 @@ if [[ -f ${IOS_ZIP} ]]; then
     unzip ${IOS_ZIP}
     cp -r iOS/CouchbaseLiteSwift.framework .
     cp -r iOS/CouchbaseLiteSwift.framework.dSYM .
+    lipo CouchbaseLiteSwift.framework/CouchbaseLiteSwift -thin arm64 -output  CouchbaseLiteSwift.framework/CouchbaseLiteSwift
 else
     echo "Required file ${IOS_ZIP} not found!"
     exit 1
