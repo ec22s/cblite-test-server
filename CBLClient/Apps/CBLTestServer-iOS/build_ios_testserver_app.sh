@@ -19,9 +19,6 @@ fi
 SDK=iphonesimulator
 SDK_DEVICE=iphoneos
 
-lipo Carthage/Build/iOS/Zip.framework/Zip -thin x86_64 -output  Carthage/Build/iOS/Zip.framework/Zip
-lipo Carthage/Build/iOS/Zip.framework/Zip -thin arm64 -output  Carthage/Build/iOS/Zip.framework/Zip
-
 FRAMEWORK_DIR=${WORKSPACE}/mobile-testapps/CBLClient/Apps/CBLTestServer-iOS/Frameworks
 
 if [[ -d build ]]; then rm -rf build/*; fi
@@ -42,6 +39,9 @@ fi
 popd
 
 pwd
+
+lipo Carthage/Build/iOS/Zip.framework/Zip -thin x86_64 -output  Carthage/Build/iOS/Zip.framework/Zip
+lipo Carthage/Build/iOS/Zip.framework/Zip -thin arm64 -output  Carthage/Build/iOS/Zip.framework/Zip
 
 # Build CBLTestServer-iOS
 
