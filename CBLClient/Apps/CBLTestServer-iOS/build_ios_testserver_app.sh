@@ -39,8 +39,7 @@ fi
 popd
 
 pwd
-lipo Carthage/Build/iOS/Zip.framework/Zip -thin arm64 -output Carthage/Build/iOS/Zip.framework/Zip
-lipo Carthage/Build/iOS/Zip.framework/Zip -thin armv7 -output Carthage/Build/iOS/Zip.framework/Zip
+
 # Build CBLTestServer-iOS
 
 TESTSERVER_APP=CBLTestServer-iOS.app
