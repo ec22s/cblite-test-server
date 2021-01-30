@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -52,12 +52,11 @@
 		2E2A8411238E555E00F8043F /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2A840F238E550C00F8043F /* Zip.framework */; };
 		2E2A8412238E555E00F8043F /* Zip.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2A840F238E550C00F8043F /* Zip.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2E8631EF229F2C8C00859424 /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 2E8631EE229F2C8C00859424 /* Files */; };
-		410E9313235D91EF002AC728 /* CouchbaseLiteSwift.framework.dSYM in Resources */ = {isa = PBXBuildFile; fileRef = 410E9311235D91EF002AC728 /* CouchbaseLiteSwift.framework.dSYM */; };
-		41DAF0882362D6D400BE60C0 /* CouchbaseLiteSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 410E9310235D91EF002AC728 /* CouchbaseLiteSwift.framework */; };
-		41DAF0892362D6D400BE60C0 /* CouchbaseLiteSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 410E9310235D91EF002AC728 /* CouchbaseLiteSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4D7993E5250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7993E4250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift */; };
 		4DE0E3222501F24D00DEBA87 /* identity in Resources */ = {isa = PBXBuildFile; fileRef = 4DE0E3212501F24D00DEBA87 /* identity */; };
 		6917C7BA232C30EE00D99DA6 /* RawData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6917C7B9232C30EE00D99DA6 /* RawData.swift */; };
+		7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; };
+		7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FB0C46F1221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */; };
 		FB5934DA219CB5150000C958 /* sg_cert.cer in Resources */ = {isa = PBXBuildFile; fileRef = 2920479F204E05C700B21067 /* sg_cert.cer */; };
 		FB5934E0219CB6220000C958 /* Databases in Resources */ = {isa = PBXBuildFile; fileRef = FB5934DF219CB6220000C958 /* Databases */; };
@@ -98,7 +97,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				2E2A8412238E555E00F8043F /* Zip.framework in Embed Frameworks */,
-				41DAF0892362D6D400BE60C0 /* CouchbaseLiteSwift.framework in Embed Frameworks */,
+				7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -182,11 +181,10 @@
 		29F786901F9FC4180035178F /* GCDWebServerStreamedResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDWebServerStreamedResponse.m; sourceTree = "<group>"; };
 		2E2A840F238E550C00F8043F /* Zip.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Zip.framework; path = Carthage/Build/iOS/Zip.framework; sourceTree = "<group>"; };
 		2E8631EE229F2C8C00859424 /* Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Files; sourceTree = SOURCE_ROOT; };
-		410E9310235D91EF002AC728 /* CouchbaseLiteSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CouchbaseLiteSwift.framework; path = Frameworks/CouchbaseLiteSwift.framework; sourceTree = "<group>"; };
-		410E9311235D91EF002AC728 /* CouchbaseLiteSwift.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = CouchbaseLiteSwift.framework.dSYM; path = Frameworks/CouchbaseLiteSwift.framework.dSYM; sourceTree = "<group>"; };
 		4D7993E4250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenerAuthenticatorRequestHandler.swift; sourceTree = "<group>"; };
 		4DE0E3212501F24D00DEBA87 /* identity */ = {isa = PBXFileReference; lastKnownFileType = folder; path = identity; sourceTree = "<group>"; };
 		6917C7B9232C30EE00D99DA6 /* RawData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawData.swift; sourceTree = "<group>"; };
+		7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CouchbaseLiteSwift.xcframework; path = Frameworks/CouchbaseLiteSwift.xcframework; sourceTree = "<group>"; };
 		FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveQueriesRequestHandler.swift; sourceTree = "<group>"; };
 		FB5934DF219CB6220000C958 /* Databases */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Databases; sourceTree = SOURCE_ROOT; };
 		FB5A6A5421123A9A00937927 /* ReplicatorTcpConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplicatorTcpConnection.swift; sourceTree = "<group>"; };
@@ -208,7 +206,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E2A8411238E555E00F8043F /* Zip.framework in Frameworks */,
-				41DAF0882362D6D400BE60C0 /* CouchbaseLiteSwift.framework in Frameworks */,
+				7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,9 +400,8 @@
 		29F7869E1F9FC4850035178F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */,
 				2E2A840F238E550C00F8043F /* Zip.framework */,
-				410E9310235D91EF002AC728 /* CouchbaseLiteSwift.framework */,
-				410E9311235D91EF002AC728 /* CouchbaseLiteSwift.framework.dSYM */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -528,7 +525,6 @@
 				29F77F311F9FC18D0035178F /* LaunchScreen.storyboard in Resources */,
 				29F77F2E1F9FC18D0035178F /* Assets.xcassets in Resources */,
 				4DE0E3222501F24D00DEBA87 /* identity in Resources */,
-				410E9313235D91EF002AC728 /* CouchbaseLiteSwift.framework.dSYM in Resources */,
 				FB5934DA219CB5150000C958 /* sg_cert.cer in Resources */,
 				29F77F2C1F9FC18D0035178F /* Main.storyboard in Resources */,
 				2E8631EF229F2C8C00859424 /* Files in Resources */,
@@ -770,7 +766,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -797,7 +794,10 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 1;
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
@@ -821,7 +821,10 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
@@ -842,7 +845,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -863,7 +870,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -883,7 +894,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -903,7 +918,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -994,7 +1013,10 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 1;
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_SWIFT_FLAGS = "-DCOUCHBASE_ENTERPRISE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1017,7 +1039,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -1037,7 +1063,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -1094,7 +1124,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1114,7 +1145,10 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_SWIFT_FLAGS = "-DCOUCHBASE_ENTERPRISE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1136,7 +1170,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -1156,7 +1194,11 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOSUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOSUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
