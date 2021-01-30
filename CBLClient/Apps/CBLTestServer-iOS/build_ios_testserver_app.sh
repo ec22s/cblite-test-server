@@ -43,7 +43,6 @@ ls
 
 lipo -info Carthage/Build/iOS/Zip.framework/Zip
 
-lipo Carthage/Build/iOS/Zip.framework/Zip -thin x86_64 -output  Carthage/Build/iOS/Zip.framework/Zip
 lipo Carthage/Build/iOS/Zip.framework/Zip -thin arm64 -output  Carthage/Build/iOS/Zip.framework/Zip
 
 # Build CBLTestServer-iOS
