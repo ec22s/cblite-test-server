@@ -49,8 +49,6 @@
 		29F7869B1F9FC4180035178F /* GCDWebServerErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F7868C1F9FC4180035178F /* GCDWebServerErrorResponse.m */; };
 		29F7869C1F9FC4180035178F /* GCDWebServerFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F7868E1F9FC4180035178F /* GCDWebServerFileResponse.m */; };
 		29F7869D1F9FC4180035178F /* GCDWebServerStreamedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F786901F9FC4180035178F /* GCDWebServerStreamedResponse.m */; };
-		2E2A8411238E555E00F8043F /* Zip.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2A840F238E550C00F8043F /* Zip.framework */; };
-		2E2A8412238E555E00F8043F /* Zip.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2E2A840F238E550C00F8043F /* Zip.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2E8631EF229F2C8C00859424 /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 2E8631EE229F2C8C00859424 /* Files */; };
 		4D7993E5250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7993E4250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift */; };
 		4DE0E3222501F24D00DEBA87 /* identity in Resources */ = {isa = PBXBuildFile; fileRef = 4DE0E3212501F24D00DEBA87 /* identity */; };
@@ -96,7 +94,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2E2A8412238E555E00F8043F /* Zip.framework in Embed Frameworks */,
 				7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -205,7 +202,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E2A8411238E555E00F8043F /* Zip.framework in Frameworks */,
 				7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
