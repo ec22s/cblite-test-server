@@ -37,14 +37,6 @@ else
 fi
 popd
 
-pwd
-
-ls
-
-lipo -info Carthage/Build/iOS/Zip.framework/Zip
-
-# lipo Carthage/Build/iOS/Zip.framework/Zip -thin arm64 -output  Carthage/Build/iOS/Zip.framework/Zip
-
 # Build CBLTestServer-iOS
 
 TESTSERVER_APP=CBLTestServer-iOS.app
@@ -71,7 +63,9 @@ debug_product_location=Debug-EE-${SDK}
 debug_device_prod_loc=Debug-EE-${SDK_DEVICE}
 fi
 
+xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK} -configuration ${configuration} -derivedDataPath build
 xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK_DEVICE} -configuration ${configuration} -derivedDataPath build-device -allowProvisioningUpdates
+xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK} -configuration ${debug_configuration} -derivedDataPath build
 xcodebuild CURRENT_PROJECT_VERSION=${BLD_NUM} CBL_VERSION_STRING=${VERSION} -scheme ${SCHEME} -sdk ${SDK_DEVICE} -configuration ${debug_configuration} -derivedDataPath build-device -allowProvisioningUpdates
 
 rm -f *.zip
