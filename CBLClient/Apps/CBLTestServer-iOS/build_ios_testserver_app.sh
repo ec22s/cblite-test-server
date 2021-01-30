@@ -30,7 +30,6 @@ echo ${WORKSPACE}
 IOS_ZIP=${WORKSPACE}/artifacts/couchbase-lite-swift_xc_${EDITION}_${VERSION}-${BLD_NUM}.zip
 if [[ -f ${IOS_ZIP} ]]; then
     unzip ${IOS_ZIP}
-    cp -r CouchbaseLiteSwift.xcframework .
 else
     echo "Required file ${IOS_ZIP} not found!"
     exit 1
