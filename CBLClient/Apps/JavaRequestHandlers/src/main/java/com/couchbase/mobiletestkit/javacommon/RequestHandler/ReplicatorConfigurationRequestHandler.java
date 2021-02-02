@@ -71,6 +71,7 @@ public class ReplicatorConfigurationRequestHandler {
         String filter_callback_func = args.get("filter_callback_func");
         String conflict_resolver = args.get("conflict_resolver");
         Map<String, String> headers = args.get("headers");
+        String heartbeat = args.get("heartbeat");
 
         if (replicatorType == null) {
             replicatorType = "push_pull";
@@ -119,6 +120,9 @@ public class ReplicatorConfigurationRequestHandler {
         }
         if (documentIds != null) {
             config.setDocumentIDs(documentIds);
+        }
+        if (heartbeat != null && !heartbeat.trim().isEmpty()){
+            config.setHeartbeat(Long.parseLong(heartbeat));
         }
 
         Log.d(TAG, "Args: " + args);

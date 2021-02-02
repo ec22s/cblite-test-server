@@ -130,6 +130,15 @@ namespace Couchbase.Lite.Testing
                     }
                     config.Headers = headers;
                 }
+                 
+                if (postBody.ContainsKey("heartbeat"))
+                {
+                    String heartbeat = postBody["heartbeat"].ToString();
+                    if (String.IsNullOrEmpty(heartbeat.Trim()))
+                    {
+                        config.Heartbeat = new System.TimeSpan(long.Parse(heartbeat));
+                    }
+                }
 
                 if (postBody.ContainsKey("pinnedservercert"))
                 {
