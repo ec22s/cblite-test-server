@@ -24,7 +24,8 @@
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (2THW8MWYRU)</CodesignKey>
+    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -36,7 +37,7 @@
     <MtouchArch>x86_64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (2THW8MWYRU)</CodesignKey>
+    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,7 +50,7 @@
     <ConsolePause>false</ConsolePause>
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (2THW8MWYRU)</CodesignKey>
+    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
   </PropertyGroup>
@@ -62,7 +63,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (2THW8MWYRU)</CodesignKey>
+    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
@@ -76,7 +77,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <BuildIpa>True</BuildIpa>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (2THW8MWYRU)</CodesignKey>
+    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>none</DebugType>
@@ -88,7 +89,7 @@
     <MtouchArch>ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
-    <CodesignKey>Apple Development: mobile-qe couchbaase (2THW8MWYRU)</CodesignKey>
+    <CodesignKey>Apple Development: mobile-qe couchbaase (VG63Y8KQHT)</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
