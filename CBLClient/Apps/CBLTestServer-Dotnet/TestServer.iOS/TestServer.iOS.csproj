@@ -129,7 +129,6 @@
     <PackageReference Include="Couchbase.Lite.Enterprise">
       <Version>3.0.0-b0016</Version>
     </PackageReference>
-    <PackageReference Include="SimpleInjector" Version="5.2.0" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Databases\PrebuiltDB.cblite2\db.sqlite3" />
