@@ -59,6 +59,7 @@ public class ReplicatorConfigurationRequestHandler {
             let push_filter: Bool? = args.get(name: "push_filter")!
             let filter_callback_func: String? = args.get(name: "filter_callback_func")
             let conflict_resolver: String? = args.get(name: "conflict_resolver")
+            let heartbeat: String? = args.get(name: "heartbeat")
             
             var replicatorType = ReplicatorType.pushAndPull
             
@@ -177,6 +178,9 @@ public class ReplicatorConfigurationRequestHandler {
                 default:
                     config.conflictResolver = ConflictResolver.default
                     break;
+            }
+            if heartbeat != nil {
+                config.heartbeat = Double(heartbeat!)!
             }
             return config
         
