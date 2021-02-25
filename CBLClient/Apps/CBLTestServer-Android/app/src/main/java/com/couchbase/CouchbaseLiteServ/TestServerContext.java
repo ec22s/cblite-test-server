@@ -168,7 +168,7 @@ public class TestServerContext implements Context {
                     } catch (UnrecoverableEntryException e) {
                         e.printStackTrace();
                     }
-                    identity = TLSIdentity.getIdentity("clientcerts");
+                    identity = TLSIdentity.getIdentity("ClientCertsSelfsigned");
                 } catch (KeyStoreException e) {
                         e.printStackTrace();
                 } catch (CertificateException e) {
