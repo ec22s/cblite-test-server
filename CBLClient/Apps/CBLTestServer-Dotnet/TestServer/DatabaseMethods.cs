@@ -457,8 +457,16 @@ namespace Couchbase.Lite.Testing
             {
                 With<MutableDocument>(postBody, "document", doc =>
                 {
-                    db.Save(doc);
-                    response.WriteEmptyBody();
+                    try
+                    {
+                        db.Save(doc);
+                        response.WriteEmptyBody();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Error Saving the document" + e.Message);
+                        response.WriteBody(e.Message);
+                    }
                 });
             });
         }
