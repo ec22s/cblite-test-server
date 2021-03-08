@@ -95,11 +95,7 @@ public class DatabaseRequestHandler {
         case "database_save":
             let database: Database = (args.get(name:"database"))!
             let document: MutableDocument = args.get(name:"document")!
-            do {
-                try database.saveDocument(document)
-            } catch {
-                return error.localizedDescription
-            }
+            try database.saveDocument(document)
             
         case "database_saveWithConcurrency":
             let database: Database = (args.get(name:"database"))!

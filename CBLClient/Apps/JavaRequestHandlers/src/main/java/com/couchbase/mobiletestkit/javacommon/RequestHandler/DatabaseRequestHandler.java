@@ -187,16 +187,10 @@ public class DatabaseRequestHandler {
         });
     }
 
-    public String save(Args args) throws CouchbaseLiteException {
+    public void save(Args args) throws CouchbaseLiteException {
         Database database = args.get("database");
         MutableDocument document = args.get("document");
-        try {
-            database.save(document);
-            return "Document Saved";
-        } catch (CouchbaseLiteException e) {
-            Log.e(TAG, "DB Save failed", e);
-            return e.getMessage();
-        }
+        database.save(document);
     }
 
     public void saveWithConcurrency(Args args) throws CouchbaseLiteException {
