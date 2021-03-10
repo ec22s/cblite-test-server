@@ -28,7 +28,7 @@ public class DictionaryRequestHandler {
     }
 
     public MutableDictionary toMutableDictionary(Args args) {
-        return new MutableDictionary(args.get("dictionary"));
+        return new MutableDictionary((Map<String, Object>) args.get("dictionary"));
     }
 
     public int count(Args args) {
