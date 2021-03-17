@@ -72,6 +72,8 @@ public class ReplicatorConfigurationRequestHandler {
         String conflict_resolver = args.get("conflict_resolver");
         Map<String, String> headers = args.get("headers");
         String heartbeat = args.get("heartbeat");
+        String maxRetries = args.get("max_retries");
+        String maxRetryWaitTime = args.get("max_retry_wait_time");
 
         if (replicatorType == null) {
             replicatorType = "push_pull";
@@ -123,6 +125,12 @@ public class ReplicatorConfigurationRequestHandler {
         }
         if (heartbeat != null && !heartbeat.trim().isEmpty()){
             config.setHeartbeat(Long.parseLong(heartbeat));
+        }
+        if (maxRetries != null && !maxRetries.trim().isEmpty()){
+            config.setMaxRetries(Long.parseLong(maxRetries));
+        }
+        if (maxRetryWaitTime != null && !maxRetryWaitTime.trim().isEmpty()){
+            config.setMaxRetryWaitTime(Long.parseLong(maxRetryWaitTime));
         }
 
         Log.d(TAG, "Args: " + args);

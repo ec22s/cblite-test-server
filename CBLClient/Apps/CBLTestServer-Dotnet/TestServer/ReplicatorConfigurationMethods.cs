@@ -140,6 +140,24 @@ namespace Couchbase.Lite.Testing
                     }
                 }
 
+                if (postBody.ContainsKey("max_retries"))
+                {
+                    String maxRetries = postBody["max_retriest"].ToString();
+                    if (String.IsNullOrEmpty(maxRetries.Trim()))
+                    {
+                        config.MaxRetries = int.Parse(maxRetries);
+                    }
+                }
+
+                if (postBody.ContainsKey("max_retry_wait_time"))
+                {
+                    String maxRetryWaitTime = postBody["max_retry_wait_time"].ToString();
+                    if (String.IsNullOrEmpty(maxRetryWaitTime.Trim()))
+                    {
+                        config.MaxRetryWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime));
+                    }
+                }
+
                 if (postBody.ContainsKey("pinnedservercert"))
                 {
                     var cert_file = postBody["pinnedservercert"].ToString();
