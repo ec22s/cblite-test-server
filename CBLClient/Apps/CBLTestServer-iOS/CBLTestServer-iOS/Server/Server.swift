@@ -211,8 +211,6 @@ public class Server {
                 return response
             } catch let error as NSError {
                 let response = GCDWebServerDataResponse(text: error.localizedDescription)!
-                response.statusCode = error.code as Int
-                response.contentType = "text/plain"
                 return response
             }
         }
