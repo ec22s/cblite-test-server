@@ -22,7 +22,7 @@ public class ArrayRequestHandler {
         case "array_create":
             let array: [Any]? = args.get(name: "content_array")!
             if array != nil {
-                return MutableArrayObject(data: array)
+                return MutableArrayObject(data: array!)
             } else {
                 return MutableArrayObject()
             }
@@ -40,7 +40,7 @@ public class ArrayRequestHandler {
             let array: MutableArrayObject = args.get(name: "array")!
             let data: [Any]? = args.get(name: "data")!
             
-            return array.setData(data)
+            return array.setData(data!)
             
         case "array_setString":
             let array: MutableArrayObject = args.get(name: "array")!

@@ -26,14 +26,14 @@ public class DocumentRequestHandler {
                 if dictionary == nil {
                     return MutableDocument(id: id)
                 } else {
-                    return MutableDocument(id: id, data: dictionary)
+                    return MutableDocument(id: id, data: dictionary!)
                 }
             } else {
                 if dictionary == nil {
                     let doc = MutableDocument()
                     return doc
                 } else {
-                    return MutableDocument(data: dictionary)
+                    return MutableDocument(data: dictionary!)
                 }
             }
             
