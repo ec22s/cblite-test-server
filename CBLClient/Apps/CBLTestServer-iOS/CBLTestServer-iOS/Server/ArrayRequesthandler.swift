@@ -34,9 +34,8 @@ public class ArrayRequestHandler {
             
         case "array_setData":
             let array: MutableArrayObject = args.get(name: "array")!
-            let data: [Any]? = args.get(name: "data")!
-            
-            return array.setData(data!)
+            let data: [Any] = args.get(name: "data") ?? [Any]()
+            return array.setData(data)
             
         case "array_setString":
             let array: MutableArrayObject = args.get(name: "array")!

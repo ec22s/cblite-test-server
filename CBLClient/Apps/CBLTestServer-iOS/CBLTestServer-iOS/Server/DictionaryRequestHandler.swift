@@ -23,8 +23,8 @@ public class DictionaryRequestHandler {
             return MutableDictionaryObject(data: dictionary)
 
         case "dictionary_toMutableDictionary":
-            let dictionary: [String: Any]? = args.get(name: "dictionary")!
-            return MutableDictionaryObject(data: dictionary!)
+            let dictionary: [String: Any] = args.get(name: "dictionary") ?? [String: Any]()
+            return MutableDictionaryObject(data: dictionary)
             
         case "dictionary_count":
             let dictionary: MutableDictionaryObject = args.get(name: "dictionary")!
@@ -37,9 +37,8 @@ public class DictionaryRequestHandler {
         
         case "dictionary_setData":
             let dictionary: MutableDictionaryObject = args.get(name: "dictionary")!
-            let data: [String: Any]? = args.get(name: "data")!
-
-            return dictionary.setData(data!)
+            let data: [String: Any] = args.get(name: "data") ?? [String: Any]()
+            return dictionary.setData(data)
         
         case "dictionary_setString":
             let dictionary: MutableDictionaryObject = args.get(name: "dictionary")!
