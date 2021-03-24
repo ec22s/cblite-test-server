@@ -21,12 +21,7 @@ public class DocumentRequestHandler {
         case "document_create":
             let id: String? = (args.get(name: "id"))
             let dictionary: [String: Any] = (args.get(name: "dictionary")) ?? [String: Any]()
-
-            if id != nil {
-                return MutableDocument(id: id, data: dictionary)
-            } else {
-                return MutableDocument(data: dictionary)
-            }
+            return MutableDocument(id: id, data: dictionary)
             
         case "document_toMutable":
             let document: Document = args.get(name:"document")!
