@@ -20,12 +20,8 @@ public class ArrayRequestHandler {
         // MutableArrayObject //
         ////////////////////////
         case "array_create":
-            let array: [Any]? = args.get(name: "content_array")!
-            if array != nil {
-                return MutableArrayObject(data: array!)
-            } else {
-                return MutableArrayObject()
-            }
+            let array: [Any] = args.get(name: "content_array") ?? [Any]()
+            return MutableArrayObject(data: array)
 
         case "array_count":
             let array: MutableArrayObject = args.get(name: "array")!

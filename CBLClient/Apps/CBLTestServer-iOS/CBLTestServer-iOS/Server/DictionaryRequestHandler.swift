@@ -19,12 +19,8 @@ public class DictionaryRequestHandler {
         // MutableDictionaryObject //
         /////////////////////////////
         case "dictionary_create":
-            let dictionary: [String: Any]? = args.get(name: "content_dict")!
-            if dictionary != nil {
-                return MutableDictionaryObject(data: dictionary!)
-            } else {
-                return MutableDictionaryObject()
-            }
+            let dictionary: [String: Any] = args.get(name: "content_dict") ?? [String: Any]()
+            return MutableDictionaryObject(data: dictionary)
 
         case "dictionary_toMutableDictionary":
             let dictionary: [String: Any]? = args.get(name: "dictionary")!
