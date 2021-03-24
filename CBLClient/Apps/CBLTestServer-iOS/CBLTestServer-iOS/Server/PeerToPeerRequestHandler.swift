@@ -131,6 +131,7 @@ public class PeerToPeerRequestHandler {
             let conflict_resolver: String? = args.get(name: "conflict_resolver")!
             let filter_callback_func: String? = args.get(name: "filter_callback_func")
             let auth: Authenticator? = args.get(name: "basic_auth")!
+            let heartbeat: String? = args.get(name: "heartbeat")
             
             let serverVerificationMode: Bool? = args.get(name: "server_verification_mode")!
             let tls_disable: Bool? = args.get(name: "tls_disable")!
@@ -241,6 +242,9 @@ public class PeerToPeerRequestHandler {
                 default:
                     replicatorConfig.conflictResolver = ConflictResolver.default
                     break;
+            }
+            if heartbeat != nil {
+                replicatorConfig.heartbeat = Double(heartbeat!)!
             }
             replicatorConfig.replicatorType = replicatorType
             let replicator: Replicator = Replicator(config: replicatorConfig)

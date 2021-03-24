@@ -52,6 +52,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         String tlsAuthType = args.get("tls_auth_type");
         Boolean serverVerificationMode = args.get("server_verification_mode");
         Boolean tlsAuthenticator = args.get("tls_authenticator");
+        String heartbeat = args.get("heartbeat");
         ReplicatorConfiguration config;
         Replicator replicator;
         URI uri;
@@ -92,6 +93,9 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         }
         if (documentIds != null) {
             config.setDocumentIDs(documentIds);
+        }
+        if (heartbeat != null && !heartbeat.trim().isEmpty()){
+            config.setHeartbeat(Long.parseLong(heartbeat));
         }
         if (push_filter) {
             switch (filter_callback_func) {

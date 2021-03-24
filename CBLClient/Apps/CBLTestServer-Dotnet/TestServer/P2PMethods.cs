@@ -306,7 +306,16 @@ namespace Couchbase.Lite.Testing
                     config.ConflictResolver = ConflictResolver.Default;
                     break;
             }
-       
+
+            if (postBody.ContainsKey("heartbeat"))
+            {
+                String heartbeat = postBody["heartbeat"].ToString();
+                if (String.IsNullOrEmpty(heartbeat.Trim()))
+                {
+                    config.Heartbeat = new System.TimeSpan(long.Parse(heartbeat));
+                }
+            }
+
             Replicator replicator = new Replicator(config);
 
             response.WriteBody(MemoryMap.Store(replicator));
