@@ -16,7 +16,7 @@ namespace memory_map {
 
 template<typename T>
 void with(nlohmann::json& postBody, const std::string& key, std::function<void(T)> action) {
-    const auto handle = postBody[key].get<string>();
+    const auto handle = postBody[key].get<std::string>();
     auto obj = static_cast<T>(memory_map::get(handle));
     action(obj);
 }

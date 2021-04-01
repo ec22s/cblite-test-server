@@ -9,6 +9,12 @@
 #include <WinSock2.h> // Needed for its define for the next header
 #include <iphlpapi.h>
 #pragma comment( lib, "Iphlpapi.lib" )
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <ifaddrs.h>
+#include <net/if.h>
+#include <netdb.h>
 #endif
 
 using namespace std;
@@ -50,15 +56,43 @@ static void get_ip_addr() {
             DWORD size = 255;
             WSAAddressToStringA(addrs[0].FirstUnicastAddress->Address.lpSockaddr, addrs[0].FirstUnicastAddress->Address.iSockaddrLength, 
                 nullptr, address, &size);
-            LocalIPAddr = string(address, size - 1);
-            return;
+            LocalIPAddr = address;
+            break;
         }
 
         addrs = addrs->Next;
     }
+
+    free(addrs);
 }
 #else
+static void get_ip_addr() {
+    ifaddrs* ifaddr, *ifa;
+    char host[NI_MAXHOST];
+    if(getifaddrs(&ifaddr) != 0) {
+        throw domain_error("Unable to get network interfaces");
+    }
 
+    for(ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
+        if(ifa->ifa_addr->sa_family != AF_INET) {
+            continue;
+        }
+
+        if(!(ifa->ifa_flags & IFF_UP) || (ifa->ifa_flags & IFF_LOOPBACK)) {
+            continue;
+        }
+
+        if(getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST,
+            nullptr, 0, NI_NUMERICHOST) != 0) {
+            throw domain_error("Unable to get inteface info");
+        }
+
+        LocalIPAddr = host;
+        break;
+    }
+
+    freeifaddrs(ifaddr);
+}
 #endif
 
 namespace memory_map {
