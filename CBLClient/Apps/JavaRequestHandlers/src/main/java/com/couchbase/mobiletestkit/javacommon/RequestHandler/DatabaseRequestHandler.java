@@ -98,7 +98,7 @@ public class DatabaseRequestHandler {
 
     public List<String> getIndexes(Args args) throws CouchbaseLiteException {
         Database database = args.get("database");
-        return database.getIndexNames();
+        return database.getIndexes();
     }
 
     public Map<String, Map<String, Object>> getDocuments(Args args) {
