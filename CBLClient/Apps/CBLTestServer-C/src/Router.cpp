@@ -1,6 +1,7 @@
 #include "Router.h"
 #include "MemoryMap.h"
 #include "ArrayMethods.h"
+#include "DictionaryMethods.h"
 #include "ValueSerializer.h"
 #include <functional>
 #include <utility>
@@ -34,6 +35,35 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "array_getString", array_methods::array_getString },
     { "release", releaseObject },
     { "flushMemory", flushMemory },
+    { "dictionary_contains", dictionary_methods::dictionary_contains },
+    { "dictionary_count", dictionary_methods::dictionary_count },
+    { "dictionary_create", dictionary_methods::dictionary_create },
+    { "dictionary_getArray", dictionary_methods::dictionary_getArray },
+    { "dictionary_getBlob", dictionary_methods::dictionary_getBlob },
+    { "dictionary_getBoolean", dictionary_methods::dictionary_getBoolean },
+    { "dictionary_getDate", dictionary_methods::dictionary_getDate },
+    { "dictionary_getDictionary", dictionary_methods::dictionary_getDictionary },
+    { "dictionary_getDouble", dictionary_methods::dictionary_getDouble },
+    { "dictionary_getFloat", dictionary_methods::dictionary_getFloat },
+    { "dictionary_getInt", dictionary_methods::dictionary_getInt },
+    { "dictionary_getKeys", dictionary_methods::dictionary_getKeys },
+    { "dictionary_getLong", dictionary_methods::dictionary_getLong },
+    { "dictionary_getString", dictionary_methods::dictionary_getString },
+    { "dictionary_remove", dictionary_methods::dictionary_remove },
+    { "dictionary_setArray", dictionary_methods::dictionary_setArray },
+    { "dictionary_setBlob", dictionary_methods::dictionary_setBlob },
+    { "dictionary_setBoolean", dictionary_methods::dictionary_setBoolean },
+    { "dictionary_setDate", dictionary_methods::dictionary_setDate },
+    { "dictionary_setDictionary", dictionary_methods::dictionary_setDictionary },
+    { "dictionary_setDouble", dictionary_methods::dictionary_setDouble },
+    { "dictionary_setFloat", dictionary_methods::dictionary_setFloat },
+    { "dictionary_setInt", dictionary_methods::dictionary_setInt },
+    { "dictionary_setLong", dictionary_methods::dictionary_setLong },
+    { "dictionary_getValue", dictionary_methods::dictionary_getValue },
+    { "dictionary_setString", dictionary_methods::dictionary_setString },
+    { "dictionary_setValue", dictionary_methods::dictionary_setValue },
+    { "dictionary_toMap", dictionary_methods::dictionary_toMap },
+    { "dictionary_toMutableDictionary", dictionary_methods::dictionary_toMutableDictionary },
 };
 
 void router::internal::handle(string url, mg_connection* connection) {

@@ -30,8 +30,12 @@ add_executable(
     src/Response.cpp
     src/ValueSerializer.cpp
     src/MemoryMap.cpp
+    src/FleeceHelpers.cpp
     src/main.cpp
     src/ArrayMethods.cpp
+    src/BasicAuthenticationMethods.cpp
+    src/DatabaseMethods.cpp
+    src/DictionaryMethods.cpp
 )
 
 target_link_libraries(
@@ -49,6 +53,7 @@ target_include_directories(
 target_compile_definitions(
     testserver PRIVATE
     -DJSON_USE_IMPLICIT_CONVERSIONS=0
+    -DHAS_UNCAUGHT_EXCEPTIONS=1
 )
 
 if(MSVC)

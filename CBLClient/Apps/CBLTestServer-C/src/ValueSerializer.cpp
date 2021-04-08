@@ -58,7 +58,6 @@ namespace value_serializer {
             case value_t::boolean:
                 return serialize(j.get<bool>());
             case value_t::number_integer:
-            case value_t::number_unsigned:
                 {
                     const auto val = j.get<int64_t>();
                     if(val >= numeric_limits<int32_t>::max() || val <= numeric_limits<int32_t>::min()) {
@@ -66,6 +65,15 @@ namespace value_serializer {
                     }
 
                     return serialize(static_cast<int32_t>(val));
+                }
+            case value_t::number_unsigned:
+                {
+                    const auto val = j.get<uint64_t>();
+                    if(val <= numeric_limits<uint32_t>::min()) {
+                        return serialize(val);
+                    }
+
+                    return serialize(static_cast<uint32_t>(val));
                 }
             case value_t::number_float:
                 return serialize(j.get<double>());
@@ -99,6 +107,10 @@ namespace value_serializer {
     }
 
     string serialize(const FLValue val) {
+        if(!val) {
+            return serialize(nullptr);
+        }
+
         switch(FLValue_GetType(val)) {
             case kFLBoolean:
                 return serialize(FLValue_AsBool(val));
@@ -138,7 +150,7 @@ namespace value_serializer {
                 FLDictIterator i;
                 FLDictIterator_Begin(FLValue_AsDict(val), &i);
                 const int count = static_cast<int>(FLDictIterator_GetCount(&i));
-                for(int idx = 0; idx < count; idx++) {
+                for(int idx = 0; idx < count; FLDictIterator_Next(&i), idx++) {
                     const FLString keyFLStr = FLDictIterator_GetKeyString(&i);
                     string keyStr(static_cast<const char *>(keyFLStr.buf), keyFLStr.size);
                     stringMap[keyStr] = serialize(FLDictIterator_GetValue(&i));
@@ -218,5 +230,4 @@ namespace value_serializer {
 
         return newJson;
     }
-
 }

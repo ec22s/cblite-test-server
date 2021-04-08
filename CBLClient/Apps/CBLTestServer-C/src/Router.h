@@ -14,7 +14,7 @@ namespace router {
 }
 
 template<typename T>
-void write_serialized_body(mg_connection* conn, T object, bool success) {
+void write_serialized_body(mg_connection* conn, T object, bool success = true) {
     const std::string encoded = value_serializer::serialize(object);
     if(success) {
         mg_send_http_ok(conn, "application/json", encoded.size());
@@ -22,4 +22,9 @@ void write_serialized_body(mg_connection* conn, T object, bool success) {
     } else {
         mg_send_http_error(conn, 400, encoded.c_str());
     }
+}
+
+#define TRY(logic, err) if(!(logic)) { \
+    std::string errMsg = from_slice_result(CBLError_Message(&err)); \
+    throw std::domain_error(errMsg); \
 }

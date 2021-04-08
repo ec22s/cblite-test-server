@@ -36,7 +36,7 @@ static mutex Mutex;
 #ifdef _MSC_VER
 static void get_ip_addr() {
     ULONG bufferSize = 15;
-    PIP_ADAPTER_ADDRESSES addrs = nullptr;
+    PIP_ADAPTER_ADDRESSES addrs = nullptr ,current = nullptr;
     DWORD result;
     int attempts = 3;
     do {
@@ -50,17 +50,18 @@ static void get_ip_addr() {
         throw domain_error("Unable to retrieve IP address");
     }
 
-    while(addrs) {
-        if(addrs->OperStatus == IfOperStatusUp && addrs->FirstGatewayAddress) {
+    current = addrs;
+    while(current) {
+        if(current->OperStatus == IfOperStatusUp && current->FirstGatewayAddress) {
             char address[255];
             DWORD size = 255;
-            WSAAddressToStringA(addrs[0].FirstUnicastAddress->Address.lpSockaddr, addrs[0].FirstUnicastAddress->Address.iSockaddrLength, 
+            WSAAddressToStringA(current[0].FirstUnicastAddress->Address.lpSockaddr, current[0].FirstUnicastAddress->Address.iSockaddrLength, 
                 nullptr, address, &size);
             LocalIPAddr = address;
             break;
         }
 
-        addrs = addrs->Next;
+        current = current->Next;
     }
 
     free(addrs);
