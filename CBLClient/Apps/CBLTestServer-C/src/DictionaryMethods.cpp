@@ -14,47 +14,13 @@ static void FLMutableDict_EntryDelete(void* ptr) {
     FLMutableDict_Release(static_cast<FLMutableDict>(ptr));
 }
 
-static FLValue FLMutableDict_FindValue(FLMutableDict dict, const string& key, FLValueType type) {
-    if(FLDict_Count(dict) == 0) {
-        return nullptr;
-    }
-
-    FLDictIterator i;
-    FLDictIterator_Begin(dict, &i);
-    do {
-        const auto flKey = FLDictIterator_GetKeyString(&i);
-        const string foundKey(static_cast<const char*>(flKey.buf), flKey.size);
-        if(foundKey == key) {
-            const FLValue val = FLDictIterator_GetValue(&i);
-            return (FLValue_GetType(val) == type || type == kFLUndefined) ? val : nullptr;
-        }
-    } while(FLDictIterator_Next(&i));
-
-    return nullptr;
-}
-
 namespace dictionary_methods {
     void dictionary_contains(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         with<FLMutableDict>(body, "dictionary", [conn, &key](FLMutableDict d)
         {
-            if(FLDict_Count(d) == 0) {
-                write_serialized_body(conn, false);
-                return;
-            }
-
-            FLDictIterator i;
-            FLDictIterator_Begin(d, &i);
-            do {
-                const auto flKey = FLDictIterator_GetKeyString(&i);
-                const string foundKey(static_cast<const char*>(flKey.buf), flKey.size);
-                if(foundKey == key) {
-                    write_serialized_body(conn, true);
-                    return;
-                }
-            } while(FLDictIterator_Next(&i));
-
-            write_serialized_body(conn, false);
+            bool exists = FLDict_Get(d, { key.data(), key.size() }) != nullptr;
+            write_serialized_body(conn, exists);
         });
     }
 
@@ -245,18 +211,21 @@ namespace dictionary_methods {
 
     void dictionary_remove(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
-        with<FLMutableDict>(body, "dictionary", [conn, &key](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
             FLMutableDict_Remove(d, flKey);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setArray(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];
-        with<FLMutableDict>(body, "dictionary", [conn, &key, &val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
         {
             FLString flKey { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
@@ -265,32 +234,37 @@ namespace dictionary_methods {
             writeFleece(subArr, val);
             FLSlot_SetMutableArray(slot, subArr);
             FLMutableArray_Release(subArr);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setBlob(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         auto* val = static_cast<CBLBlob *>(memory_map::get(body["value"].get<string>()));
-        with<FLMutableDict>(body, "dictionary", [conn, &key, val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             FLString flKey { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
             FLSlot_SetBlob(slot, val);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setBoolean(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<bool>();
-        with<FLMutableDict>(body, "dictionary", [conn, &key, val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
             FLSlot_SetBool(slot, val);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setDate(json& body, mg_connection* conn) {
@@ -300,7 +274,8 @@ namespace dictionary_methods {
     void dictionary_setDictionary(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];
-        with<FLMutableDict>(body, "dictionary", [conn, &key, &val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
         {
             FLString flKey { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
@@ -312,78 +287,91 @@ namespace dictionary_methods {
 
             FLSlot_SetMutableDict(slot, subDict);
             FLMutableDict_Release(subDict);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setDouble(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<double>();
-        with<FLMutableDict>(body, "dictionary", [conn, &key, val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
             FLSlot_SetDouble(slot, val);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setFloat(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<float>();
-        with<FLMutableDict>(body, "dictionary", [conn, &key, val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
             FLSlot_SetFloat(slot, val);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setInt(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<int>();
-        with<FLMutableDict>(body, "dictionary", [conn, &key, val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
             FLSlot_SetInt(slot, val);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setLong(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<int64_t>();
-        with<FLMutableDict>(body, "dictionary", [conn, &key, val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
             FLSlot_SetInt(slot, val);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setString(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<string>();
-        with<FLMutableDict>(body, "dictionary", [conn, &key, &val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
             FLSlot slot = FLMutableDict_Set(d, flKey);
             FLSlot_SetString(slot, {val.data(), val.size() });
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setValue(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];
-        with<FLMutableDict>(body, "dictionary", [conn, &key, val](FLMutableDict d)
+        const auto handle = body["document"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             writeFleece(d, key, val);
-            write_serialized_body(conn, reinterpret_cast<FLValue>(d));
         });
+
+        write_serialized_body(conn, handle);
     }
     void dictionary_toMap(json& body, mg_connection* conn) {
         with<FLMutableDict>(body, "dictionary", [conn](FLMutableDict d)

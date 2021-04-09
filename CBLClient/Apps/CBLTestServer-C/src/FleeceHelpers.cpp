@@ -194,3 +194,29 @@ FLSlice FormatISO8601Date(char buf[], int64_t time, bool asUTC) {
     memcpy(buf, timestream.str().c_str(), timestream.str().size());
     return {buf, timestream.str().length()};
 }
+
+FLValue FLMutableDict_FindValue(FLMutableDict dict, const string& key, FLValueType type) {
+    if(FLDict_Count(dict) == 0) {
+        return nullptr;
+    }
+
+    const auto* flVal = FLDict_Get(dict, { key.data(), key.size() });
+    if(!flVal) {
+        return nullptr;
+    }
+
+    return (type == kFLUndefined || FLValue_GetType(flVal) == type) ? flVal : nullptr;
+}
+
+FLValue FLDict_FindValue(FLDict dict, const string& key, FLValueType type) {
+    if(FLDict_Count(dict) == 0) {
+        return nullptr;
+    }
+
+    const auto* flVal = FLDict_Get(dict, { key.data(), key.size() });
+    if(!flVal) {
+        return nullptr;
+    }
+
+    return (type == kFLUndefined || FLValue_GetType(flVal) == type) ? flVal : nullptr;
+}

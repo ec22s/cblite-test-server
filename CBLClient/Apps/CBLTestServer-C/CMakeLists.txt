@@ -36,6 +36,7 @@ add_executable(
     src/BasicAuthenticationMethods.cpp
     src/DatabaseMethods.cpp
     src/DictionaryMethods.cpp
+    src/DocumentMethods.cpp
 )
 
 target_link_libraries(
