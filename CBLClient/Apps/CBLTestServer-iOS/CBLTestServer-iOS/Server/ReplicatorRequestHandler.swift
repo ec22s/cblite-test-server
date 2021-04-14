@@ -112,6 +112,9 @@ public class ReplicatorRequestHandler {
             let config: ReplicatorConfiguration? = args.get(name: "config")
             return config?.continuous
 
+        case "replicator_resetCheckpoint":
+            let replication_obj: Replicator = args.get(name: "replicator")!
+            return replication_obj.start(reset: true)
 
         default:
             throw RequestHandlerError.MethodNotFound(method)
