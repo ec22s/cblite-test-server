@@ -265,7 +265,7 @@ namespace Couchbase.Lite.Testing
         {
             With<Replicator>(postBody, "replicator", r =>
             {
-                r.ResetCheckpoint();
+                r.Start(true);
                 response.WriteEmptyBody();
             });
         }
