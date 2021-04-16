@@ -127,7 +127,7 @@ public class ReplicatorConfigurationRequestHandler {
             config.setHeartbeat(Long.parseLong(heartbeat));
         }
         if (maxRetries != null && !maxRetries.trim().isEmpty()){
-            config.setMaxRetries(Long.parseLong(maxRetries));
+            config.setMaxRetries(Integer.parseInt(maxRetries));
         }
         if (maxRetryWaitTime != null && !maxRetryWaitTime.trim().isEmpty()){
             config.setMaxRetryWaitTime(Long.parseLong(maxRetryWaitTime));
