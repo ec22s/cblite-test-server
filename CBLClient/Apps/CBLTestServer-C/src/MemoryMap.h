@@ -11,6 +11,7 @@ namespace memory_map {
     void clear();
     void* get(const std::string &id);
     std::string store(void* item, cleanup_func cleanup);
+    std::string store(const void* item, cleanup_func cleanup);
     void release(const std::string &id);
 }
 

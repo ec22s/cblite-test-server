@@ -49,7 +49,7 @@ static void addElement(FLSlot slot, const json& element) {
                 writeFleece(nextArr, subelement);
             }
 
-            FLSlot_SetMutableArray(slot, nextArr);
+            FLSlot_SetArray(slot, nextArr);
             FLMutableArray_Release(nextArr);
             break;
         }
@@ -60,7 +60,7 @@ static void addElement(FLSlot slot, const json& element) {
                 writeFleece(nextDict, key, value);
             }
 
-            FLSlot_SetMutableDict(slot, nextDict);
+            FLSlot_SetDict(slot, nextDict);
             FLMutableDict_Release(nextDict);
             break;
         }

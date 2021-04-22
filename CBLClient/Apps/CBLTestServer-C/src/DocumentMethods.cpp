@@ -2,13 +2,13 @@
 #include "Router.h"
 #include "MemoryMap.h"
 #include "FleeceHelpers.h"
+#include "Defines.h"
 
-#include <cbl/CBLDocument.h>
-#include <cbl/CBLBlob.h>
+#include <cbl/CouchbaseLite.h>
 using namespace std;
 using namespace nlohmann;
 
-static void CBLDocument_EntryDelete(void* ptr) {
+void CBLDocument_EntryDelete(void* ptr) {
     CBLDocument_Release(static_cast<CBLDocument *>(ptr));
 }
 
@@ -23,13 +23,13 @@ namespace document_methods {
         }
 
         if(body.contains("dictionary")) {
-            string json = body["dictionary"].dump();
-            CBLError err;
-            if(!CBLDocument_SetJSON(doc, { json.data(), json.size() }, &err)) {
-                string errMsg = from_slice_result(CBLError_Message(&err));
-                mg_send_http_error(conn, 500, errMsg.c_str());
-                return;
+            FLMutableDict newContent = FLMutableDict_New();
+            for(auto& [ key, value ] : body["dictionary"].items()) {
+                writeFleece(newContent, key, value);
             }
+
+            CBLDocument_SetProperties(doc, newContent);
+            FLMutableDict_Release(newContent);
         }
 
         write_serialized_body(conn, memory_map::store(doc, CBLDocument_EntryDelete));
@@ -38,17 +38,13 @@ namespace document_methods {
     void document_delete(json& body, mg_connection* conn) {
         with<CBLDatabase *>(body, "database", [conn, &body](CBLDatabase *db)
         {
-            with<const CBLDocument*>(body, "document", [conn, db](const CBLDocument* doc)
+            with<const CBLDocument*>(body, "document", [db](const CBLDocument* doc)
             {
                 CBLError err;
-                if(!CBLDatabase_DeleteDocument(db, doc, &err)) {
-                    string errMsg = from_slice_result(CBLError_Message(&err));
-                    mg_send_http_error(conn, 500, errMsg.c_str());
-                    return;
-                }
+                TRY(CBLDatabase_DeleteDocument(db, doc, &err), err)
+            });            
 
-                mg_send_http_ok(conn, "text/plain", 0);
-            });
+            mg_send_http_ok(conn, "text/plain", 0);
         });
     }
 
@@ -264,7 +260,7 @@ namespace document_methods {
 
             FLMutableArray subArr = FLMutableArray_New();
             writeFleece(subArr, value);
-            FLSlot_SetMutableArray(slot, subArr);
+            FLSlot_SetArray(slot, subArr);
             FLMutableArray_Release(subArr);
         });
 
@@ -309,8 +305,8 @@ namespace document_methods {
         with<CBLDocument*>(body, "document", [&value](CBLDocument* doc)
         {
             FLMutableDict properties = FLMutableDict_New();
-            for(const auto& [ key, value] : value.items()) {
-                writeFleece(properties, key, value);
+            for(const auto& [ key, val] : value.items()) {
+                writeFleece(properties, key, val);
             }
 
             CBLDocument_SetProperties(doc, properties);
@@ -344,11 +340,11 @@ namespace document_methods {
             FLSlot slot = FLMutableDict_Set(properties, flKey);
 
             FLMutableDict subDict = FLMutableDict_New();
-            for(const auto& [ key, value ] : value.items()) {
-                writeFleece(subDict, key, value);
+            for(const auto& [ key, val ] : value.items()) {
+                writeFleece(subDict, key, val);
             }
 
-            FLSlot_SetMutableDict(slot, subDict);
+            FLSlot_SetDict(slot, subDict);
             FLMutableDict_Release(subDict);
         });
 

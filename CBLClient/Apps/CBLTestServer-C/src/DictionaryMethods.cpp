@@ -3,9 +3,10 @@
 #include "Router.h"
 #include "FleeceHelpers.h"
 #include "date.h"
+#include "Defines.h"
 
 #include <fleece/Fleece.h>
-#include <cbl/CBLBlob.h>
+#include <cbl/CouchbaseLite.h>
 
 using namespace nlohmann;
 using namespace std;
@@ -19,7 +20,7 @@ namespace dictionary_methods {
         const auto key = body["key"].get<string>();
         with<FLMutableDict>(body, "dictionary", [conn, &key](FLMutableDict d)
         {
-            bool exists = FLDict_Get(d, { key.data(), key.size() }) != nullptr;
+            bool exists = FLDict_Get(d, flstr(key)) != nullptr;
             write_serialized_body(conn, exists);
         });
     }
@@ -170,8 +171,7 @@ namespace dictionary_methods {
             FLDictIterator_Begin(d, &i);
             do {
                 const auto flKey = FLDictIterator_GetKeyString(&i);
-                const string key(static_cast<const char*>(flKey.buf), flKey.size);
-                keys.push_back(key);
+                keys.push_back(to_string(flKey));
             } while(FLDictIterator_Next(&i));
 
             write_serialized_body(conn, keys);
@@ -232,7 +232,7 @@ namespace dictionary_methods {
 
             FLMutableArray subArr = FLMutableArray_New();
             writeFleece(subArr, val);
-            FLSlot_SetMutableArray(slot, subArr);
+            FLSlot_SetArray(slot, subArr);
             FLMutableArray_Release(subArr);
         });
 
@@ -285,7 +285,7 @@ namespace dictionary_methods {
                 writeFleece(subDict, key, value);
             }
 
-            FLSlot_SetMutableDict(slot, subDict);
+            FLSlot_SetDict(slot, subDict);
             FLMutableDict_Release(subDict);
         });
 
@@ -312,8 +312,7 @@ namespace dictionary_methods {
         const auto handle = body["document"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
-            const FLString flKey = { key.data(), key.size() };
-            FLSlot slot = FLMutableDict_Set(d, flKey);
+            FLSlot slot = FLMutableDict_Set(d, flstr(key));
             FLSlot_SetFloat(slot, val);
         });
 
@@ -326,8 +325,7 @@ namespace dictionary_methods {
         const auto handle = body["document"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
-            const FLString flKey = { key.data(), key.size() };
-            FLSlot slot = FLMutableDict_Set(d, flKey);
+            FLSlot slot = FLMutableDict_Set(d, flstr(key));
             FLSlot_SetInt(slot, val);
         });
 
@@ -340,8 +338,7 @@ namespace dictionary_methods {
         const auto handle = body["document"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
-            const FLString flKey = { key.data(), key.size() };
-            FLSlot slot = FLMutableDict_Set(d, flKey);
+            FLSlot slot = FLMutableDict_Set(d, flstr(key));
             FLSlot_SetInt(slot, val);
         });
 
@@ -354,9 +351,8 @@ namespace dictionary_methods {
         const auto handle = body["document"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
         {
-            const FLString flKey = { key.data(), key.size() };
-            FLSlot slot = FLMutableDict_Set(d, flKey);
-            FLSlot_SetString(slot, {val.data(), val.size() });
+            FLSlot slot = FLMutableDict_Set(d, flstr(key));
+            FLSlot_SetString(slot, flstr(val));
         });
 
         write_serialized_body(conn, handle);

@@ -23,8 +23,3 @@ void write_serialized_body(mg_connection* conn, T object, bool success = true) {
         mg_send_http_error(conn, 400, encoded.c_str());
     }
 }
-
-#define TRY(logic, err) if(!(logic)) { \
-    std::string errMsg = from_slice_result(CBLError_Message(&err)); \
-    throw std::domain_error(errMsg); \
-}

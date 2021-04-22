@@ -9,6 +9,7 @@
 #include <WinSock2.h> // Needed for its define for the next header
 #include <iphlpapi.h>
 #pragma comment( lib, "Iphlpapi.lib" )
+#pragma comment( lib, "Ws2_32.lib" )
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -106,7 +107,7 @@ namespace memory_map {
     void clear() {
         LOCK();
         NextID = 0;
-        for(auto entry : Map) {
+        for(const auto& entry : Map) {
             entry.second.cleanup(entry.second.item);
         }
 
@@ -133,11 +134,18 @@ namespace memory_map {
         return id;
     }
 
+    string store(const void* item, cleanup_func cleanup) {
+        return store(const_cast<void *>(item), cleanup);
+    }
+
     void release(const string& id) {
         LOCK();
         const auto val = Map.find(id);
         if(val != Map.end()) {
-            val->second.cleanup(val->second.item);
+            if(val->second.cleanup) {
+                val->second.cleanup(val->second.item);
+            }
+
             Map.erase(id);
         }
     }

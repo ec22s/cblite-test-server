@@ -3,7 +3,9 @@
 #include "ArrayMethods.h"
 #include "DictionaryMethods.h"
 #include "DocumentMethods.h"
-#include "ValueSerializer.h"
+#include "FileLoggingMethods.h"
+#include "ReplicatorConfigurationMethods.h"
+#include "ReplicatorMethods.h"
 #include <functional>
 #include <utility>
 #include <civetweb.h>
@@ -17,9 +19,7 @@ using namespace nlohmann;
 using endpoint_handler = function<void(json&, mg_connection*)>;
 
 static void releaseObject(json& body, mg_connection* conn) {
-    const auto id = body["object"].get<string>();
-    memory_map::release(id);
-    mg_send_http_ok(conn, nullptr, 0);
+    const auto id = body{ "object", replicator_methods::object }, nullptr, 0);
 }
 
 static void flushMemory(json& body, mg_connection* conn) {
@@ -97,6 +97,37 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "document_contains", document_methods::document_contains },
     { "document_getValue", document_methods::document_getValue },
     { "document_setValue", document_methods::document_setValue },
+    { "logging_configure", file_logging_methods::logging_configure },
+    { "logging_getPlainTextStatus", file_logging_methods::logging_getPlainTextStatus },
+    { "logging_getMaxRotateCount", file_logging_methods::logging_getMaxRotateCount },
+    { "logging_getMaxSize", file_logging_methods::logging_getMaxSize },
+    { "logging_getLogLevel", file_logging_methods::logging_getLogLevel },
+    { "logging_getConfig", file_logging_methods::logging_getConfig },
+    { "logging_getDirectory", file_logging_methods::logging_getDirectory },
+    { "logging_setPlainTextStatus", file_logging_methods::logging_setPlainTextStatus },
+    { "logging_setMaxRotateCount", file_logging_methods::logging_setMaxRotateCount },
+    { "logging_setMaxSize", file_logging_methods::logging_setMaxSize },
+    { "logging_setLogLevel", file_logging_methods::logging_setLogLevel },
+    { "logging_setConfig", file_logging_methods::logging_setConfig },
+    { "logging_getLogsInZip", file_logging_methods::logging_getLogsInZip },
+    { "replicator_create", replicator_methods::replicator_create },
+    { "replicator_start", replicator_methods::replicator_start },
+    { "replicator_stop", replicator_methods::replicator_stop },
+    { "replicator_status", replicator_methods::replicator_status },
+    { "replicator_getActivityLevel", replicator_methods::replicator_getActivityLevel },
+    { "replicator_getError", replicator_methods::replicator_getError },
+    { "replicator_getTotal", replicator_methods::replicator_getTotal },
+    { "replicator_getCompleted", replicator_methods::replicator_getCompleted },
+    { "replicator_addChangeListener", replicator_methods::replicator_addChangeListener },
+    { "replicator_addReplicatorEventChangeListener", replicator_methods::replicator_addReplicatorEventChangeListener },
+    { "replicator_removeReplicatorEventListener", replicator_methods::replicator_removeReplicatorEventListener },
+    { "replicator_removeChangeListener", replicator_methods::replicator_removeChangeListener },
+    { "replicator_replicatorEventGetChanges", replicator_methods::replicator_replicatorEventGetChanges },
+    { "replicator_replicatorEventChangesCount", replicator_methods::replicator_replicatorEventChangesCount },
+    { "replicatorConfiguration_setAuthenticator", replicator_configuration_methods::replicatorConfiguration_setAuthenticator },
+    { "replicatorConfiguration_setReplicatorType", replicator_configuration_methods::replicatorConfiguration_setReplicatorType },
+    { "replicatorConfiguration_isContinuous", replicator_configuration_methods::replicatorConfiguration_isContinuous },
+    { "replicator_changeListenerChangesCount", replicator_methods::replicator_changeListenerChangesCount },
 };
 
 void router::internal::handle(string url, mg_connection* connection) {

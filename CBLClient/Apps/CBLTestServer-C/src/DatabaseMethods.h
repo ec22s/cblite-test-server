@@ -19,14 +19,11 @@ namespace database_methods {
     void database_saveWithConcurrency(nlohmann::json& body, mg_connection* conn);
     void database_deleteWithConcurrency(nlohmann::json& body, mg_connection* conn);
     void database_getCount(nlohmann::json& body, mg_connection* conn);
-    void database_addDocuments(nlohmann::json& body, mg_connection* conn);
     void database_getDocIds(nlohmann::json& body, mg_connection* conn);
     void database_getDocuments(nlohmann::json& body, mg_connection* conn);
     void database_updateDocument(nlohmann::json& body, mg_connection* conn);
     void database_updateDocuments(nlohmann::json& body, mg_connection* conn);
     void database_exists(nlohmann::json& body, mg_connection* conn);
-    void database_create(nlohmann::json& body, mg_connection* conn);
     void database_copy(nlohmann::json& body, mg_connection* conn);
-    void database_create(nlohmann::json& body, mg_connection* conn);
     void database_getPreBuiltDb(nlohmann::json& body, mg_connection* conn);
 }

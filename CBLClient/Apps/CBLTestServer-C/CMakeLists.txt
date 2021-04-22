@@ -37,6 +37,9 @@ add_executable(
     src/DatabaseMethods.cpp
     src/DictionaryMethods.cpp
     src/DocumentMethods.cpp
+    src/FileLoggingMethods.cpp
+    src/ReplicatorMethods.cpp
+    src/ReplicatorConfigurationMethods.cpp
 )
 
 target_link_libraries(
@@ -44,11 +47,13 @@ target_link_libraries(
     civetweb-c-library
     nlohmann_json::nlohmann_json
     CouchbaseLiteC
+    zip
 )
 
 target_include_directories(
     testserver PRIVATE
     ${civetweb_SOURCE_DIR}/include
+
 )
 
 target_compile_definitions(
@@ -62,5 +67,15 @@ if(MSVC)
         testserver PRIVATE
         -D_WIN32_WINNT=0x0A00
         -DWIN32_LEAN_AND_MEAN
+    )
+
+    target_link_libraries(
+        testserver PRIVATE
+        zlibstatic
+    )
+    
+    target_include_directories(
+        testserver PRIVATE
+        src/MSVC
     )
 endif()
