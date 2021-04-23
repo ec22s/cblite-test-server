@@ -1,6 +1,8 @@
 #include "Router.h"
 #include "MemoryMap.h"
 #include "ArrayMethods.h"
+#include "BasicAuthenticationMethods.h"
+#include "DatabaseMethods.h"
 #include "DictionaryMethods.h"
 #include "DocumentMethods.h"
 #include "FileLoggingMethods.h"
@@ -19,7 +21,7 @@ using namespace nlohmann;
 using endpoint_handler = function<void(json&, mg_connection*)>;
 
 static void releaseObject(json& body, mg_connection* conn) {
-    const auto id = body{ "object", replicator_methods::object }, nullptr, 0);
+    const auto id = body{ "object", database_methods::object }, nullptr, 0);
 }
 
 static void flushMemory(json& body, mg_connection* conn) {
@@ -32,10 +34,32 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "array_addString", array_methods::array_addString },
     { "array_create", array_methods::array_create },
     { "array_getArray", array_methods::array_getArray },
-    { "array_getDictionary", array_methods::array_getDictionary },    
+    { "array_getDictionary", array_methods::array_getDictionary },
     { "array_getString", array_methods::array_getString },
-    { "release", releaseObject },
-    { "flushMemory", flushMemory },
+    { "array_getString", array_methods::array_setString },
+    { "basicAuthenticator_create", basic_authentication_methods::basic_authentication_create },
+    { "database_create", database_methods::database_create },
+    { "database_compact", database_methods::database_compact },
+    { "database_close", database_methods::database_close },
+    { "database_getPath", database_methods::database_getPath },
+    { "database_deleteDB", database_methods::database_deleteDB },
+    { "database_delete", database_methods::database_delete },
+    { "database_deleteBulkDocs", database_methods::database_deleteBulkDocs },
+    { "database_getName", database_methods::database_getName },
+    { "database_getDocument", database_methods::database_getDocument },
+    { "database_saveDocuments", database_methods::database_saveDocuments },
+    { "database_purge", database_methods::database_purge },
+    { "database_save", database_methods::database_save },
+    { "database_saveWithConcurrency", database_methods::database_saveWithConcurrency },
+    { "database_deleteWithConcurrency", database_methods::database_deleteWithConcurrency },
+    { "database_getCount", database_methods::database_getCount },
+    { "database_getDocIds", database_methods::database_getDocIds },
+    { "database_getDocuments", database_methods::database_getDocuments },
+    { "database_updateDocument", database_methods::database_updateDocument },
+    { "database_updateDocuments", database_methods::database_updateDocuments },
+    { "database_exists", database_methods::database_exists },
+    { "database_copy", database_methods::database_copy }, 
+    { "database_getPreBuiltDb", database_methods::database_getPreBuiltDb },
     { "dictionary_contains", dictionary_methods::dictionary_contains },
     { "dictionary_count", dictionary_methods::dictionary_count },
     { "dictionary_create", dictionary_methods::dictionary_create },
@@ -128,6 +152,9 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "replicatorConfiguration_setReplicatorType", replicator_configuration_methods::replicatorConfiguration_setReplicatorType },
     { "replicatorConfiguration_isContinuous", replicator_configuration_methods::replicatorConfiguration_isContinuous },
     { "replicator_changeListenerChangesCount", replicator_methods::replicator_changeListenerChangesCount },
+    { "configure_replication", replicator_configuration_methods::replicatorConfiguration_create },
+    { "release", releaseObject },
+    { "flushMemory", flushMemory },
 };
 
 void router::internal::handle(string url, mg_connection* connection) {

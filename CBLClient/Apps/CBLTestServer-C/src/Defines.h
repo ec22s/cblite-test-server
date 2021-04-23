@@ -4,6 +4,10 @@
 #include <fleece/Fleece.h>
 
 inline FLString flstr(const std::string& str) {
+    if(str.empty()) {
+        return kFLSliceNull;
+    }
+
     return {str.data(), str.size()};
 }
 

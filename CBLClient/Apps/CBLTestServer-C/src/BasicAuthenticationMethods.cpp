@@ -19,5 +19,4 @@ namespace basic_authentication_methods {
         const auto id = memory_map::store(authentication, CBLAuthenticator_EntryDelete);
         write_serialized_body(conn, id);
     }
-
 }

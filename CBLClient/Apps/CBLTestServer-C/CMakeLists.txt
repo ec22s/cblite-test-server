@@ -34,13 +34,27 @@ add_executable(
     src/main.cpp
     src/ArrayMethods.cpp
     src/BasicAuthenticationMethods.cpp
+    src/BlobMethods.cpp
     src/DatabaseMethods.cpp
+    src/DatabaseConfigurationMethods.cpp
     src/DictionaryMethods.cpp
     src/DocumentMethods.cpp
     src/FileLoggingMethods.cpp
     src/ReplicatorMethods.cpp
     src/ReplicatorConfigurationMethods.cpp
+    src/SessionAuthenticationMethods.cpp
 )
+
+if(ANDROID)
+
+elseif(WINDOWS_STORE)
+
+else()
+    target_sources(
+        testserver PRIVATE
+        src/FilePathResolver+Desktop.cpp
+    )
+endif()
 
 target_link_libraries(
     testserver PRIVATE

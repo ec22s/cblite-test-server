@@ -10,4 +10,5 @@ namespace array_methods {
     void array_getArray(nlohmann::json& body, mg_connection* conn);
     void array_getDictionary(nlohmann::json& body, mg_connection* conn);
     void array_getString(nlohmann::json& body, mg_connection* conn);
+    void array_setString(nlohmann::json& body, mg_connection* conn);
 }

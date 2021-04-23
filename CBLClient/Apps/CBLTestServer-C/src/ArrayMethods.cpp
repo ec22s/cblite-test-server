@@ -2,6 +2,7 @@
 #include "MemoryMap.h"
 #include "Router.h"
 #include "FleeceHelpers.h"
+#include "Defines.h"
 
 #include <fleece/Fleece.h>
 
@@ -20,7 +21,7 @@ void array_methods::array_addDictionary(json& body, mg_connection* conn) {
     const auto* const dict = static_cast<FLDict>(memory_map::get(body["value"].get<string>()));
     with<FLMutableArray>(body, "array", [dict, conn](FLMutableArray a)
     {
-        const FLSlot slot = FLMutableArray_Append(a);
+        FLSlot slot = FLMutableArray_Append(a);
         FLSlot_SetDict(slot, dict);
         write_serialized_body(conn, reinterpret_cast<const FLValue>(a));
     });
@@ -30,9 +31,8 @@ void array_methods::array_addString(json& body, mg_connection* conn) {
     const auto val = body["value"].get<string>();
     with<FLMutableArray>(body, "array", [&val, conn](FLMutableArray a)
     {
-        const FLString flStr = {val.data(), val.size() };
-        const FLSlot slot = FLMutableArray_Append(a);
-        FLSlot_SetString(slot, flStr);
+        FLSlot slot = FLMutableArray_Append(a);
+        FLSlot_SetString(slot, flstr(val));
         write_serialized_body(conn, reinterpret_cast<const FLValue>(a));
     });
 }
@@ -90,5 +90,16 @@ void array_methods::array_getString(json& body, mg_connection* conn) {
         }
 
         write_serialized_body(conn, val);
+    });
+}
+
+void array_methods::array_setString(json& body, mg_connection* conn) {
+    const auto key = body["key"].get<uint32_t>();
+    const auto val = body["value"].get<string>();
+    with<FLMutableArray>(body, "array", [key, &val, conn](FLMutableArray a)
+    {
+        FLSlot slot = FLMutableArray_Set(a, key);
+        FLSlot_SetString(slot, flstr(val));
+        write_serialized_body(conn, reinterpret_cast<const FLValue>(a));
     });
 }
