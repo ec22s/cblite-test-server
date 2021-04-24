@@ -21,7 +21,9 @@ using namespace nlohmann;
 using endpoint_handler = function<void(json&, mg_connection*)>;
 
 static void releaseObject(json& body, mg_connection* conn) {
-    const auto id = body{ "object", database_methods::object }, nullptr, 0);
+    const auto id = body["object"].get<string>();
+    memory_map::release(id);
+    mg_send_http_ok(conn, nullptr, 0);
 }
 
 static void flushMemory(json& body, mg_connection* conn) {
@@ -161,7 +163,7 @@ void router::internal::handle(string url, mg_connection* connection) {
     url.erase(0, url.find_first_not_of('/'));
     const auto& handler = ROUTE_MAP.find(url);
     if(handler == ROUTE_MAP.end()) {
-        mg_send_http_error(connection, 404, mg_get_response_code_text(connection, 404));
+        mg_send_http_error(connection, 404, "%s", mg_get_response_code_text(connection, 404));
         return;
     }
 

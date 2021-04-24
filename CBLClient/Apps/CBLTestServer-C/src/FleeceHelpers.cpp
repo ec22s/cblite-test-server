@@ -3,12 +3,14 @@
 #include "date.h"
 
 #include <iomanip>
+#include <mutex>
 
+#ifndef WINAPI_FAMILY_PARTITION
 #ifdef _MSC_VER
 #include <winapifamily.h>
-#include <mutex>
 #else
 #define WINAPI_FAMILY_PARTITION(x) false
+#endif
 #endif
 
 using namespace std;

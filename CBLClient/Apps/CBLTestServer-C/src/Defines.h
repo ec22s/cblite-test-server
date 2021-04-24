@@ -44,7 +44,7 @@ typedef struct stat cbl_stat_t;
 #define cbl_stat stat
 #define cbl_getcwd getcwd
 
-inline errno_t cbl_fopen(FILE** fd, const char* path, const char* mode) {
+inline int cbl_fopen(FILE** fd, const char* path, const char* mode) {
     *fd = fopen(path, mode);
     if(!*fd) {
         return errno;

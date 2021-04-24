@@ -17,6 +17,7 @@
 typedef struct _stat64 cbl_stat_t;
 #define cbl_stat _stat64
 #else
+#include <sys/stat.h>
 typedef struct stat cbl_stat_t;
 #define cbl_stat stat
 #endif
@@ -231,14 +232,14 @@ namespace file_logging_methods {
         zip_error_t zErr;
         zip_source_t* zipSrc = zip_source_buffer_create(nullptr, 0, 0, &zErr);
         if(!zipSrc) {
-            mg_send_http_error(conn, 500, zErr.str);
+            mg_send_http_error(conn, 500, "%s", zErr.str);
             zip_error_fini(&zErr);
             return;
         }
 
         zip_t* za = zip_open_from_source(zipSrc, ZIP_TRUNCATE, &zErr);
         if(!za) {
-            mg_send_http_error(conn, 500, zErr.str);
+            mg_send_http_error(conn, 500, "%s", zErr.str);
             zip_error_fini(&zErr);
             return;
         }
@@ -254,7 +255,7 @@ namespace file_logging_methods {
             if(!name.empty() && !is_dir(contents, logDirectory)) {
                 string fullPath = logDirectory + DIRECTORY_SEPARATOR + name;
                 FILE* fp;
-                errno_t openResult = cbl_fopen(&fp, fullPath.c_str(), "rb");
+                int openResult = cbl_fopen(&fp, fullPath.c_str(), "rb");
                 if(openResult != 0) {
                     cerr << "Unable to open " << name << endl;
                     continue;

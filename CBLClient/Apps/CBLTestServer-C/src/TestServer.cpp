@@ -9,7 +9,7 @@ using namespace std;
 static int handle_request(mg_connection* connection, void* context) {
     const mg_request_info* request_info = mg_get_request_info(connection);
     if(strncmp("POST", request_info->request_method, 4) != 0) {
-        mg_send_http_error(connection, 405, mg_get_response_code_text(connection, 405));
+        mg_send_http_error(connection, 405, "%s", mg_get_response_code_text(connection, 405));
         return 405;
     }
 

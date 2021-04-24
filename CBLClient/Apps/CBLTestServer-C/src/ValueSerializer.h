@@ -7,11 +7,31 @@
 namespace value_serializer {
     template<typename T>
     typename std::enable_if<std::is_floating_point<T>::value, std::string>::type
-    serialize(T val);
+    serialize(T val) {
+	std::string retVal;
+        if(sizeof(T) == 8) {
+            retVal = "D";
+        } else {
+            retVal = "F";
+        }
+
+        retVal += std::to_string(val);
+        return retVal;
+    }
 
     template<typename T>
     typename std::enable_if<std::is_integral<T>::value, std::string>::type
-    serialize(T val);
+    serialize(T val) {
+	std::string retVal;
+        if(sizeof(T) == 8) {
+            retVal = "L";
+        } else {
+            retVal = "I";
+        }
+
+        retVal += std::to_string(val);
+        return retVal;
+    }
 
     std::string serialize(nullptr_t n);
     std::string serialize(bool b);

@@ -20,6 +20,6 @@ void write_serialized_body(mg_connection* conn, T object, bool success = true) {
         mg_send_http_ok(conn, "application/json", encoded.size());
         mg_write(conn, encoded.c_str(), encoded.size());
     } else {
-        mg_send_http_error(conn, 400, encoded.c_str());
+        mg_send_http_error(conn, 400, "%s", encoded.c_str());
     }
 }

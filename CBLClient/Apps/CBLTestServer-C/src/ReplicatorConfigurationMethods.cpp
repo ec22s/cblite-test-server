@@ -8,10 +8,17 @@
 #include <algorithm>
 #include <unordered_set>
 #include <thread>
+#include <cctype>
 #include <cbl/CouchbaseLite.h>
 
 using namespace nlohmann;
 using namespace std;
+
+static void tolower(string& str) {
+    transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
+    return tolower(c);
+    });
+}
 
 static bool replicator_boolean_filter_callback(void* context, CBLDocument* doc, bool isDeleted) {
     const auto* properties = CBLDocument_Properties(doc);
@@ -213,7 +220,7 @@ namespace replicator_configuration_methods {
 
             if(body.contains("replication_type")) {
                 auto replicatorType = body["replication_type"].get<string>();
-                transform(replicatorType.begin(), replicatorType.end(), replicatorType.begin(), tolower);
+                tolower(replicatorType);
                 if(replicatorType == "push") {
                     config->replicatorType = kCBLReplicatorTypePush;
                 } else if(replicatorType == "pull") {
@@ -288,7 +295,7 @@ namespace replicator_configuration_methods {
 
     void replicatorConfiguration_setReplicatorType(json& body, mg_connection* conn) {
         auto replicatorType = body["replication_type"].get<string>();
-        transform(replicatorType.begin(), replicatorType.end(), replicatorType.begin(), tolower);
+        tolower(replicatorType);
                 
         with<CBLReplicatorConfiguration *>(body, "configuration", [&replicatorType](CBLReplicatorConfiguration *repConf)
         {
