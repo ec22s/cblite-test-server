@@ -16,7 +16,7 @@ using namespace std;
 static bool replicator_boolean_filter_callback(void* context, CBLDocument* doc, bool isDeleted) {
     const auto* properties = CBLDocument_Properties(doc);
     FLValue val = FLDict_Get(properties, FLSTR("new_field_1"));
-    return FLValue_GetType(val) != kFLUndefined;
+    return val != nullptr;
 }
 
 static bool replicator_deleted_filter_callback(void* context, CBLDocument* doc, bool isDeleted) {
@@ -87,7 +87,7 @@ static const CBLDocument* merge_conflict_resolution(void *context, FLString docu
     do {
         auto key = FLDictIterator_GetKeyString(&i);
         const auto* val = FLDict_Get(localProperties, key);
-        if(FLValue_GetType(val) == kFLUndefined) {
+        if(val != nullptr) {
             FLSlot slot = FLMutableDict_Set(properties, key);
             FLSlot_SetValue(slot, FLDictIterator_GetValue(&i));
         }
