@@ -141,7 +141,7 @@ public class PeerToPeerRequestHandler {
             var replicatorType = ReplicatorType.pushAndPull
             var wsPort: String?
             let maxRetries: String? = args.get(name: "max_retries")
-            let maxRetryWaitTime: String? = args.get(name: "max_retry_wait_time")
+            let maxRetryWaitTime: String? = args.get(name: "max_timeout")
 
             if let type = replication_type {
                 if type == "push" {
