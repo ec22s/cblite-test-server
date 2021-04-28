@@ -97,7 +97,7 @@ try {
     
     $ZipPath = Resolve-Path ".\zips"
 
-    Push-Location bin\Release\netcoreapp2.1\publish
+    Push-Location bin\Release\netcoreapp3.1\publish
     try {
         7z a -r ${ZipPath}\TestServer.NetCore.zip *
     } finally {
