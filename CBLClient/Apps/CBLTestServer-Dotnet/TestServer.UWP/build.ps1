@@ -61,12 +61,12 @@ function Calculate-Version {
 
 Push-Location $PSScriptRoot
 $VSRegistryKey = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7"
-$VSInstall = (Get-ItemProperty -Path $VSRegistryKey -Name "16.0") | Select-Object -ExpandProperty "16.0"
+$VSInstall = (Get-CimInstance MSFT_VSInstance).InstallLocation[0]
 if(-Not $VSInstall) {
     throw "Unable to locate VS2019 installation"
 }
 
-$MSBuild = "$VSInstall\MSBuild\16.0\Bin\MSBuild.exe"
+$MSBuild = "$VSInstall\MSBuild\Current\Bin\MSBuild.exe"
 
 $fullVersion = Calculate-Version
 
