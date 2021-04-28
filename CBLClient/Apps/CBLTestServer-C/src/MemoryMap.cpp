@@ -16,6 +16,9 @@
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <netdb.h>
+#ifdef __ANDROID__
+#include "Android/getifaddrs.h"
+#endif
 #endif
 
 using namespace std;

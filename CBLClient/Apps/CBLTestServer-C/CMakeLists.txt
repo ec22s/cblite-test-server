@@ -21,17 +21,25 @@ add_subdirectory(shared)
 
 get_directory_property(civetweb_SOURCE_DIR DIRECTORY shared DEFINITION civetweb_SOURCE_DIR)
 
+if(ANDROID)
+    set( CMAKE_FIND_ROOT_PATH_MODE_PACKAGE NEVER )
+endif()
+
+message(STATUS ${CMAKE_LIBRARY_ARCHITECTURE})
 find_package(CouchbaseLite 3.0.0 REQUIRED)
 
-add_executable(
-    testserver
+if(ANDROID)
+    set( CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY )
+endif()
+
+set(
+    TESTSERVER_COMMON_SRC
     src/TestServer.cpp
     src/Router.cpp
     src/Response.cpp
     src/ValueSerializer.cpp
     src/MemoryMap.cpp
     src/FleeceHelpers.cpp
-    src/main.cpp
     src/ArrayMethods.cpp
     src/BasicAuthenticationMethods.cpp
     src/BlobMethods.cpp
@@ -45,13 +53,44 @@ add_executable(
     src/SessionAuthenticationMethods.cpp
 )
 
-if(ANDROID)
+if(ANDROID) 
+    add_library(testserver SHARED ${TESTSERVER_COMMON_SRC})
+    
+    target_sources(
+        testserver PRIVATE
+        src/Android/MainActivity.cpp
+        src/Android/getifaddrs.cc
+        src/Android/bionic_netlink.cc
+        src/Android/FilePathResolver+Android.cpp
+    )
 
+    add_library(
+        native_app_glue STATIC
+        ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
+    )
+
+    target_include_directories(
+        native_app_glue PUBLIC
+        ${ANDROID_NDK}/sources/android/native_app_glue
+    )
+
+    find_library(log-lib log)
+
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+    target_link_libraries(
+        testserver PRIVATE
+        native_app_glue
+        android
+        ${log-lib}
+    )
 elseif(WINDOWS_STORE)
 
 else()
+    add_executable(testserver ${TESTSERVER_COMMON_SRC})
+
     target_sources(
         testserver PRIVATE
+        src/main.cpp
         src/FilePathResolver+Desktop.cpp
     )
 endif()
