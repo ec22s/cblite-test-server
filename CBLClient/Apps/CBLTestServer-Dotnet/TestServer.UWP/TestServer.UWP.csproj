@@ -178,6 +178,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="SimpleInjector" Version="5.0.1" />
+  </ItemGroup>
+  <ItemGroup>
     <BundleResource Include="Assets\certs\certs.p12" />
     <BundleResource Include="Assets\certs\client.p12" />
     <BundleResource Include="Assets\certs\client-ca.der" />
