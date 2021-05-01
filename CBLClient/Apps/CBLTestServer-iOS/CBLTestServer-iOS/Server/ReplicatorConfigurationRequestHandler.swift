@@ -61,7 +61,7 @@ public class ReplicatorConfigurationRequestHandler {
             let conflict_resolver: String? = args.get(name: "conflict_resolver")
             let heartbeat: String? = args.get(name: "heartbeat")
             let maxRetries: String? = args.get(name: "max_retries")
-            let maxRetryWaitTime: String? = args.get(name: "max_retry_wait_time")
+            let maxRetryWaitTime: String? = args.get(name: "max_timeout")
             
             var replicatorType = ReplicatorType.pushAndPull
             

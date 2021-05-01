@@ -73,7 +73,7 @@ public class ReplicatorConfigurationRequestHandler {
         Map<String, String> headers = args.get("headers");
         String heartbeat = args.get("heartbeat");
         String maxRetries = args.get("max_retries");
-        String maxRetryWaitTime = args.get("max_retry_wait_time");
+        String maxRetryWaitTime = args.get("max_timeout");
 
         if (replicatorType == null) {
             replicatorType = "push_pull";

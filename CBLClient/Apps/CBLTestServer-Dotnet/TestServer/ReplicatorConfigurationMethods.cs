@@ -142,16 +142,16 @@ namespace Couchbase.Lite.Testing
 
                 if (postBody.ContainsKey("max_retries"))
                 {
-                    String maxRetries = postBody["max_retriest"].ToString();
+                    String maxRetries = postBody["max_retries"].ToString();
                     if (String.IsNullOrEmpty(maxRetries.Trim()))
                     {
                         config.MaxRetries = int.Parse(maxRetries);
                     }
                 }
 
-                if (postBody.ContainsKey("max_retry_wait_time"))
+                if (postBody.ContainsKey("max_timeout"))
                 {
-                    String maxRetryWaitTime = postBody["max_retry_wait_time"].ToString();
+                    String maxRetryWaitTime = postBody["max_timeout"].ToString();
                     if (String.IsNullOrEmpty(maxRetryWaitTime.Trim()))
                     {
                         config.MaxRetryWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime));

@@ -316,6 +316,24 @@ namespace Couchbase.Lite.Testing
                 }
             }
 
+            if (postBody.ContainsKey("max_retries"))
+            {
+                String maxRetries = postBody["max_retries"].ToString();
+                if (String.IsNullOrEmpty(maxRetries.Trim()))
+                {
+                    config.MaxRetries = int.Parse(maxRetries);
+                }
+            }
+
+            if (postBody.ContainsKey("max_timeout"))
+            {
+                String maxRetryWaitTime = postBody["max_timeout"].ToString();
+                if (String.IsNullOrEmpty(maxRetryWaitTime.Trim()))
+                {
+                    config.MaxRetryWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime));
+                }
+            }
+
             Replicator replicator = new Replicator(config);
 
             response.WriteBody(MemoryMap.Store(replicator));
