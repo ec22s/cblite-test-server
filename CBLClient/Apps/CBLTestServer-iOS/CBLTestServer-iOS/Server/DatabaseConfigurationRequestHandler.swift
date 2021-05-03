@@ -27,7 +27,7 @@ public class DatabaseConfigurationRequestHandler {
             #if COUCHBASE_ENTERPRISE
             let encryptionKey: EncryptionKey? = password != nil ? EncryptionKey.password(password!) : nil
             #endif
-            let config = DatabaseConfiguration()
+            var config = DatabaseConfiguration()
             if directory != nil {
                 config.directory = directory!
             }
@@ -49,7 +49,7 @@ public class DatabaseConfigurationRequestHandler {
             return config.encryptionKey
             
         case "databaseConfiguration_setEncryptionKey":
-            let config: DatabaseConfiguration = args.get(name: "config")!
+            var config: DatabaseConfiguration = args.get(name: "config")!
             let password: String? = args.get(name:"password")!
             let encryptionKey: EncryptionKey? = EncryptionKey.password(password!)
             config.encryptionKey = encryptionKey
@@ -57,7 +57,7 @@ public class DatabaseConfigurationRequestHandler {
         #endif
             
         case "databaseConfiguration_setDirectory":
-            let config: DatabaseConfiguration = args.get(name: "config")!
+            var config: DatabaseConfiguration = args.get(name: "config")!
             let directory: String = args.get(name: "directory")!
             config.directory = directory
             return config
