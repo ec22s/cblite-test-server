@@ -225,32 +225,32 @@ public class ReplicatorConfigurationRequestHandler {
             return replicatorConfiguration.continuous
         
         case "replicatorConfiguration_setAuthenticator":
-            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let authenticator: Authenticator = args.get(name: "authenticator")!
             replicatorConfiguration.authenticator = authenticator
         
         case "replicatorConfiguration_setChannels":
-            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let channels: [String] = args.get(name: "channels")!
             replicatorConfiguration.channels = channels
         
         case "replicatorConfiguration_setContinuous":
-            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let continuous: Bool = args.get(name: "continuous")!
             replicatorConfiguration.continuous = continuous
         
         case "replicatorConfiguration_setDocumentIDs":
-            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let documentIds: [String] = args.get(name: "documentIds")!
             replicatorConfiguration.documentIDs = documentIds
             
         case "replicatorConfiguration_setPinnedServerCertificate":
-            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let cert: SecCertificate? = args.get(name: "cert")!
             replicatorConfiguration.pinnedServerCertificate = cert
         
         case "replicatorConfiguration_setReplicatorType":
-            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let type: String = args.get(name: "replType")!
             var replicatorType: ReplicatorType
             switch (type) {

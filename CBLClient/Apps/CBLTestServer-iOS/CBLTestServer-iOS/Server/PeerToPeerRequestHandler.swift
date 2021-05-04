@@ -67,7 +67,7 @@ public class PeerToPeerRequestHandler {
             let database: Database = args.get(name:"database")!
             let wsPort: Int = args.get(name: "port")!
             let tls_disable: Bool? = args.get(name: "tls_disable")!
-            let config = URLEndpointListenerConfiguration.init(database: [database][0])
+            var config = URLEndpointListenerConfiguration.init(database: [database][0])
             let tlsAuthType: String = args.get(name:"tls_auth_type")!
             let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
             let enable_delta_sync: Bool? = args.get(name: "enable_delta_sync")!

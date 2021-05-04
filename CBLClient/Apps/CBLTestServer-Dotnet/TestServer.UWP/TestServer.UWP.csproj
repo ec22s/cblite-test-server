@@ -18,7 +18,7 @@
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <PackageCertificateKeyFile>TestServer.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>442551ECC7895C46E87F5BD582EC963286B999FD</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>C57DC059C6F911A3F9A850216BD1F4496C9BA87A</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -176,6 +176,9 @@
       <Project>{ca1db44f-9a07-40c1-b305-f0b5d797ee6a}</Project>
       <Name>TestServer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="SimpleInjector" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Assets\certs\certs.p12" />

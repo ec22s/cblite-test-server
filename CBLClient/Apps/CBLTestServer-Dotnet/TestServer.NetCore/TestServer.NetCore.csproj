@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>default</LangVersion>
@@ -19,6 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestServer\TestServer.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="SimpleInjector" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
