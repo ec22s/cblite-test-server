@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 11)
-
+set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/out)
 add_subdirectory(shared)
 
 get_directory_property(civetweb_SOURCE_DIR DIRECTORY shared DEFINITION civetweb_SOURCE_DIR)
@@ -55,6 +55,12 @@ set(
 
 if(ANDROID) 
     add_library(testserver SHARED ${TESTSERVER_COMMON_SRC})
+
+    # Android prior to API24 is dumb about loading shared libraries
+    # and since libtestserver.so depends in CBL-C shared, it cannot
+    # load via native activity.  Create this dummy loader to do 
+    # the actual loading...
+    add_library(dummyloader SHARED src/Android/DummyLoader.cpp)
     
     target_sources(
         testserver PRIVATE
@@ -79,6 +85,13 @@ if(ANDROID)
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
     target_link_libraries(
         testserver PRIVATE
+        native_app_glue
+        android
+        ${log-lib}
+    )
+
+    target_link_libraries(
+        dummyloader PRIVATE
         native_app_glue
         android
         ${log-lib}

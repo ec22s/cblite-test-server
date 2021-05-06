@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.couchbase.testserver">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="false"
         android:fullBackupContent="false"
@@ -15,7 +17,7 @@
 
             <meta-data
                 android:name="android.app.lib_name"
-                android:value="testserver" />    
+                android:value="dummyloader" />    
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

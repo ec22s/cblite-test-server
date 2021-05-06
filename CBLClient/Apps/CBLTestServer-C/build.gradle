@@ -18,6 +18,13 @@ allprojects {
 
 apply plugin: 'com.android.application'
 
+ext {
+    PROJECT_DIR = "${projectDir}"
+    ROOT_DIR = "${PROJECT_DIR}/../"
+    JAVA_COMMON_DIR = "${ROOT_DIR}/JavaRequestHandlers"
+    ASSET_DIR = "${JAVA_COMMON_DIR}/src/main/assets"
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -39,6 +46,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            resources.srcDirs = [
+                    "src/main/res/",                                    // android resource files
+                    ASSET_DIR
+            ]
+
         }
     }
 
