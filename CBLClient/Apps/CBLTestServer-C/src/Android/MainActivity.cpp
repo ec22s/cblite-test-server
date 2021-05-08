@@ -17,11 +17,10 @@ extern "C" {
 
     void android_main(struct android_app* pApp) {
         __android_log_print(ANDROID_LOG_INFO, "TestServer", "Entering android_main...");
+        GlobalApp = pApp;
 
-        std::string foo = file_resolution::resolve_path("PrebuiltDB.cblite2.zip", true);
         __android_log_print(ANDROID_LOG_INFO, "TestServer", "%s", foo.c_str());
 
-        GlobalApp = pApp;
         pApp->onAppCmd = handle_cmd;
 
         mg_init_library(0);

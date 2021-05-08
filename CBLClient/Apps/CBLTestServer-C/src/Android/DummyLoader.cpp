@@ -22,6 +22,9 @@ void ANativeActivity_onCreate(ANativeActivity * app, void * ud, size_t udsize)
 {
     __android_log_print(ANDROID_LOG_INFO, "dummyloader", "Loaded bootstrap");
     load_lib(LIB_PATH "libCouchbaseLiteC.so");
+    __android_log_print(ANDROID_LOG_INFO, "dummyloader", "Loaded CBL-C");
+    load_lib(LIB_PATH "libzip.so");
+    __android_log_print(ANDROID_LOG_INFO, "dummyloader", "Loaded libzip");
     auto* main = (void (*)(ANativeActivity*, void*, size_t))dlsym(load_lib(LIB_PATH "libtestserver.so"), "ANativeActivity_onCreate");
     if (!main)  {
         __android_log_print(ANDROID_LOG_ERROR, "dummyloader", "undefined symbol ANativeActivity_onCreate");
