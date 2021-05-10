@@ -102,11 +102,11 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         }
 
         if (maxRetries != null && !maxRetries.trim().isEmpty()) {
-            config.setMaxRetries(Integer.parseInt(maxRetries));
+            config.setMaxAttempts(Integer.parseInt(maxRetries));
         }
 
         if (maxTimeout != null && !maxTimeout.trim().isEmpty()) {
-            config.setMaxRetryWaitTime(Long.parseLong(maxTimeout));
+            config.setMaxAttemptWaitTime(Integer.parseInt(maxTimeout));
         }
 
 

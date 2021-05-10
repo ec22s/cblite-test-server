@@ -127,10 +127,10 @@ public class ReplicatorConfigurationRequestHandler {
             config.setHeartbeat(Integer.parseInt(heartbeat));
         }
         if (maxRetries != null && !maxRetries.trim().isEmpty()){
-            config.setMaxRetries(Integer.parseInt(maxRetries));
+            config.setMaxAttempts(Integer.parseInt(maxRetries));
         }
         if (maxRetryWaitTime != null && !maxRetryWaitTime.trim().isEmpty()){
-            config.setMaxRetryWaitTime(Long.parseLong(maxRetryWaitTime));
+            config.setMaxAttemptWaitTime(Integer.parseInt(maxRetryWaitTime));
         }
 
         Log.d(TAG, "Args: " + args);
