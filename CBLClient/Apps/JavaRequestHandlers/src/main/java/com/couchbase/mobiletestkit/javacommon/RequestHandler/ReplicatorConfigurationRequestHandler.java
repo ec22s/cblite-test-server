@@ -122,7 +122,7 @@ public class ReplicatorConfigurationRequestHandler {
             config.setDocumentIDs(documentIds);
         }
         if (heartbeat != null && !heartbeat.trim().isEmpty()){
-            config.setHeartbeat(Long.parseLong(heartbeat));
+            config.setHeartbeat(Integer.parseInt(heartbeat));
         }
 
         Log.d(TAG, "Args: " + args);
