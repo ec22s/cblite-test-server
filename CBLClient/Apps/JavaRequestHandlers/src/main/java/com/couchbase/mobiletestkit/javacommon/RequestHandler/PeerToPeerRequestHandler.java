@@ -98,7 +98,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             config.setDocumentIDs(documentIds);
         }
         if (heartbeat != null && !heartbeat.trim().isEmpty()){
-            config.setHeartbeat(Long.parseLong(heartbeat));
+            config.setHeartbeat(Integer.parseInt(heartbeat));
         }
 
         if (maxRetries != null && !maxRetries.trim().isEmpty()) {

@@ -13,6 +13,7 @@ import com.couchbase.lite.Replicator;
 import com.couchbase.lite.ReplicatorChange;
 import com.couchbase.lite.ReplicatorChangeListener;
 import com.couchbase.lite.ReplicatorConfiguration;
+import com.couchbase.lite.ReplicatorStatus;
 import com.couchbase.mobiletestkit.javacommon.util.ConcurrentExecutor;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
 
@@ -122,7 +123,7 @@ public class ReplicatorRequestHandler {
         return change.getReplicator();
     }
 
-    public Replicator.Status changeGetStatus(Args args) {
+    public ReplicatorStatus changeGetStatus(Args args) {
         ReplicatorChange change = args.get("change");
         return change.getStatus();
     }
