@@ -32,6 +32,12 @@ if(ANDROID)
     set( CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY )
 endif()
 
+if(APPLE)
+    set(CMAKE_INSTALL_RPATH "@loader_path")
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+endif()
+
 set(
     TESTSERVER_COMMON_SRC
     src/TestServer.cpp
@@ -53,15 +59,15 @@ set(
     src/SessionAuthenticationMethods.cpp
 )
 
-if(ANDROID) 
+if(ANDROID)
     add_library(testserver SHARED ${TESTSERVER_COMMON_SRC})
 
     # Android prior to API24 is dumb about loading shared libraries
     # and since libtestserver.so depends in CBL-C shared, it cannot
-    # load via native activity.  Create this dummy loader to do 
+    # load via native activity.  Create this dummy loader to do
     # the actual loading...
     add_library(dummyloader SHARED src/Android/DummyLoader.cpp)
-    
+
     target_sources(
         testserver PRIVATE
         src/Android/MainActivity.cpp
@@ -139,9 +145,14 @@ if(MSVC)
         testserver PRIVATE
         zlibstatic
     )
-    
+
     target_include_directories(
         testserver PRIVATE
         src/MSVC
     )
 endif()
+
+install(
+    TARGETS testserver
+    RUNTIME DESTINATION bin
+)

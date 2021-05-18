@@ -33,7 +33,7 @@ namespace value_serializer {
         return retVal;
     }
 
-    std::string serialize(nullptr_t n);
+    std::string serialize(std::nullptr_t n);
     std::string serialize(bool b);
     std::string serialize(const std::string &s);
 
