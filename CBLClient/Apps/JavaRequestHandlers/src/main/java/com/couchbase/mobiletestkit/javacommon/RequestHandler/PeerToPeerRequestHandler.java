@@ -53,6 +53,9 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         Boolean serverVerificationMode = args.get("server_verification_mode");
         Boolean tlsAuthenticator = args.get("tls_authenticator");
         String heartbeat = args.get("heartbeat");
+        String maxRetries = args.get("max_retries");
+        String maxTimeout = args.get("max_timeout");
+
         ReplicatorConfiguration config;
         Replicator replicator;
         URI uri;
@@ -97,6 +100,16 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         if (heartbeat != null && !heartbeat.trim().isEmpty()){
             config.setHeartbeat(Integer.parseInt(heartbeat));
         }
+
+        if (maxRetries != null && !maxRetries.trim().isEmpty()) {
+            config.setMaxAttempts(Integer.parseInt(maxRetries));
+        }
+
+        if (maxTimeout != null && !maxTimeout.trim().isEmpty()) {
+            config.setMaxAttemptWaitTime(Integer.parseInt(maxTimeout));
+        }
+
+
         if (push_filter) {
             switch (filter_callback_func) {
                 case "boolean":
