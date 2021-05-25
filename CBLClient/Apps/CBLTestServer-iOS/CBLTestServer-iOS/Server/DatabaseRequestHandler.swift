@@ -149,7 +149,7 @@ public class DatabaseRequestHandler {
 
         case "database_compact":
             let database: Database = (args.get(name:"database"))!
-            return try! database.compact()
+            return try! database.performMaintenance(type:MaintenanceType.compact)
             
         case "database_addChangeListener":
             let database: Database = (args.get(name:"database"))!
