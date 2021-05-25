@@ -60,6 +60,8 @@ public class ReplicatorConfigurationRequestHandler {
             let filter_callback_func: String? = args.get(name: "filter_callback_func")
             let conflict_resolver: String? = args.get(name: "conflict_resolver")
             let heartbeat: String? = args.get(name: "heartbeat")
+            let maxRetries: String? = args.get(name: "max_retries")
+            let maxRetryWaitTime: String? = args.get(name: "max_timeout")
             
             var replicatorType = ReplicatorType.pushAndPull
             
@@ -182,8 +184,14 @@ public class ReplicatorConfigurationRequestHandler {
             if heartbeat != nil {
                 config.heartbeat = Double(heartbeat!)!
             }
+            if maxRetries != nil {
+                config.maxRetries = Int(maxRetries!)!
+            }
+            if maxRetryWaitTime != nil {
+                config.maxRetryWaitTime = Double(maxRetryWaitTime!)!
+            }
             return config
-        
+
         case "replicatorConfiguration_getAuthenticator":
             let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             return replicatorConfiguration.authenticator

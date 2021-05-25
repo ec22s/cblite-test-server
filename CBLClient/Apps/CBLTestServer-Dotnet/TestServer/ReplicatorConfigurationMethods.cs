@@ -140,6 +140,24 @@ namespace Couchbase.Lite.Testing
                     }
                 }
 
+                if (postBody.ContainsKey("max_retries"))
+                {
+                    String maxRetries = postBody["max_retries"].ToString();
+                    if (String.IsNullOrEmpty(maxRetries.Trim()))
+                    {
+                        config.MaxRetries = int.Parse(maxRetries);
+                    }
+                }
+
+                if (postBody.ContainsKey("max_timeout"))
+                {
+                    String maxRetryWaitTime = postBody["max_timeout"].ToString();
+                    if (String.IsNullOrEmpty(maxRetryWaitTime.Trim()))
+                    {
+                        config.MaxRetryWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime));
+                    }
+                }
+
                 if (postBody.ContainsKey("pinnedservercert"))
                 {
                     var cert_file = postBody["pinnedservercert"].ToString();
@@ -230,8 +248,10 @@ namespace Couchbase.Lite.Testing
                         config.ConflictResolver = new ExceptionThrownConflictResolver();
                         break;
                     default:
+
                         config.ConflictResolver = ConflictResolver.Default;
                         break;
+                        
                 }
                 response.WriteBody(MemoryMap.Store(config));
             });
@@ -279,7 +299,7 @@ namespace Couchbase.Lite.Testing
                                        [NotNull] IReadOnlyDictionary<string, object> postBody,
                                        [NotNull] HttpListenerResponse response)
         {
-            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf.Database));
+            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf));
         }
 
         public static void GetDocumentIDs([NotNull] NameValueCollection args,
@@ -307,7 +327,7 @@ namespace Couchbase.Lite.Testing
                                      [NotNull] IReadOnlyDictionary<string, object> postBody,
                                      [NotNull] HttpListenerResponse response)
         {
-            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf.Target.ToString()));
+            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf));
         }
 
         public static void IsContinuous([NotNull] NameValueCollection args,
