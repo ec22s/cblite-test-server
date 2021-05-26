@@ -1,1 +1,3 @@
 .cxx/
+ios/Frameworks/*
+ios/TestServer/cmake

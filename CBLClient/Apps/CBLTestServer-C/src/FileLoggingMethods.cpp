@@ -4,12 +4,12 @@
 #include "Defines.h"
 
 #include <iostream>
-#include <cbl/CouchbaseLite.h>
 #include <string>
 #include <sstream>
 #include <dirent.h>
 #include <zip.h>
 #include <fstream>
+#include INCLUDE_CBL(CouchbaseLite.h)
 
 
 #ifdef _MSC_VER

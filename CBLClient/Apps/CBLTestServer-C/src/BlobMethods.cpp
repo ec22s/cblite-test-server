@@ -4,7 +4,7 @@
 #include "Router.h"
 #include "FilePathResolver.h"
 
-#include <cbl/CouchbaseLite.h>
+#include INCLUDE_CBL(CouchbaseLite.h)
 #include <fstream>
 using namespace std;
 using namespace nlohmann;

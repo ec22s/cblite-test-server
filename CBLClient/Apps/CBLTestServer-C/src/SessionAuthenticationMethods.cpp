@@ -3,7 +3,7 @@
 #include "Router.h"
 #include "Defines.h"
 
-#include <cbl/CouchbaseLite.h>
+#include INCLUDE_CBL(CouchbaseLite.h)
 #include <string>
 using namespace std;
 using namespace nlohmann;

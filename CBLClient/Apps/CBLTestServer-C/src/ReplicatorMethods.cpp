@@ -3,7 +3,7 @@
 #include "Router.h"
 #include "Defines.h"
 
-#include <cbl/CouchbaseLite.h>
+#include INCLUDE_CBL(CouchbaseLite.h)
 #include <sstream>
 #include <vector>
 using namespace nlohmann;
@@ -264,7 +264,7 @@ namespace replicator_methods {
                     }
 
                     ss << ", error_code: " << error_code << ", error_domain: " << error_domain << ", flags: " << doc.flags
-                        << ", push: " << change.isPush ? "true"  : "false";
+                        << ", push: " << (change.isPush ? "true"  : "false");
                     eventList.push_back(ss.str());
                 }
             }

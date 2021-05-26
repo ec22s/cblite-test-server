@@ -1,8 +1,10 @@
 #pragma once
 
+#include"Defines.h"
+
 #include <string>
 #include <nlohmann/json.hpp>
-#include <fleece/Fleece.h>
+#include INCLUDE_FLEECE(Fleece.h)
 
 namespace value_serializer {
     template<typename T>

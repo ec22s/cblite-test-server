@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <thread>
 #include <cctype>
-#include <cbl/CouchbaseLite.h>
+#include INCLUDE_CBL(CouchbaseLite.h)
 
 using namespace nlohmann;
 using namespace std;

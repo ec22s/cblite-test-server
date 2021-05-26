@@ -5,8 +5,8 @@
 #include "date.h"
 #include "Defines.h"
 
-#include <fleece/Fleece.h>
-#include <cbl/CouchbaseLite.h>
+#include INCLUDE_FLEECE(Fleece.h)
+#include INCLUDE_CBL(CouchbaseLite.h)
 
 using namespace nlohmann;
 using namespace std;

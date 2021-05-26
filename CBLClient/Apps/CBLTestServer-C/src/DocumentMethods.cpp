@@ -4,7 +4,7 @@
 #include "FleeceHelpers.h"
 #include "Defines.h"
 
-#include <cbl/CouchbaseLite.h>
+#include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
 using namespace nlohmann;
 

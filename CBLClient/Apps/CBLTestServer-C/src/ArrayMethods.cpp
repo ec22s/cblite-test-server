@@ -4,7 +4,7 @@
 #include "FleeceHelpers.h"
 #include "Defines.h"
 
-#include <fleece/Fleece.h>
+#include INCLUDE_FLEECE(Fleece.h)
 
 using namespace std;
 using namespace nlohmann;

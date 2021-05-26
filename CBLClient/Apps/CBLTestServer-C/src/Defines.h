@@ -1,7 +1,28 @@
 #pragma once
 
+#define STRINGIFY(X) STRINGIFY2(X)
+#define STRINGIFY2(X) #X
+
+// Thanks Apple, this sorcery is needed to use frameworks include paths
+// (i.e. CouchbaseLite/<path>) work as well as normal include paths
+// (i.e. cbl/<path> or fleece/<path>)
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#if !TARGET_OS_OSX
+#define INCLUDE_CBL(X) STRINGIFY(CouchbaseLite/X)
+#define INCLUDE_FLEECE(X) STRINGIFY(CouchbaseLite/X)
+#else
+#define INCLUDE_CBL(X) STRINGIFY(cbl/X)
+#define INCLUDE_FLEECE(X) STRINGIFY(fleece/X)
+#endif
+#else
+#define INCLUDE_CBL(X) STRINGIFY(cbl/X)
+#define INCLUDE_FLEECE(X) STRINGIFY(fleece/X)
+#endif
+
 #include <string>
-#include <fleece/Fleece.h>
+#include <errno.h>
+#include INCLUDE_FLEECE(Fleece.h)
 
 inline FLString flstr(const std::string& str) {
     if(str.empty()) {

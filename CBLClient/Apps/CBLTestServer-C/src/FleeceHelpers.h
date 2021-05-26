@@ -1,6 +1,8 @@
 #pragma once
 
-#include <fleece/Fleece.h>
+#include "Defines.h"
+
+#include INCLUDE_FLEECE(Fleece.h)
 #include <string>
 #include <nlohmann/json.hpp>
 
