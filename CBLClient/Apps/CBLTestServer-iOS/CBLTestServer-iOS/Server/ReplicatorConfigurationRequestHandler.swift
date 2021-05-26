@@ -228,26 +228,31 @@ public class ReplicatorConfigurationRequestHandler {
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let authenticator: Authenticator = args.get(name: "authenticator")!
             replicatorConfiguration.authenticator = authenticator
+            return replicatorConfiguration
         
         case "replicatorConfiguration_setChannels":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let channels: [String] = args.get(name: "channels")!
             replicatorConfiguration.channels = channels
+            return replicatorConfiguration
         
         case "replicatorConfiguration_setContinuous":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let continuous: Bool = args.get(name: "continuous")!
             replicatorConfiguration.continuous = continuous
+            return replicatorConfiguration
         
         case "replicatorConfiguration_setDocumentIDs":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let documentIds: [String] = args.get(name: "documentIds")!
             replicatorConfiguration.documentIDs = documentIds
+            return replicatorConfiguration
             
         case "replicatorConfiguration_setPinnedServerCertificate":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let cert: SecCertificate? = args.get(name: "cert")!
             replicatorConfiguration.pinnedServerCertificate = cert
+            return replicatorConfiguration
         
         case "replicatorConfiguration_setReplicatorType":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
@@ -264,6 +269,7 @@ public class ReplicatorConfigurationRequestHandler {
                     replicatorType = ReplicatorType.pushAndPull
             }
             replicatorConfiguration.replicatorType = replicatorType
+            return replicatorConfiguration
 
         default:
             throw RequestHandlerError.MethodNotFound(method)
