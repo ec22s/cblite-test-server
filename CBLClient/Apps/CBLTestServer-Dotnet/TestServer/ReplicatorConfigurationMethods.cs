@@ -299,7 +299,7 @@ namespace Couchbase.Lite.Testing
                                        [NotNull] IReadOnlyDictionary<string, object> postBody,
                                        [NotNull] HttpListenerResponse response)
         {
-            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf));
+            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf.Database));
         }
 
         public static void GetDocumentIDs([NotNull] NameValueCollection args,
@@ -327,7 +327,7 @@ namespace Couchbase.Lite.Testing
                                      [NotNull] IReadOnlyDictionary<string, object> postBody,
                                      [NotNull] HttpListenerResponse response)
         {
-            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf));
+            With<ReplicatorConfiguration>(postBody, "configuration", repConf => response.WriteBody(repConf.Target.ToString()));
         }
 
         public static void IsContinuous([NotNull] NameValueCollection args,
