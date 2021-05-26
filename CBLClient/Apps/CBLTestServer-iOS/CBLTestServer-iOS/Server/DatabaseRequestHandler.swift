@@ -146,6 +146,10 @@ public class DatabaseRequestHandler {
         case "database_getCount":
             let database: Database = (args.get(name:"database"))!
             return database.count
+
+        case "database_compact":
+            let database: Database = (args.get(name:"database"))!
+            return try! database.performMaintenance(type:MaintenanceType.compact)
             
         case "database_addChangeListener":
             let database: Database = (args.get(name:"database"))!
