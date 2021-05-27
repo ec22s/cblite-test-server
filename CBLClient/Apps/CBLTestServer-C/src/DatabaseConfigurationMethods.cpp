@@ -24,5 +24,7 @@ namespace database_configuration_methods {
             memcpy(allocated, directory.c_str(), directory.size());
             databaseConfig->directory = { allocated, directory.size() };
         }
+
+        write_serialized_body(conn, memory_map::store(databaseConfig, CBLDatabaseConfiguration_EntryDelete));
     }
 }
