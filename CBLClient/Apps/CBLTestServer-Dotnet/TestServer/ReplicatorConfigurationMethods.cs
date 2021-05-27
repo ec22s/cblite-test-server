@@ -145,7 +145,7 @@ namespace Couchbase.Lite.Testing
                     String maxRetries = postBody["max_retries"].ToString();
                     if (String.IsNullOrEmpty(maxRetries.Trim()))
                     {
-                        config.MaxRetries = int.Parse(maxRetries);
+                        config.MaxAttempts = int.Parse(maxRetries);
                     }
                 }
 
@@ -154,7 +154,7 @@ namespace Couchbase.Lite.Testing
                     String maxRetryWaitTime = postBody["max_timeout"].ToString();
                     if (String.IsNullOrEmpty(maxRetryWaitTime.Trim()))
                     {
-                        config.MaxRetryWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime));
+                        config.MaxAttemptsWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime));
                     }
                 }
 

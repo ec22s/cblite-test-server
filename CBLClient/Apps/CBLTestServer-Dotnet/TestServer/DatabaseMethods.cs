@@ -127,7 +127,7 @@ namespace Couchbase.Lite.Testing
                                              [NotNull] IReadOnlyDictionary<string, object> postBody,
                                              [NotNull] HttpListenerResponse response)
         {
-            With<Database>(postBody, "database", db => db.Compact());
+            With<Database>(postBody, "database", db => db.PerformMaintenance(MaintenanceType.Compact));
             response.WriteEmptyBody();
         }
 
