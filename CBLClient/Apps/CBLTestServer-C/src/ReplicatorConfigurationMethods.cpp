@@ -20,14 +20,14 @@ static void tolower(string& str) {
     });
 }
 
-static bool replicator_boolean_filter_callback(void* context, CBLDocument* doc, bool isDeleted) {
+static bool replicator_boolean_filter_callback(void* context, CBLDocument* doc, CBLDocumentFlags flags) {
     const auto* properties = CBLDocument_Properties(doc);
     FLValue val = FLDict_Get(properties, FLSTR("new_field_1"));
     return val != nullptr;
 }
 
-static bool replicator_deleted_filter_callback(void* context, CBLDocument* doc, bool isDeleted) {
-    return isDeleted;
+static bool replicator_deleted_filter_callback(void* context, CBLDocument* doc, CBLDocumentFlags flags) {
+    return flags & kCBLDocumentFlagsDeleted;
 }
 
 static void checkMismatchDocID(const CBLDocument* localDoc, const CBLDocument* remoteDoc, string&& docId) {

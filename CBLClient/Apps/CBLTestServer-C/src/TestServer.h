@@ -6,7 +6,7 @@ struct mg_context;
 
 class TestServer {
 public:
-    static constexpr uint16_t PORT = 1234;
+    static constexpr uint16_t PORT = 8080;
     void start();
     void stop();
 

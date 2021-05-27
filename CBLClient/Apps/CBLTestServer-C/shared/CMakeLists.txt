@@ -14,14 +14,18 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build." FORCE)
 endif()
 
+if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN -D_WIN32_WINNT=0x0A00)
+endif()
+
 project(testserver)
 
 include(FetchContent)
 
 FetchContent_Declare(
     civetweb
-    GIT_REPOSITORY https://github.com/civetweb/civetweb
-    GIT_TAG v1.13
+    GIT_REPOSITORY https://github.com/couchbasedeps/civetweb
+    GIT_TAG cbl_c_testserver
     GIT_SHALLOW TRUE
 )
 

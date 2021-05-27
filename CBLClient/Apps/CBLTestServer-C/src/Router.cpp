@@ -180,5 +180,6 @@ void router::internal::handle(string url, mg_connection* connection) {
         s >> body;
     }
 
-    handler->second(body, connection);
+    json deserialized = value_serializer::deserialize(body);
+    handler->second(deserialized, connection);
 }
