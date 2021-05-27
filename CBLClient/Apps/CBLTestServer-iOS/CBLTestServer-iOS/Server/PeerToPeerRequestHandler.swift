@@ -245,14 +245,14 @@ public class PeerToPeerRequestHandler {
                     replicatorConfig.conflictResolver = ConflictResolver.default
                     break;
             }
-            if heartbeat != nil {
-                replicatorConfig.heartbeat = Double(heartbeat!)!
+            if let heartbeat = heartbeat, let heartbeatDouble = Double(heartbeat) {
+                replicatorConfig.heartbeat = heartbeatDouble
             }
-            if maxRetries != nil {
-                replicatorConfig.maxRetries = Int(maxRetries!)!
+            if let maxRetries = maxRetries, let maxRetryInInt = UInt(maxRetries) {
+                replicatorConfig.maxAttempts = maxRetryInInt
             }
-            if maxRetryWaitTime != nil {
-                replicatorConfig.maxRetryWaitTime = Double(maxRetryWaitTime!)!
+            if let maxRetryWaitTime = maxRetryWaitTime, let maxRetryWaitTimeDouble = Double(maxRetryWaitTime) {
+                replicatorConfig.maxAttemptWaitTime = maxRetryWaitTimeDouble
             }
             replicatorConfig.replicatorType = replicatorType
             let replicator: Replicator = Replicator(config: replicatorConfig)

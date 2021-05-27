@@ -181,14 +181,15 @@ public class ReplicatorConfigurationRequestHandler {
                     config.conflictResolver = ConflictResolver.default
                     break;
             }
-            if heartbeat != nil {
-                config.heartbeat = Double(heartbeat!)!
+            if let heartbeat = heartbeat, let heartbeatDouble = Double(heartbeat) {
+                config.heartbeat = heartbeatDouble
             }
-            if maxRetries != nil {
-                config.maxRetries = Int(maxRetries!)!
+            if let maxRetries = maxRetries, let maxRetryInInt = UInt(maxRetries) {
+                config.maxAttempts = maxRetryInInt
             }
-            if maxRetryWaitTime != nil {
-                config.maxRetryWaitTime = Double(maxRetryWaitTime!)!
+            
+            if let maxRetryWaitTime = maxRetryWaitTime, let maxRetryWaitTimeDouble = Double(maxRetryWaitTime) {
+                config.maxAttemptWaitTime = maxRetryWaitTimeDouble
             }
             return config
 
