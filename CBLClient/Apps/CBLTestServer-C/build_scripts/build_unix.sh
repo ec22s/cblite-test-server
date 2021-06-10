@@ -20,6 +20,7 @@ esac
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 DOWNLOAD_DIR=$SCRIPT_DIR/../downloaded
 BUILD_DIR=$SCRIPT_DIR/../build
+ZIPS_DIR=$SCRIPT_DIR/../zips
 
 rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
@@ -38,3 +39,9 @@ cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
 cp out/lib/$LIBZIP out/bin
+
+ZIP_FILENAME=testserver_${OS}_x64.zip
+pushd out/bin
+zip ${ZIP_FILENAME} *
+mkdir -p $ZIPS_DIR
+mv ${ZIP_FILENAME} $ZIPS_DIR
