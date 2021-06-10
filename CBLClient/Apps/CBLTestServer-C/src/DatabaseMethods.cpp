@@ -398,4 +398,22 @@ namespace database_methods {
         // TODO: Need per platform implementation
         throw std::domain_error("Not implemented");
     }
+
+    void database_changeEncryptionKey(json& body, mg_connection* conn) {
+        with<CBLDatabase *>(body, "database", [body, conn](CBLDatabase* db) {
+            CBLError err;
+            auto password = body["password"].get<string>();
+            if(password == "nil") {
+                TRY(CBLDatabase_ChangeEncryptionKey(db, nullptr, &err), err);
+            } else {
+                CBLEncryptionKey encryptionKey;
+                if(!CBLEncryptionKey_FromPassword(&encryptionKey, flstr(password))) {
+                    mg_send_http_error(conn, 500, "Failed to create encryption key");
+                    return;
+                }
+                
+                TRY(CBLDatabase_ChangeEncryptionKey(db, &encryptionKey, &err), err);
+            }
+        });
+    }
 }

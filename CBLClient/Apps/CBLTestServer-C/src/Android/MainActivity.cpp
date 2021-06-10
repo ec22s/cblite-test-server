@@ -19,8 +19,6 @@ extern "C" {
         __android_log_print(ANDROID_LOG_INFO, "TestServer", "Entering android_main...");
         GlobalApp = pApp;
 
-        __android_log_print(ANDROID_LOG_INFO, "TestServer", "%s", foo.c_str());
-
         pApp->onAppCmd = handle_cmd;
 
         mg_init_library(0);

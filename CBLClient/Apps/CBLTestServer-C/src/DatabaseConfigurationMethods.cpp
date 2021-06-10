@@ -27,4 +27,18 @@ namespace database_configuration_methods {
 
         write_serialized_body(conn, memory_map::store(databaseConfig, CBLDatabaseConfiguration_EntryDelete));
     }
+
+    void database_configuration_methods::database_configuration_setEncryptionKey(json &body, mg_connection *conn) {
+        with<CBLDatabaseConfiguration *>(body, "config", [body, conn](CBLDatabaseConfiguration* dbconfig) {
+            auto password = body["password"].get<string>();
+            CBLEncryptionKey encryptionKey;
+            if(!CBLEncryptionKey_FromPassword(&encryptionKey, flstr(password))) {
+                mg_send_http_error(conn, 500, "Error creating encryption key");
+                return;
+            }
+            
+            dbconfig->encryptionKey = encryptionKey;
+            mg_send_http_ok(conn, "application/text", 0);
+        });
+    }
 }

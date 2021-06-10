@@ -55,7 +55,7 @@ namespace blob_methods {
     }
 
     void blob_createImageStream(nlohmann::json& body, mg_connection* conn) {
-        mg_send_http_error(conn, 501, "Cannot use this method with passing a database");
+        mg_send_http_error(conn, 501, "Cannot use this method without passing a database");
     }
 
     void blob_createImageFileUrl(nlohmann::json& body, mg_connection* conn) {

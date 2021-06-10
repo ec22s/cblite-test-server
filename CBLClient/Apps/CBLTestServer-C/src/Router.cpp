@@ -2,6 +2,9 @@
 #include "MemoryMap.h"
 #include "ArrayMethods.h"
 #include "BasicAuthenticationMethods.h"
+#include "BlobMethods.h"
+#include "SessionAuthenticationMethods.h"
+#include "DatabaseConfigurationMethods.h"
 #include "DatabaseMethods.h"
 #include "DictionaryMethods.h"
 #include "DocumentMethods.h"
@@ -39,7 +42,13 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "array_getDictionary", array_methods::array_getDictionary },
     { "array_getString", array_methods::array_getString },
     { "array_getString", array_methods::array_setString },
+    { "blob_create", blob_methods::blob_create },
+    { "blob_createImageContent", blob_methods::blob_createImageContent },
+    { "blob_createImageStream", blob_methods::blob_createImageStream },
+    { "blob_createImageFileUrl", blob_methods::blob_createImageFileUrl },
     { "basicAuthenticator_create", basic_authentication_methods::basic_authentication_create },
+    { "sessionAuthenticator_create", session_authentication_methods::session_authentication_create },
+    { "databaseConfiguration_configure", database_configuration_methods::database_configuration_configure },
     { "database_create", database_methods::database_create },
     { "database_compact", database_methods::database_compact },
     { "database_close", database_methods::database_close },

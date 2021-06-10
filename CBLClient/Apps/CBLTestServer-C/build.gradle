@@ -11,6 +11,7 @@ buildscript {
 
 repositories {
     google()
+    jcenter()
 }
 
 apply plugin: 'com.android.application'
@@ -39,6 +40,15 @@ android {
         }
     }
 
+    signingConfigs {
+          config {
+              keyAlias 'cbl-android-key'
+              keyPassword 'couchbase'
+              storeFile file('android-key')
+              storePassword 'couchbase'
+          }
+    }
+
     buildTypes {
         debug {
             externalNativeBuild {
@@ -54,6 +64,7 @@ android {
                 }
             }
 
+            signingConfig signingConfigs.config
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

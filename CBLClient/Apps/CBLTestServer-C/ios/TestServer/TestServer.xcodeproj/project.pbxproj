@@ -31,7 +31,6 @@
 		42F2DA98265351B8001C9EC3 /* BlobMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA7C265351B8001C9EC3 /* BlobMethods.cpp */; };
 		42F2DA9A265351B8001C9EC3 /* DatabaseConfigurationMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA7E265351B8001C9EC3 /* DatabaseConfigurationMethods.cpp */; };
 		42F2DA9B265351B8001C9EC3 /* BasicAuthenticationMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA81265351B8001C9EC3 /* BasicAuthenticationMethods.cpp */; };
-		42F2DAA026548E77001C9EC3 /* TestServer.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 42F2DA9F26548E77001C9EC3 /* TestServer.xcconfig */; };
 		42F2DAA326548EE4001C9EC3 /* CouchbaseLite.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42F2DA4426535167001C9EC3 /* CouchbaseLite.xcframework */; };
 		42F2DAA426548EE4001C9EC3 /* CouchbaseLite.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 42F2DA4426535167001C9EC3 /* CouchbaseLite.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		42F2DABA2655F430001C9EC3 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 42F2DAB92655F430001C9EC3 /* libz.tbd */; };
@@ -631,7 +630,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1210;
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					42F2DA1B26535018001C9EC3 = {
 						CreatedOnToolsVersion = 12.1;
@@ -662,7 +661,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				42F2DA2C26535019001C9EC3 /* LaunchScreen.storyboard in Resources */,
-				42F2DAA026548E77001C9EC3 /* TestServer.xcconfig in Resources */,
 				42F2DA2926535019001C9EC3 /* Assets.xcassets in Resources */,
 				42F2DA2726535018001C9EC3 /* Main.storyboard in Resources */,
 			);
