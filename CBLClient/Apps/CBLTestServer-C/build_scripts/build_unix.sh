@@ -8,10 +8,14 @@ case "${OSTYPE}" in
     darwin*)  OS="macosx"
               LIBZIP="libzip.5.dylib"
               LIBCBL="libCouchbaseLiteC.dylib"
+              ZIP_CMD="unzip"
+              ZIP_EXT="zip"
               ;;
     linux*)   OS="linux"
               LIBZIP="libzip.so.5"
               LIBCBL="libCouchbaseLiteC.so"
+              ZIP_CMD="tar xvf"
+              ZIP_EXT="tar.gz"
               ;;
     *)        echo "unknown: $OSTYPE"
               exit 1;;
@@ -26,9 +30,9 @@ rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
 pushd $DOWNLOAD_DIR
 
-ZIP_FILENAME=couchbase-lite-c-${OS}-${VERSION}-${BLD_NUM}-enterprise.zip
+ZIP_FILENAME=couchbase-lite-c-${OS}-${VERSION}-${BLD_NUM}-enterprise.${ZIP_EXT}
 curl -O http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${VERSION}/${BLD_NUM}/${ZIP_FILENAME}
-unzip ${ZIP_FILENAME}
+${ZIP_CMD} ${ZIP_FILENAME}
 rm ${ZIP_FILENAME}
 
 popd

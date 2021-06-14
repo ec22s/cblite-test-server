@@ -28,7 +28,7 @@ namespace database_configuration_methods {
         write_serialized_body(conn, memory_map::store(databaseConfig, CBLDatabaseConfiguration_EntryDelete));
     }
 
-    void database_configuration_methods::database_configuration_setEncryptionKey(json &body, mg_connection *conn) {
+    void database_configuration_setEncryptionKey(json &body, mg_connection *conn) {
         with<CBLDatabaseConfiguration *>(body, "config", [body, conn](CBLDatabaseConfiguration* dbconfig) {
             auto password = body["password"].get<string>();
             CBLEncryptionKey encryptionKey;

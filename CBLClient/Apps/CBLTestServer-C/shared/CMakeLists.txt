@@ -71,6 +71,7 @@ if(MSVC)
     endif()
 endif()
 
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 FetchContent_Declare(
     libzip
     GIT_REPOSITORY https://github.com/nih-at/libzip
