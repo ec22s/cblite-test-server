@@ -27,7 +27,7 @@ try {
         throw "Cmake failed!"
     } 
 
-    & "C:\Program Files\CMake\bin\cmake.exe" --build . --target install --parallel 12
+    & "C:\Program Files\CMake\bin\cmake.exe" --build . --target install --config Release --parallel 12
     if($LASTEXITCODE -ne 0) {
         throw "Build failed!"
     } 
