@@ -43,6 +43,9 @@ cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
 cp out/lib/$LIBZIP out/bin
+if [ "${OS}" = "linux" ]; then
+    cp -Pf $DOWNLOAD_DIR/lib/*.so* out/bin/
+fi
 
 ZIP_FILENAME=testserver_${OS}_x64.zip
 pushd out/bin
