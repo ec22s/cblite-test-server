@@ -17,6 +17,31 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/out)
+
+# if(WINDOWS_STORE)
+#     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+#     set(PACKAGE_GUID "3f18ac77-9071-4c4d-beed-9f33b982780c")
+
+#     file(COPY UWP/Package.appxmanifest DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+#     set(CONTENT_FILES ${CMAKE_CURRENT_BINARY_DIR}/Package.appxmanifest)
+#     set(
+#         ASSET_FILES
+#         UWP/Assets/LockScreenLogo.scale-200.png
+#         UWP/Assets/SplashScreen.scale-200.png
+#         UWP/Assets/Square150x150Logo.scale-200.png
+#         UWP/Assets/Square44x44Logo.scale-200.png
+#         UWP/Assets/Square44x44Logo.targetsize-24_altform-unplated.png
+#         UWP/Assets/StoreLogo.png
+#         UWP/Assets/Wide310x150Logo.scale-200.png
+#     )
+
+#     set(RESOURCE_FILES ${CONTENT_FILES} ${ASSET_FILES} UWP/UWP_TemporaryKey.pfx)
+
+#     set_property(SOURCE ${CONTENT_FILES} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+#     set_property(SOURCE ${ASSET_FILES} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+#     set_property(SOURCE ${ASSET_FILES} PROPERTY VS_DEPLOYMENT_LOCATION "Assets")
+# endif()
+
 add_subdirectory(shared)
 
 get_directory_property(civetweb_SOURCE_DIR DIRECTORY shared DEFINITION civetweb_SOURCE_DIR)
@@ -102,8 +127,22 @@ if(ANDROID)
         android
         ${log-lib}
     )
-elseif(WINDOWS_STORE)
+# elseif(WINDOWS_STORE)
+#     add_library(testserver SHARED ${TESTSERVER_COMMON_SRC})
 
+#     target_sources(
+#         testserver PRIVATE
+#         src/UWP/main.cpp
+#         src/UWP/FilePathResolver+UWP.cpp
+#     )
+
+#     set_target_properties(testserver PROPERTIES COMPILE_FLAGS /ZW)
+#     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /nodefaultlib:kernel32.lib /nodefaultlib:ole32.lib")
+
+#     add_executable(
+#         testapp WIN32
+#         UWP/App.xaml.cpp
+#     )
 else()
     add_executable(testserver ${TESTSERVER_COMMON_SRC})
 

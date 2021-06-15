@@ -39,7 +39,8 @@ option(CIVETWEB_ENABLE_SSL "Enables the secure socket layer" OFF)
 option(CIVETWEB_ENABLE_ASAN "Enable ASAN in debug mode" OFF)
 option(CIVETWEB_BUILD_TESTING "Enable automated testing of civetweb" OFF)
 option(CIVETWEB_ENABLE_SERVER_EXECUTABLE "Enable building of the server executable" OFF)
-set(BUILD_SHARED_LIBS OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+set(BUILD_SHARED_LIBS OFF) # Ugh how many times do I have to tell you?!
 
 message(STATUS "Fetching civetweb...")
 FetchContent_MakeAvailable(civetweb)
@@ -69,9 +70,10 @@ if(MSVC)
     else()
         set(ZLIB_LIBRARY ${zlib_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zlibstatic.lib)
     endif()
+    set(ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR})
+    target_include_directories(zlibstatic PRIVATE ${zlib_BINARY_DIR})
 endif()
 
-option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 FetchContent_Declare(
     libzip
     GIT_REPOSITORY https://github.com/nih-at/libzip
@@ -89,3 +91,4 @@ option(ENABLE_WINDOWS_CRYPTO "" OFF)
 option(ENABLE_OPENSSL "" OFF)
 message(STATUS "Fetching libzip...")
 FetchContent_MakeAvailable(libzip)
+target_include_directories(zip PRIVATE ${zlib_BINARY_DIR})

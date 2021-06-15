@@ -6,13 +6,11 @@ BLD_NUM=${2}
 
 case "${OSTYPE}" in
     darwin*)  OS="macosx"
-              LIBZIP="libzip.5.dylib"
               LIBCBL="libCouchbaseLiteC.dylib"
               ZIP_CMD="unzip"
               ZIP_EXT="zip"
               ;;
     linux*)   OS="linux"
-              LIBZIP="libzip.so.5"
               LIBCBL="libCouchbaseLiteC.so"
               ZIP_CMD="tar xvf"
               ZIP_EXT="tar.gz"
@@ -42,7 +40,6 @@ pushd $BUILD_DIR
 cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
-cp out/lib/$LIBZIP out/bin
 if [ "${OS}" = "linux" ]; then
     cp -Pf $DOWNLOAD_DIR/lib/*.so* out/bin/
 fi
