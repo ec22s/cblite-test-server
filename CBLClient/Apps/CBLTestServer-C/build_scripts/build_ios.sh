@@ -29,6 +29,7 @@ xcodebuild -scheme TestServer -sdk iphonesimulator -configuration Release -deriv
 xcodebuild -scheme TestServer -sdk iphoneos -configuration Release -derivedDataPath $BUILD_DEVICE_FOLDER -allowProvisioningUpdates | xcpretty
 popd
 
+mkdir -p $ZIPS_DIR
 pushd $ZIPS_DIR
 mv $SCRIPT_DIR/../ios/TestServer/$BUILD_SIM_FOLDER/Build/Products/Release-iphonesimulator/TestServer.app .
 mv $SCRIPT_DIR/../ios/TestServer/$BUILD_DEVICE_FOLDER/Build/Products/Release-iphoneos/TestServer.app TestServer-Device.app
