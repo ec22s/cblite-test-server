@@ -21,8 +21,8 @@ rm ${ZIP_FILENAME}
 popd
 
 pushd $SCRIPT_DIR/../ios/TestServer
-xcodebuild -scheme TestServer -sdk iphonesimulator -configuration Release -derivedDataPath $BUILD_SIM_FOLDER
-xcodebuild -scheme TestServer -sdk iphoneos -configuration Release -derivedDataPath $BUILD_DEVICE_FOLDER -allowProvisioningUpdates
+xcodebuild -scheme TestServer -sdk iphonesimulator -configuration Release -derivedDataPath $BUILD_SIM_FOLDER | xcpretty
+xcodebuild -scheme TestServer -sdk iphoneos -configuration Release -derivedDataPath $BUILD_DEVICE_FOLDER -allowProvisioningUpdates | xcpretty
 popd
 
 pushd $ZIPS_DIR
