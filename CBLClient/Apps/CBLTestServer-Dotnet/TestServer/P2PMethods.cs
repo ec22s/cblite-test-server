@@ -310,7 +310,7 @@ namespace Couchbase.Lite.Testing
             if (postBody.ContainsKey("heartbeat"))
             {
                 String heartbeat = postBody["heartbeat"].ToString();
-                if (!(String.IsNullOrEmpty(heartbeat.Trim())))
+                if (!String.IsNullOrEmpty(heartbeat.Trim()))
                 {
                     config.Heartbeat = new System.TimeSpan(long.Parse(heartbeat) * 10000000);
                 }
@@ -319,7 +319,8 @@ namespace Couchbase.Lite.Testing
             if (postBody.ContainsKey("max_retries"))
             {
                 String maxRetries = postBody["max_retries"].ToString();
-                if (!(String.IsNullOrEmpty(maxRetries)))
+
+                if (!String.IsNullOrEmpty(maxRetries.Trim()))
                 {
                     config.MaxAttempts = int.Parse(maxRetries);
                 }
@@ -328,7 +329,8 @@ namespace Couchbase.Lite.Testing
             if (postBody.ContainsKey("max_timeout"))
             {
                 String maxRetryWaitTime = postBody["max_timeout"].ToString();
-                if (!(String.IsNullOrEmpty(maxRetryWaitTime)))
+
+                if (!String.IsNullOrEmpty(maxRetryWaitTime.Trim()))
                 {
                     config.MaxAttemptsWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime) * 10000000);
                 }
