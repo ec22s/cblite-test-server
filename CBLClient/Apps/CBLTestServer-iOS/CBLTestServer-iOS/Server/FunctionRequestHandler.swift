@@ -58,7 +58,7 @@ public class FunctionRequestHandler {
             let x: Float = args.get(name: "x")!
             let y: Float = args.get(name: "y")!
             
-            return Function.atan2(x:Expression.float(x), y:Expression.float(y))
+            return Function.atan2(y:Expression.float(y), x:Expression.float(x))
             
         case "function_ceil":
             let expression: Expression = args.get(name: "expression")!
