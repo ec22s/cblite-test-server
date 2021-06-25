@@ -58,12 +58,17 @@ inline errno_t cbl_fopen(FILE** fd, const char* path, const char* mode) {
     return fopen_s(fd, path, mode);
 }
 
+inline int cbl_mkdir(const char* path, ...) {
+    return _mkdir(path);
+}
+
 #else
 #include <unistd.h>
 constexpr char DIRECTORY_SEPARATOR = '/';
 typedef struct stat cbl_stat_t;
 #define cbl_stat stat
 #define cbl_getcwd getcwd
+#define cbl_mkdir mkdir
 
 inline int cbl_fopen(FILE** fd, const char* path, const char* mode) {
     *fd = fopen(path, mode);

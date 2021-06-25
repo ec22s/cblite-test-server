@@ -73,6 +73,7 @@ namespace file_logging_methods {
             ss << LogTempDirectory() << DIRECTORY_SEPARATOR << "log_" << CBL_Now();
             directory = ss.str();
             cout << "File logging configured at: " << directory;
+            cbl_mkdir(directory.c_str(), 0755);
         } else {
             directory = body["directory"].get<string>();
         }
@@ -210,6 +211,7 @@ namespace file_logging_methods {
             ss << LogTempDirectory() << DIRECTORY_SEPARATOR << "log_" << CBL_Now();
             directory = ss.str();
             cout << "File logging configured at: " << directory;
+            cbl_mkdir(directory.c_str(), 0755);
         }
 
         auto config = *CBLLog_FileConfig();
@@ -252,7 +254,7 @@ namespace file_logging_methods {
             }
 
             string name(contents->d_name);
-            if(!name.empty() && !is_dir(contents, logDirectory)) {
+            if(!name.empty() && name[0] != '.' && !is_dir(contents, logDirectory)) {
                 string fullPath = logDirectory + DIRECTORY_SEPARATOR + name;
                 FILE* fp;
                 int openResult = cbl_fopen(&fp, fullPath.c_str(), "rb");
