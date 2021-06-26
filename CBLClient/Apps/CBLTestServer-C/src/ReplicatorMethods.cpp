@@ -128,7 +128,7 @@ namespace replicator_methods {
         {
             CBLError err;
             CBLReplicator* repl;
-            TRY((repl = CBLReplicator_New(repConf, &err)), err)
+            TRY((repl = CBLReplicator_Create(repConf, &err)), err)
             write_serialized_body(conn, memory_map::store(repl, CBLReplicator_EntryDelete));
         });
     }
@@ -160,7 +160,7 @@ namespace replicator_methods {
             const auto status = CBLReplicator_Status(r);
             body["activityLevel"] = status.activity;
             progress["documentCount"] = status.progress.documentCount;
-            progress["fractionComplete"] = status.progress.fractionComplete;
+            progress["complete"] = status.progress.complete;
             body["progress"] = progress;
             error["domain"] = status.error.domain;
             error["code"] = status.error.code;

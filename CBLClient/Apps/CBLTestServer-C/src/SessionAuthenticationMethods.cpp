@@ -16,7 +16,7 @@ namespace session_authentication_methods {
     void session_authentication_create(json& body, mg_connection* conn) {
         const auto sessionId = body["sessionId"].get<string>();
         const auto cookieName = body["cookieName"].get<string>();
-        auto* authentication = CBLAuth_NewSession(flstr(sessionId), flstr(cookieName));
+        auto* authentication = CBLAuth_CreateSession(flstr(sessionId), flstr(cookieName));
         const auto id = memory_map::store(authentication, CBLAuthenticator_EntryDelete);
         write_serialized_body(conn, id);
     }

@@ -166,7 +166,7 @@ namespace replicator_configuration_methods {
             config->database = db;
             if(body.contains("target_url")) {
                 const auto url = body["target_url"].get<string>();
-                auto* endpoint = CBLEndpoint_NewWithURL(flstr(url));
+                auto* endpoint = CBLEndpoint_CreateWithURL(flstr(url));
                 config->endpoint = endpoint;
             } else if(body.contains("target_db")) {
                 // TODO

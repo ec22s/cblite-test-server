@@ -28,11 +28,11 @@ namespace blob_methods {
 
         if(body.contains("content")) {
             const auto* data = static_cast<FLSliceResult *>(memory_map::get(body["content"].get<string>()));
-            auto* blob = CBLBlob_NewWithData(flstr(contentType), static_cast<FLSlice>(*data));
+            auto* blob = CBLBlob_CreateWithData(flstr(contentType), static_cast<FLSlice>(*data));
             write_serialized_body(conn, memory_map::store(blob, CBLBlob_EntryDelete));
         } else if(body.contains("stream")) {
             auto* stream = static_cast<CBLBlobWriteStream *>(memory_map::get(body["stream"].get<string>()));
-            auto* blob = CBLBlob_NewWithStream(flstr(contentType), stream);
+            auto* blob = CBLBlob_CreateWithStream(flstr(contentType), stream);
             write_serialized_body(conn, memory_map::store(blob, CBLBlob_EntryDelete));
         } else if(body.contains("fileURL")) {
             mg_send_http_error(conn, 501, "Not supported in C API");

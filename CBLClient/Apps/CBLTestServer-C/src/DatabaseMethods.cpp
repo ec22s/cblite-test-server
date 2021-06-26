@@ -266,7 +266,7 @@ namespace database_methods {
         {
             CBLError err;
             CBLQuery* query;
-            TRY((query = CBLQuery_New(db, kCBLN1QLLanguage, flstr(queryString), nullptr, &err)), err)
+            TRY((query = CBLDatabase_CreateQuery(db, kCBLN1QLLanguage, flstr(queryString), nullptr, &err)), err)
             DEFER {
                 CBLQuery_Release(query);
             };
