@@ -4,6 +4,7 @@
 #include "Defer.hh"
 #include "FleeceHelpers.h"
 #include "Defines.h"
+#include "FilePathResolver.h"
 
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
@@ -395,8 +396,9 @@ namespace database_methods {
     }
 
     void database_getPreBuiltDb(json& body, mg_connection* conn) {
-        // TODO: Need per platform implementation
-        throw std::domain_error("Not implemented");
+        string dbPath = file_resolution::resolve_path(body["dbPath"].get<string>(), true);
+        dbPath += "/";
+        write_serialized_body(conn, dbPath);
     }
 
     void database_changeEncryptionKey(json& body, mg_connection* conn) {

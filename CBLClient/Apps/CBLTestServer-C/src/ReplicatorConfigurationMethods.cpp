@@ -3,12 +3,14 @@
 #include "Defines.h"
 #include "FleeceHelpers.h"
 #include "Router.h"
+#include "FilePathResolver.h"
 
 #include <string>
 #include <algorithm>
 #include <unordered_set>
 #include <thread>
 #include <cctype>
+#include <fstream>
 #include INCLUDE_CBL(CouchbaseLite.h)
 
 using namespace nlohmann;
@@ -27,7 +29,11 @@ static bool replicator_boolean_filter_callback(void* context, CBLDocument* doc, 
 }
 
 static bool replicator_deleted_filter_callback(void* context, CBLDocument* doc, CBLDocumentFlags flags) {
-    return flags & kCBLDocumentFlagsDeleted;
+    return !(flags & kCBLDocumentFlagsDeleted);
+}
+
+static bool replicator_access_revoked_filter_callback(void* context, CBLDocument* doc, CBLDocumentFlags flags) {
+    return !(flags & kCBLDocumentFlagsAccessRemoved);
 }
 
 static void checkMismatchDocID(const CBLDocument* localDoc, const CBLDocument* remoteDoc, string&& docId) {
@@ -158,6 +164,15 @@ static const CBLDocument* delayed_local_win_conflict_resolution(void *context, F
     return localDocument;
 }
 
+static void CBLReplicatorConfig_EntryDelete(void* ptr) {
+    auto* config = (CBLReplicatorConfiguration *)ptr;
+    if(config->pinnedServerCertificate.buf) {
+        free((void *)config->pinnedServerCertificate.buf);
+    }
+
+    free(config);
+}
+
 namespace replicator_configuration_methods {
     void replicatorConfiguration_create(json& body, mg_connection* conn) {
         with<CBLDatabase *>(body, "source_db", [conn, &body](CBLDatabase* db)
@@ -211,11 +226,24 @@ namespace replicator_configuration_methods {
             }
 
             if(body.contains("heartbeat")) {
-                // TODO: Missing from C API
+                config->heartbeat = stoul(body["heartbeat"].get<string>(), nullptr, 10);
             }
 
             if(body.contains("pinnedservercert")) {
-                // TODO: Need platform specific implementation
+                string certFile = file_resolution::resolve_path(body["pinnedservercert"].get<string>(), false);
+                ifstream ifs(certFile.c_str(), ios::binary);
+                ifs.exceptions(ifs.failbit | ifs.badbit);
+                ifs.seekg(0, ios::end);
+                auto fileSize = ifs.tellg();
+                ifs.seekg(0, ios::beg);
+                FLSlice s {
+                    malloc(fileSize),
+                    fileSize
+                };
+
+                ifs.read((char *)s.buf, fileSize);
+                ifs.close();
+                config->pinnedServerCertificate = s; // Leak on purpose since this has to survive between remote calls
             }
 
             if(body.contains("replication_type")) {
@@ -237,8 +265,7 @@ namespace replicator_configuration_methods {
                 } else if(filterCallbackFunction == "deleted") {
                     config->pushFilter = replicator_deleted_filter_callback;
                 } else if(filterCallbackFunction == "access_revoked") {
-                    // Need C API support
-                    throw domain_error("Not implemented");
+                    config->pushFilter = replicator_access_revoked_filter_callback;
                 }
             }
 
@@ -249,8 +276,7 @@ namespace replicator_configuration_methods {
                 } else if(filterCallbackFunction == "deleted") {
                     config->pullFilter = replicator_deleted_filter_callback;
                 } else if(filterCallbackFunction == "access_revoked") {
-                    // Need C API support
-                    throw domain_error("Not implemented");
+                    config->pullFilter = replicator_access_revoked_filter_callback;
                 }
             }
 
@@ -277,7 +303,7 @@ namespace replicator_configuration_methods {
                 }
             }
 
-            write_serialized_body(conn, memory_map::store(config, free));
+            write_serialized_body(conn, memory_map::store(config, CBLReplicatorConfig_EntryDelete));
         });
     }
 
