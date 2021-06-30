@@ -8,6 +8,12 @@
 using namespace std;
 using namespace nlohmann;
 
+#ifdef __ANDROID__
+#include <android_native_app_glue.h>
+#include <sys/stat.h>
+extern android_app* GlobalApp;
+#endif
+
 static void CBLDatabaseConfiguration_EntryDelete(void* ptr) {
     // Sigh...
     auto* config = static_cast<CBLDatabaseConfiguration *>(ptr);
@@ -24,6 +30,21 @@ namespace database_configuration_methods {
             memcpy(allocated, directory.c_str(), directory.size());
             databaseConfig->directory = { allocated, directory.size() };
         }
+#ifdef __ANDROID__
+        else {
+            // The default directory provided by C is not always writable
+            string internalData = GlobalApp->activity->internalDataPath;
+            if(internalData[internalData.size() - 1] != '/') {
+                internalData += "/";
+            }
+
+            internalData += "db/";
+            mkdir(internalData.c_str(), 0755);
+            char* allocated = new char[internalData.size()];
+            memcpy(allocated, internalData.c_str(), internalData.size());
+            databaseConfig->directory = { allocated, internalData.size() };
+        }
+#endif
 
         write_serialized_body(conn, memory_map::store(databaseConfig, CBLDatabaseConfiguration_EntryDelete));
     }
