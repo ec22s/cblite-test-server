@@ -238,7 +238,7 @@ namespace replicator_configuration_methods {
                 ifs.seekg(0, ios::beg);
                 FLSlice s {
                     malloc(fileSize),
-                    fileSize
+                    (size_t)fileSize
                 };
 
                 ifs.read((char *)s.buf, fileSize);
