@@ -17,6 +17,7 @@ namespace replicator_methods {
     void replicator_removeReplicatorEventListener(nlohmann::json& body, mg_connection* conn);
     void replicator_removeChangeListener(nlohmann::json& body, mg_connection* conn);
     void replicator_replicatorEventGetChanges(nlohmann::json& body, mg_connection* conn);
+    void replicator_config(nlohmann::json& body, mg_connection* conn);
     void replicator_replicatorEventChangesCount(nlohmann::json& body, mg_connection* conn);
     void replicator_changeListenerChangesCount(nlohmann::json& body, mg_connection* conn);
 }

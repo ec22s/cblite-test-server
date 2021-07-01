@@ -30,6 +30,17 @@ namespace database_configuration_methods {
             memcpy(allocated, directory.c_str(), directory.size());
             databaseConfig->directory = { allocated, directory.size() };
         }
+        
+        if(body.contains("password")) {
+            CBLEncryptionKey key;
+            if(!CBLEncryptionKey_FromPassword(&key, flstr(body["password"].get<string>()))) {
+                mg_send_http_error(conn, 501, "Error deriving key from password material");
+                return;
+            }
+            
+            databaseConfig->encryptionKey = key;
+        }
+        
 #ifdef __ANDROID__
         else {
             // The default directory provided by C is not always writable

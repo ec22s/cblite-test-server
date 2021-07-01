@@ -262,7 +262,7 @@ namespace database_methods {
     void database_getDocIds(json& body, mg_connection* conn) {
         const auto limit = body["limit"].get<int>();
         const auto offset = body["offset"].get<int>();
-        const auto queryString = "select meta().id from db limit " + to_string(limit) + " offset " + to_string(offset);
+        const auto queryString = "select meta().id from _ limit " + to_string(limit) + " offset " + to_string(offset);
         with<CBLDatabase *>(body, "database", [conn, &queryString](CBLDatabase* db)
         {
             CBLError err;

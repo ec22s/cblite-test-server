@@ -273,6 +273,12 @@ namespace replicator_methods {
         });
     }
 
+    void replicator_config(json& body, mg_connection* conn) {
+        auto repl = (CBLReplicator *)memory_map::get(body["replicator"].get<string>());
+        auto retVal = memory_map::store(CBLReplicator_Config(repl), nullptr);
+        write_serialized_body(conn, retVal);
+    }
+
     void replicator_replicatorEventChangesCount(json& body, mg_connection* conn) {
         with<EventReplicationListenerProxy *>(body, "changeListener", [conn](EventReplicationListenerProxy *listener)
         {

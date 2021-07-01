@@ -226,7 +226,7 @@ namespace replicator_configuration_methods {
             }
 
             if(body.contains("heartbeat")) {
-                config->heartbeat = stoul(body["heartbeat"].get<string>(), nullptr, 10);
+                config->heartbeat = (unsigned int)stoul(body["heartbeat"].get<string>(), nullptr, 10);
             }
 
             if(body.contains("pinnedservercert")) {

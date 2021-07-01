@@ -25,6 +25,8 @@ mkdir -p cmake
 cd cmake
 cmake ../../../shared
 cd ..
+
+set -o pipefail # Get xcpretty to report failures
 xcodebuild -scheme TestServer -sdk iphonesimulator -configuration Release -derivedDataPath $BUILD_SIM_FOLDER | xcpretty
 xcodebuild -scheme TestServer -sdk iphoneos -configuration Release -derivedDataPath $BUILD_DEVICE_FOLDER -allowProvisioningUpdates | xcpretty
 popd
