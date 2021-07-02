@@ -45,7 +45,10 @@ if [ "${OS}" = "linux" ]; then
 fi
 
 ZIP_FILENAME=testserver_${OS}_x64.zip
+cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/certs out/bin
+cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/Databases out/bin
+cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/Files out/bin
 pushd out/bin
-zip ${ZIP_FILENAME} *
+zip -r ${ZIP_FILENAME} *
 mkdir -p $ZIPS_DIR
 mv ${ZIP_FILENAME} $ZIPS_DIR

@@ -33,8 +33,11 @@ try {
     } 
 
     Copy-Item "$DOWNLOAD_DIR\bin\CouchbaseLiteC.dll" out\bin
+    Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\certs out\bin
+    Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Databases out\bin
+    Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Files out\bin
     Push-Location out\bin
-    7za a -tzip -mx9 $ZIPS_DIR\testserver_windesktop_x64.zip testserver.exe zlib.dll CouchbaseLiteC.dll
+    7za a -bb1 -tzip -mx5 $ZIPS_DIR\testserver_windesktop_x64.zip testserver.exe zlib.dll CouchbaseLiteC.dll certs Databases Files
     Pop-Location
 } finally {
     Pop-Location
