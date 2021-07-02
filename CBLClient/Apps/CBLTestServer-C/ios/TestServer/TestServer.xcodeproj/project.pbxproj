@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		42827136268ECFD600E35F5B /* certs in Resources */ = {isa = PBXBuildFile; fileRef = 42827135268ECFD600E35F5B /* certs */; };
+		42827139268ECFF200E35F5B /* Databases in Resources */ = {isa = PBXBuildFile; fileRef = 42827137268ECFF200E35F5B /* Databases */; };
+		4282713A268ECFF200E35F5B /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 42827138268ECFF200E35F5B /* Files */; };
+		4282713C268ED06800E35F5B /* FilePathResolver+Apple.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4282713B268ED06800E35F5B /* FilePathResolver+Apple.mm */; };
 		42F2DA2026535018001C9EC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA1F26535018001C9EC3 /* AppDelegate.swift */; };
 		42F2DA2226535018001C9EC3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA2126535018001C9EC3 /* SceneDelegate.swift */; };
 		42F2DA2426535018001C9EC3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA2326535018001C9EC3 /* ViewController.swift */; };
@@ -22,7 +26,6 @@
 		42F2DA88265351B8001C9EC3 /* SessionAuthenticationMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA59265351B8001C9EC3 /* SessionAuthenticationMethods.cpp */; };
 		42F2DA89265351B8001C9EC3 /* Router.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA5B265351B8001C9EC3 /* Router.cpp */; };
 		42F2DA8A265351B8001C9EC3 /* MemoryMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA5C265351B8001C9EC3 /* MemoryMap.cpp */; };
-		42F2DA8B265351B8001C9EC3 /* FilePathResolver+Desktop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA60265351B8001C9EC3 /* FilePathResolver+Desktop.cpp */; };
 		42F2DA8C265351B8001C9EC3 /* TestServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA61265351B8001C9EC3 /* TestServer.cpp */; };
 		42F2DA8D265351B8001C9EC3 /* Response.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA64265351B8001C9EC3 /* Response.cpp */; };
 		42F2DA8E265351B8001C9EC3 /* ArrayMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA65265351B8001C9EC3 /* ArrayMethods.cpp */; };
@@ -169,6 +172,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		42827135268ECFD600E35F5B /* certs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = certs; path = "../../../CBLTestServer-Dotnet/TestServer.NetCore/certs"; sourceTree = "<group>"; };
+		42827137268ECFF200E35F5B /* Databases */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Databases; path = "../../../CBLTestServer-Dotnet/TestServer.NetCore/Databases"; sourceTree = "<group>"; };
+		42827138268ECFF200E35F5B /* Files */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Files; path = "../../../CBLTestServer-Dotnet/TestServer.NetCore/Files"; sourceTree = "<group>"; };
+		4282713B268ED06800E35F5B /* FilePathResolver+Apple.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "FilePathResolver+Apple.mm"; sourceTree = "<group>"; };
 		42F2DA1C26535018001C9EC3 /* TestServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42F2DA1F26535018001C9EC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42F2DA2126535018001C9EC3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -200,7 +207,6 @@
 		42F2DA5D265351B8001C9EC3 /* ValueSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ValueSerializer.h; sourceTree = "<group>"; };
 		42F2DA5E265351B8001C9EC3 /* DatabaseMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseMethods.h; sourceTree = "<group>"; };
 		42F2DA5F265351B8001C9EC3 /* Defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Defines.h; sourceTree = "<group>"; };
-		42F2DA60265351B8001C9EC3 /* FilePathResolver+Desktop.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "FilePathResolver+Desktop.cpp"; sourceTree = "<group>"; };
 		42F2DA61265351B8001C9EC3 /* TestServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestServer.cpp; sourceTree = "<group>"; };
 		42F2DA62265351B8001C9EC3 /* MemoryMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryMap.h; sourceTree = "<group>"; };
 		42F2DA63265351B8001C9EC3 /* SessionAuthenticationMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionAuthenticationMethods.h; sourceTree = "<group>"; };
@@ -364,6 +370,9 @@
 		42F2DA1326535018001C9EC3 = {
 			isa = PBXGroup;
 			children = (
+				42827137268ECFF200E35F5B /* Databases */,
+				42827138268ECFF200E35F5B /* Files */,
+				42827135268ECFD600E35F5B /* certs */,
 				42F2DAA226548E87001C9EC3 /* config */,
 				42F2DA47265351B8001C9EC3 /* src */,
 				42F2DA4326535167001C9EC3 /* Frameworks */,
@@ -435,7 +444,6 @@
 				42F2DA5D265351B8001C9EC3 /* ValueSerializer.h */,
 				42F2DA5E265351B8001C9EC3 /* DatabaseMethods.h */,
 				42F2DA5F265351B8001C9EC3 /* Defines.h */,
-				42F2DA60265351B8001C9EC3 /* FilePathResolver+Desktop.cpp */,
 				42F2DA61265351B8001C9EC3 /* TestServer.cpp */,
 				42F2DA62265351B8001C9EC3 /* MemoryMap.h */,
 				42F2DA63265351B8001C9EC3 /* SessionAuthenticationMethods.h */,
@@ -451,6 +459,7 @@
 				42F2DA7F265351B8001C9EC3 /* DictionaryMethods.h */,
 				42F2DA80265351B8001C9EC3 /* ReplicatorConfigurationMethods.h */,
 				42F2DA81265351B8001C9EC3 /* BasicAuthenticationMethods.cpp */,
+				4282713B268ED06800E35F5B /* FilePathResolver+Apple.mm */,
 			);
 			name = src;
 			path = ../../src;
@@ -660,8 +669,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4282713A268ECFF200E35F5B /* Files in Resources */,
+				42827139268ECFF200E35F5B /* Databases in Resources */,
 				42F2DA2C26535019001C9EC3 /* LaunchScreen.storyboard in Resources */,
 				42F2DA2926535019001C9EC3 /* Assets.xcassets in Resources */,
+				42827136268ECFD600E35F5B /* certs in Resources */,
 				42F2DA2726535018001C9EC3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -704,7 +716,6 @@
 				42F2DB762655F46C001C9EC3 /* zip_source_zip_new.c in Sources */,
 				42F2DB982655F46C001C9EC3 /* zip_source_free.c in Sources */,
 				42F2DA8E265351B8001C9EC3 /* ArrayMethods.cpp in Sources */,
-				42F2DA8B265351B8001C9EC3 /* FilePathResolver+Desktop.cpp in Sources */,
 				42F2DBC72655F46C001C9EC3 /* zip_source_zip.c in Sources */,
 				42F2DB852655F46C001C9EC3 /* zip_file_error_get.c in Sources */,
 				42F2DBA42655F46C001C9EC3 /* zip_open.c in Sources */,
@@ -796,6 +807,7 @@
 				42F2DB9E2655F46C001C9EC3 /* zip_fseek.c in Sources */,
 				42F2DB782655F46C001C9EC3 /* zip_fread.c in Sources */,
 				42F2DB482655F46C001C9EC3 /* zip_dir_add.c in Sources */,
+				4282713C268ED06800E35F5B /* FilePathResolver+Apple.mm in Sources */,
 				42F2DA8C265351B8001C9EC3 /* TestServer.cpp in Sources */,
 				42F2DBCC2655F7A3001C9EC3 /* zip_err_str.c in Sources */,
 				42F2DBAE2655F46C001C9EC3 /* zip_set_archive_flag.c in Sources */,
