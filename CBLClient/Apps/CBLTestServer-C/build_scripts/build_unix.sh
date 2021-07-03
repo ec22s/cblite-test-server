@@ -45,6 +45,7 @@ if [ "${OS}" = "linux" ]; then
 fi
 
 ZIP_FILENAME=testserver_${OS}_x64.zip
+cp $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/certs out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/Databases out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/Files out/bin

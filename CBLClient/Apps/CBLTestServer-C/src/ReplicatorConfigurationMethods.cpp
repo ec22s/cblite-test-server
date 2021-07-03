@@ -230,7 +230,7 @@ namespace replicator_configuration_methods {
             }
 
             if(body.contains("pinnedservercert")) {
-                string certFile = file_resolution::resolve_path(body["pinnedservercert"].get<string>(), false);
+                string certFile = file_resolution::resolve_path(body["pinnedservercert"].get<string>() + ".pem", false);
                 ifstream ifs(certFile.c_str(), ios::binary);
                 ifs.exceptions(ifs.failbit | ifs.badbit);
                 ifs.seekg(0, ios::end);

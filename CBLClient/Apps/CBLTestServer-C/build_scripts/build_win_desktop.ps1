@@ -33,6 +33,7 @@ try {
     } 
 
     Copy-Item "$DOWNLOAD_DIR\bin\CouchbaseLiteC.dll" out\bin
+    Copy-Item -ErrorAction Ignore $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer\sg_cert.pem out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\certs out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Databases out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Files out\bin
