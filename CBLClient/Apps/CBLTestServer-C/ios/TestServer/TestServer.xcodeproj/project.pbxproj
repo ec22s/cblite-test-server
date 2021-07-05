@@ -11,6 +11,7 @@
 		42827139268ECFF200E35F5B /* Databases in Resources */ = {isa = PBXBuildFile; fileRef = 42827137268ECFF200E35F5B /* Databases */; };
 		4282713A268ECFF200E35F5B /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 42827138268ECFF200E35F5B /* Files */; };
 		4282713C268ED06800E35F5B /* FilePathResolver+Apple.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4282713B268ED06800E35F5B /* FilePathResolver+Apple.mm */; };
+		4282713E26900E8A00E35F5B /* sg_cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 4282713D26900E8A00E35F5B /* sg_cert.pem */; };
 		42F2DA2026535018001C9EC3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA1F26535018001C9EC3 /* AppDelegate.swift */; };
 		42F2DA2226535018001C9EC3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA2126535018001C9EC3 /* SceneDelegate.swift */; };
 		42F2DA2426535018001C9EC3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA2326535018001C9EC3 /* ViewController.swift */; };
@@ -176,6 +177,7 @@
 		42827137268ECFF200E35F5B /* Databases */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Databases; path = "../../../CBLTestServer-Dotnet/TestServer.NetCore/Databases"; sourceTree = "<group>"; };
 		42827138268ECFF200E35F5B /* Files */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Files; path = "../../../CBLTestServer-Dotnet/TestServer.NetCore/Files"; sourceTree = "<group>"; };
 		4282713B268ED06800E35F5B /* FilePathResolver+Apple.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "FilePathResolver+Apple.mm"; sourceTree = "<group>"; };
+		4282713D26900E8A00E35F5B /* sg_cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = sg_cert.pem; path = "../../../CBLTestServer-Dotnet/TestServer/sg_cert.pem"; sourceTree = "<group>"; };
 		42F2DA1C26535018001C9EC3 /* TestServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42F2DA1F26535018001C9EC3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42F2DA2126535018001C9EC3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 		42F2DA1326535018001C9EC3 = {
 			isa = PBXGroup;
 			children = (
+				4282713D26900E8A00E35F5B /* sg_cert.pem */,
 				42827137268ECFF200E35F5B /* Databases */,
 				42827138268ECFF200E35F5B /* Files */,
 				42827135268ECFD600E35F5B /* certs */,
@@ -670,6 +673,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4282713A268ECFF200E35F5B /* Files in Resources */,
+				4282713E26900E8A00E35F5B /* sg_cert.pem in Resources */,
 				42827139268ECFF200E35F5B /* Databases in Resources */,
 				42F2DA2C26535019001C9EC3 /* LaunchScreen.storyboard in Resources */,
 				42F2DA2926535019001C9EC3 /* Assets.xcassets in Resources */,

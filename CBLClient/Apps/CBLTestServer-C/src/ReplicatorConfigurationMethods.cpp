@@ -230,7 +230,12 @@ namespace replicator_configuration_methods {
             }
 
             if(body.contains("pinnedservercert")) {
+                // TODO: See about getting PEM version into the assets for Android too
+#ifdef __ANDROID__
+                string certFile = file_resolution::resolve_path(body["pinnedservercert"].get<string>() + ".cer", false);
+#else
                 string certFile = file_resolution::resolve_path(body["pinnedservercert"].get<string>() + ".pem", false);
+#endif
                 ifstream ifs(certFile.c_str(), ios::binary);
                 ifs.exceptions(ifs.failbit | ifs.badbit);
                 ifs.seekg(0, ios::end);
