@@ -198,17 +198,23 @@ namespace replicator_methods {
     }
 
     void replicator_getTotal(json& body, mg_connection* conn) {
-        with<CBLReplicator *>(body, "replicator", [conn](CBLReplicator* r)
-        {
-            const auto status = CBLReplicator_Status(r);
-            write_serialized_body(conn, status.progress.documentCount);
-        });
+        // Note: Due to the new API not having the total count, return 1.0
+        // in place of the actual total since having completed == 1.0 means
+        // it is done
+        write_serialized_body(conn, 1.0f);
     }
 
     void replicator_getCompleted(json& body, mg_connection* conn) {
-        // TODO: Not in C API
-        const char* txt = "Not available in C API.";
-        mg_send_http_error(conn, 501, "Not available in C API.");
+        with<CBLReplicator *>(body, "replicator", [conn](CBLReplicator* r) 
+        {
+            auto status = CBLReplicator_Status(r);
+            if(abs(status.progress.complete - 1.0f) - FLT_EPSILON <= 0) {
+                // Send the exact bytes just in case the client is using ==
+                write_serialized_body(conn, 1.0f);
+            } else {
+                write_serialized_body(conn, status.progress.complete);
+            }
+        });
     }
 
     void replicator_addChangeListener(json& body, mg_connection* conn) {
