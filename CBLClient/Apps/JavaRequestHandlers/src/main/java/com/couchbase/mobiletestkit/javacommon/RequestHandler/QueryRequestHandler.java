@@ -179,7 +179,7 @@ public class QueryRequestHandler {
         String select_property2 = args.get("select_property2");
         String whr_key = args.get("whr_key");
         String locale = args.get("locale");
-        Collation with_locale = Collation.unicode().locale(locale);
+        Collation with_locale = Collation.unicode().setLocale(locale);
         Query search_query = QueryBuilder
             .select(
                 SelectResult.expression(Meta.id),
@@ -334,8 +334,8 @@ public class QueryRequestHandler {
         List<Object> resultArray = new ArrayList<>();
 
         Collation collation = Collation.unicode()
-            .ignoreAccents(true)
-            .ignoreCase(true);
+            .setIgnoreAccents(true)
+            .setIgnoreCase(true);
         Query query = QueryBuilder
             .select(
                 SelectResult.expression(Meta.id),
