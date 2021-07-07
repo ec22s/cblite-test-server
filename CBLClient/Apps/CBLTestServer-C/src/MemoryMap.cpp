@@ -111,7 +111,9 @@ namespace memory_map {
         LOCK();
         NextID = 0;
         for(const auto& entry : Map) {
-            entry.second.cleanup(entry.second.item);
+            if(entry.second.cleanup) {
+                entry.second.cleanup(entry.second.item);
+            }
         }
 
         Map.clear();
