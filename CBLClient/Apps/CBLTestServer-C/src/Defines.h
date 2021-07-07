@@ -49,13 +49,29 @@ inline std::string to_string(FLSliceResult sr) {
 
 #ifdef _MSC_VER
 #include <direct.h>
+#include <io.h>
+
+#define NOMINMAX
+#include <Windows.h>
 constexpr char DIRECTORY_SEPARATOR = '\\';
 typedef struct _stat64 cbl_stat_t;
 #define cbl_stat _stat64
 #define cbl_getcwd _getcwd
 
 inline errno_t cbl_fopen(FILE** fd, const char* path, const char* mode) {
-    return fopen_s(fd, path, mode);
+    HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    int opened = _open_osfhandle((intptr_t)hFile, 0);
+    if(opened == -1) {
+        return errno;
+    }
+
+    *fd = _fdopen(opened, mode);
+    if(!*fd) {
+        _close(opened);
+        return errno;
+    }
+
+    return 0;
 }
 
 inline int cbl_mkdir(const char* path, ...) {

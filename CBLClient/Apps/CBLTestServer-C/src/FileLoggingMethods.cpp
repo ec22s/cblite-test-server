@@ -2,6 +2,7 @@
 #include "Router.h"
 #include "MemoryMap.h"
 #include "Defines.h"
+#include "Defer.hh"
 
 #include <iostream>
 #include <string>
@@ -210,7 +211,7 @@ namespace file_logging_methods {
             stringstream ss;
             ss << LogTempDirectory() << DIRECTORY_SEPARATOR << "log_" << CBL_Now();
             directory = ss.str();
-            cout << "File logging configured at: " << directory;
+            cout << "File logging configured at: " << directory << endl;
             cbl_mkdir(directory.c_str(), 0755);
         }
 
@@ -223,13 +224,23 @@ namespace file_logging_methods {
     }
 
     void logging_getLogsInZip(json& body, mg_connection* conn) {
-        auto flDir = CBLLog_FileConfig()->directory;
+        auto* fileConfig = CBLLog_FileConfig();
+        if(!fileConfig) {
+            mg_send_http_error(conn, 500, "Logging not set up yet, need to call logging_configure first");
+            return;
+        }
+
+        auto flDir = fileConfig->directory;
         string logDirectory(static_cast<const char *>(flDir.buf), flDir.size);
         DIR* dir = opendir(logDirectory.c_str());
         if(!dir) {
             mg_send_http_error(conn, 500, "opendir returned error %d", errno);
             return;
         }
+
+        DEFER {
+            closedir(dir);
+        };
 
         zip_error_t zErr;
         zip_source_t* zipSrc = zip_source_buffer_create(nullptr, 0, 0, &zErr);
@@ -238,6 +249,10 @@ namespace file_logging_methods {
             zip_error_fini(&zErr);
             return;
         }
+
+        DEFER {
+            zip_source_free(zipSrc);
+        };
 
         zip_t* za = zip_open_from_source(zipSrc, ZIP_TRUNCATE, &zErr);
         if(!za) {
@@ -266,6 +281,7 @@ namespace file_logging_methods {
                 zip_source_t* f = zip_source_filep_create(fp, 0, -1, &zErr);
                 if(!f) {
                     cerr << "Unable to read " << name << endl;
+                    fclose(fp);
                     continue;
                 }
 
@@ -287,6 +303,5 @@ namespace file_logging_methods {
         mg_send_http_ok(conn, "application/zip", sz);
         mg_write(conn, outbuffer, sz);
         free(outbuffer);
-        zip_source_free(zipSrc);
     }
 }
