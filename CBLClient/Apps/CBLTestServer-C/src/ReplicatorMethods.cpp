@@ -208,7 +208,7 @@ namespace replicator_methods {
         with<CBLReplicator *>(body, "replicator", [conn](CBLReplicator* r) 
         {
             auto status = CBLReplicator_Status(r);
-            if(abs(status.progress.complete - 1.0f) - FLT_EPSILON <= 0) {
+            if(abs(status.progress.complete - 1.0f) - numeric_limits<float>::epsilon() <= 0) {
                 // Send the exact bytes just in case the client is using ==
                 write_serialized_body(conn, 1.0f);
             } else {
