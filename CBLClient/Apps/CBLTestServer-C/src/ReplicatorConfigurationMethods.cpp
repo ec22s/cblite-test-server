@@ -178,6 +178,7 @@ namespace replicator_configuration_methods {
         with<CBLDatabase *>(body, "source_db", [conn, &body](CBLDatabase* db)
         {
             auto config = static_cast<CBLReplicatorConfiguration *>(malloc(sizeof(CBLReplicatorConfiguration)));
+            memset(config, 0, sizeof(CBLReplicatorConfiguration));
             config->database = db;
             if(body.contains("target_url")) {
                 const auto url = body["target_url"].get<string>();
