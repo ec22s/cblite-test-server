@@ -170,6 +170,12 @@ static void CBLReplicatorConfig_EntryDelete(void* ptr) {
         free((void *)config->pinnedServerCertificate.buf);
     }
 
+    CBLAuth_Free(config->authenticator);
+    CBLEndpoint_Free(config->endpoint);
+    FLArray_Release(config->documentIDs);
+    FLArray_Release(config->channels);
+    FLDict_Release(config->headers);
+
     free(config);
 }
 
@@ -185,8 +191,9 @@ namespace replicator_configuration_methods {
                 auto* endpoint = CBLEndpoint_CreateWithURL(flstr(url));
                 config->endpoint = endpoint;
             } else if(body.contains("target_db")) {
-                // TODO
-                throw domain_error("target_db not implemented yet");
+                with<CBLDatabase *>(body, "target_db", [config](CBLDatabase* db) {
+                    config->endpoint = CBLEndpoint_CreateWithLocalDB(db);
+                });
             } else {
                 throw domain_error("Illegal arguments provided");
             }
@@ -318,6 +325,10 @@ namespace replicator_configuration_methods {
         {
             with<CBLAuthenticator *>(body, "authenticator", [repConf](CBLAuthenticator* auth)
             {
+                if(auth != repConf->authenticator) {
+                    CBLAuth_Free(repConf->authenticator);
+                }
+
                 repConf->authenticator = auth;
             });
         });
