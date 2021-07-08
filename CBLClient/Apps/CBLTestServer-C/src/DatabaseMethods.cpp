@@ -319,7 +319,7 @@ namespace database_methods {
             FLSlot_SetValue(slot, reinterpret_cast<FLValue>(CBLDocument_Properties(doc)));
         }
 
-        write_serialized_body(conn, retVal);
+        write_serialized_body(conn, reinterpret_cast<FLValue>(retVal));
         FLMutableDict_Release(retVal);
     }
 
