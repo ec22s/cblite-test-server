@@ -220,7 +220,7 @@ namespace replicator_configuration_methods {
                 config->documentIDs = docIDs;
             }
 
-            if(body.contains("auhenticator")) {
+            if(body.contains("authenticator")) {
                 config->authenticator = static_cast<CBLAuthenticator*>(memory_map::get(body["authenticator"].get<string>()));
             }
 
