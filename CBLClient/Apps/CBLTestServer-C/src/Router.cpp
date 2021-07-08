@@ -71,6 +71,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "database_exists", database_methods::database_exists },
     { "database_copy", database_methods::database_copy }, 
     { "database_getPreBuiltDb", database_methods::database_getPreBuiltDb },
+    { "database_changeEncryptionKey", database_methods::database_changeEncryptionKey },
     { "dictionary_contains", dictionary_methods::dictionary_contains },
     { "dictionary_count", dictionary_methods::dictionary_count },
     { "dictionary_create", dictionary_methods::dictionary_create },
