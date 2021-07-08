@@ -82,7 +82,8 @@ namespace database_methods {
     }
 
     void database_deleteBulkDocs(json& body, mg_connection* conn) {
-        with<CBLDatabase *>(body, "database", [&body](CBLDatabase* db)
+        const auto doc_ids = body["doc_ids"];
+        with<CBLDatabase *>(body, "database", [&doc_ids](CBLDatabase* db)
         {
             CBLError err;
             TRY(CBLDatabase_BeginTransaction(db, &err), err)
@@ -92,7 +93,7 @@ namespace database_methods {
                 TRY(CBLDatabase_EndTransaction(db, success, &err), err)
             };
 
-            for(const auto& val : body) {
+            for(const auto& val : doc_ids) {
                 const auto docID = val.get<string>();
                 const CBLDocument* doc = CBLDatabase_GetDocument(db, flstr(docID), &err);
                 DEFER {
