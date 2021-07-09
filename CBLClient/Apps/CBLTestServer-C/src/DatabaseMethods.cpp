@@ -417,6 +417,8 @@ namespace database_methods {
                 
                 TRY(CBLDatabase_ChangeEncryptionKey(db, &encryptionKey, &err), err);
             }
+
+            mg_send_http_ok(conn, "application/text", 0);
         });
     }
 }
