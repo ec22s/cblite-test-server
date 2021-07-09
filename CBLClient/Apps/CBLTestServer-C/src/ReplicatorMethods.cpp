@@ -190,6 +190,11 @@ namespace replicator_methods {
         with<CBLReplicator *>(body, "replicator", [conn](CBLReplicator* r)
         {
             const auto status = CBLReplicator_Status(r);
+            if((int)status.error.domain == 0 && status.error.code == 0) {
+                mg_send_http_ok(conn, "application/text", 0);
+                return;
+            }
+
             stringstream ss;
             string errMsg = to_string(CBLError_Message(&status.error));
             ss << "Error " << status.error.domain << " / " << status.error.code << ": " << errMsg;
