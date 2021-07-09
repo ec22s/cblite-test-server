@@ -110,6 +110,12 @@
     <None Include="certs\certs.p12" />
     <None Include="certs\client.p12" />
     <None Include="certs\client-ca.der" />
+    <None Include="Databases\travel-sample-2.8.0.cblite2\db.sqlite3" />
+    <None Include="Databases\travel-sample-2.8.0.cblite2\db.sqlite3-shm" />
+    <None Include="Databases\travel-sample-2.8.0.cblite2\db.sqlite3-wal" />
+    <None Include="Databases\travel-sample-encrypted-2.8.0.cblite2\db.sqlite3-shm" />
+    <None Include="Databases\travel-sample-encrypted-2.8.0.cblite2\db.sqlite3-wal" />
+    <None Include="Databases\travel-sample-encrypted-2.8.0.cblite2\db.sqlite3" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
