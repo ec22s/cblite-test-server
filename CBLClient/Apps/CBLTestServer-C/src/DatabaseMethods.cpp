@@ -101,7 +101,7 @@ namespace database_methods {
                 };
 
                 if(!doc) {
-                    if(err.domain == CBLDomain && err.code == CBLErrorNotFound) {
+                    if(err.code == 0) {
                         continue;
                     }
 
