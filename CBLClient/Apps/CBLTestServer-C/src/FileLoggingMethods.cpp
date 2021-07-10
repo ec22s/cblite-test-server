@@ -69,12 +69,18 @@ static bool is_dir(const struct dirent *entry, const string &basePath) {
 namespace file_logging_methods {
     void logging_configure(json& body, mg_connection* conn) {
         string directory;
-        if(!body.contains("directory")) {
+        if(!body.contains("directory") || body["directory"].get<string>().empty()) {
             stringstream ss;
             ss << LogTempDirectory() << DIRECTORY_SEPARATOR << "log_" << CBL_Now();
             directory = ss.str();
             cout << "File logging configured at: " << directory;
-            cbl_mkdir(directory.c_str(), 0755);
+            if(cbl_mkdir(directory.c_str(), 0755) == -1) {
+                auto e = errno;
+                if(e != EEXIST) {
+                    mg_send_http_error(conn, 500, "mkdir returned error %d", e);
+                    return;
+                }
+            }
         } else {
             directory = body["directory"].get<string>();
         }
