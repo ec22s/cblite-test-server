@@ -175,7 +175,7 @@ namespace replicator_methods {
     }
 
     void replicator_getActivityLevel(json& body, mg_connection* conn) {
-        static const char* activityLevelNames[] = {
+        static string activityLevelNames[] = {
             "stopped", "offline", "connecting", "busy", "idle"
         };
 
