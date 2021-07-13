@@ -26,6 +26,9 @@ typedef struct stat cbl_stat_t;
 using namespace std;
 using namespace nlohmann;
 
+#ifdef __APPLE__
+extern string LogTempDirectory();
+#else
 static string LogTempDirectory() {
 #ifdef _MSC_VER
     WCHAR pathBuffer[MAX_PATH + 1];
@@ -39,6 +42,7 @@ static string LogTempDirectory() {
     return "/tmp";
 #endif
 }
+#endif
 
 static json serialize_config(const CBLLogFileConfiguration *config) {
     json serialized;
