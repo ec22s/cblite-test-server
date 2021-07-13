@@ -12,6 +12,12 @@
 #include <fstream>
 #include INCLUDE_CBL(CouchbaseLite.h)
 
+#ifdef __ANDROID__
+#include <android_native_app_glue.h>
+#include <sys/stat.h>
+extern android_app* GlobalApp;
+#endif
+
 
 #ifdef _MSC_VER
 #include <atlbase.h>
@@ -37,7 +43,7 @@ static string LogTempDirectory() {
     CW2AEX<256> convertedPath(pathBuffer, CP_UTF8);
     return string(convertedPath.m_psz);
 #elif defined(__ANDROID__)
-    return "/data/local/tmp"; // This is our internal program, let's hope this path works reliably
+    return GlobalApp->activity->internalDataPath;
 #else
     return "/tmp";
 #endif
