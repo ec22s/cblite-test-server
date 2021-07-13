@@ -330,7 +330,7 @@ namespace database_methods {
         {
             CBLDocument* doc;
             CBLError err;
-            TRY(CBLDatabase_GetMutableDocument(db, flstr(id), &err), err)
+            TRY(doc = CBLDatabase_GetMutableDocument(db, flstr(id), &err), err)
             DEFER {
                 CBLDocument_Release(doc);
             };
