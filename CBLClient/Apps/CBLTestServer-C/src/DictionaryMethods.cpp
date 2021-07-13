@@ -211,7 +211,7 @@ namespace dictionary_methods {
 
     void dictionary_remove(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
@@ -224,7 +224,7 @@ namespace dictionary_methods {
     void dictionary_setArray(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
         {
             FLString flKey { key.data(), key.size() };
@@ -242,7 +242,7 @@ namespace dictionary_methods {
     void dictionary_setBlob(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         auto* val = static_cast<CBLBlob *>(memory_map::get(body["value"].get<string>()));
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             FLString flKey { key.data(), key.size() };
@@ -256,7 +256,7 @@ namespace dictionary_methods {
     void dictionary_setBoolean(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<bool>();
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
@@ -274,7 +274,7 @@ namespace dictionary_methods {
     void dictionary_setDictionary(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
         {
             FLString flKey { key.data(), key.size() };
@@ -295,7 +295,7 @@ namespace dictionary_methods {
     void dictionary_setDouble(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<double>();
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             const FLString flKey = { key.data(), key.size() };
@@ -309,7 +309,7 @@ namespace dictionary_methods {
     void dictionary_setFloat(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<float>();
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             FLSlot slot = FLMutableDict_Set(d, flstr(key));
@@ -322,7 +322,7 @@ namespace dictionary_methods {
     void dictionary_setInt(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<int>();
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             FLSlot slot = FLMutableDict_Set(d, flstr(key));
@@ -335,7 +335,7 @@ namespace dictionary_methods {
     void dictionary_setLong(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<int64_t>();
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             FLSlot slot = FLMutableDict_Set(d, flstr(key));
@@ -348,7 +348,7 @@ namespace dictionary_methods {
     void dictionary_setString(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"].get<string>();
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
         {
             FLSlot slot = FLMutableDict_Set(d, flstr(key));
@@ -361,7 +361,7 @@ namespace dictionary_methods {
     void dictionary_setValue(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];
-        const auto handle = body["document"].get<string>();
+        const auto handle = body["dictionary"].get<string>();
         with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
         {
             writeFleece(d, key, val);
