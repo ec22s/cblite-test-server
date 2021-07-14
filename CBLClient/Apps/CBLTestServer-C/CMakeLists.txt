@@ -146,6 +146,13 @@ if(ANDROID)
 else()
     add_executable(testserver ${TESTSERVER_COMMON_SRC})
 
+    if(APPLE)
+        target_sources(
+            testserver PRIVATE
+            src/FileLoggingMethods+Apple.mm
+        )
+    endif()
+
     target_sources(
         testserver PRIVATE
         src/main.cpp
