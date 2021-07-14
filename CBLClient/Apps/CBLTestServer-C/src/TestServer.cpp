@@ -18,9 +18,9 @@ static int handle_request(mg_connection* connection, void* context) {
     try {
         router::internal::handle(url, connection);
     } catch(const exception& e) {
-        mg_send_http_error(connection, 500, "Exception caught during router handling: %s", e.what());
+        mg_send_http_error(connection, 400, "Exception caught during router handling: %s", e.what());
         cerr << "Exception caught during router handling: " << e.what() << endl;
-        status = 500;
+        status = 400;
     }
 
     mg_close_connection(connection);
