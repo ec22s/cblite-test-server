@@ -108,6 +108,8 @@
     <AndroidAsset Include="Assets\certs\certs.p12" />
     <AndroidAsset Include="Assets\certs\client.p12" />
     <AndroidAsset Include="Assets\certs\client-ca.der" />
+    <AndroidAsset Include="Assets\travel-sample-2.8.0.cblite2.zip" />
+    <AndroidAsset Include="Assets\travel-sample-encrypted-2.8.0.cblite2.zip" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
