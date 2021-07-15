@@ -32,13 +32,13 @@ try {
         throw "Build failed!"
     } 
 
-    Copy-Item "$DOWNLOAD_DIR\bin\CouchbaseLiteC.dll" out\bin
+    Copy-Item "$DOWNLOAD_DIR\bin\cblite.dll" out\bin
     Copy-Item -ErrorAction Ignore $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer\sg_cert.pem out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\certs out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Databases out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Files out\bin
     Push-Location out\bin
-    7za a -bb1 -tzip -mx5 $ZIPS_DIR\testserver_windesktop_x64.zip testserver.exe zlib.dll CouchbaseLiteC.dll certs Databases Files
+    7za a -bb1 -tzip -mx5 $ZIPS_DIR\testserver_windesktop_x64.zip testserver.exe cblite.dll certs Databases Files
     Pop-Location
 } finally {
     Pop-Location

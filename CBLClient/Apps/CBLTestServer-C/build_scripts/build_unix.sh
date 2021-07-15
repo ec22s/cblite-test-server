@@ -6,12 +6,12 @@ BLD_NUM=${2}
 
 case "${OSTYPE}" in
     darwin*)  OS="macosx"
-              LIBCBL="libCouchbaseLiteC.dylib"
+              LIBCBL="libcblite*.dylib"
               ZIP_CMD="unzip"
               ZIP_EXT="zip"
               ;;
     linux*)   OS="linux"
-              LIBCBL="libCouchbaseLiteC.so"
+              LIBCBL="libcblite.so*"
               ZIP_CMD="tar xvf"
               ZIP_EXT="tar.gz"
               ;;

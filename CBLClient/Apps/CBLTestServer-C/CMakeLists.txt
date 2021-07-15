@@ -164,7 +164,7 @@ target_link_libraries(
     testserver PRIVATE
     civetweb-c-library
     nlohmann_json::nlohmann_json
-    CouchbaseLiteC
+    cblite
     zip
 )
 

@@ -21,7 +21,7 @@ void* load_lib(const char* path) {
 void ANativeActivity_onCreate(ANativeActivity * app, void * ud, size_t udsize)
 {
     __android_log_print(ANDROID_LOG_INFO, "dummyloader", "Loaded bootstrap");
-    load_lib(LIB_PATH "libCouchbaseLiteC.so");
+    load_lib(LIB_PATH "libcblite.so");
     __android_log_print(ANDROID_LOG_INFO, "dummyloader", "Loaded CBL-C");
     auto* main = (void (*)(ANativeActivity*, void*, size_t))dlsym(load_lib(LIB_PATH "libtestserver.so"), "ANativeActivity_onCreate");
     if (!main)  {
