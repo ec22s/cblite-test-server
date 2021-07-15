@@ -11,6 +11,7 @@
 #include "FileLoggingMethods.h"
 #include "ReplicatorConfigurationMethods.h"
 #include "ReplicatorMethods.h"
+#include "QueryMethods.h"
 #include <functional>
 #include <utility>
 #include <civetweb.h>
@@ -166,6 +167,9 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "replicatorConfiguration_isContinuous", replicator_configuration_methods::replicatorConfiguration_isContinuous },
     { "replicator_changeListenerChangesCount", replicator_methods::replicator_changeListenerChangesCount },
     { "replicatorConfiguration_configure", replicator_configuration_methods::replicatorConfiguration_create },
+    { "query_selectAll", query_methods::query_selectAll },
+    { "query_addChangeListener", query_methods::query_addChangeListener },
+    { "query_removeChangeListener", query_methods::query_removeChangeListener },
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };

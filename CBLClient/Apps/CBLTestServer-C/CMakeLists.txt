@@ -82,6 +82,7 @@ set(
     src/ReplicatorMethods.cpp
     src/ReplicatorConfigurationMethods.cpp
     src/SessionAuthenticationMethods.cpp
+    src/QueryMethods.cpp
 )
 
 if(ANDROID)
