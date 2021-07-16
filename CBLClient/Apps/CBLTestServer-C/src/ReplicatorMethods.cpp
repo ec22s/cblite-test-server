@@ -274,8 +274,8 @@ namespace replicator_methods {
                         error_code = doc.err.code;
                     }
 
-                    ss << ", error_code: " << error_code << ", error_domain: " << error_domain << ", flags: " << doc.flags
-                        << ", push: " << (change.isPush ? "true"  : "false");
+                    ss << ", error_code: " << error_code << ", error_domain: " << error_domain
+                        << ", push: " << (change.isPush ? "true"  : "false") << ", flags: " << doc.flags;
                     eventList.push_back(ss.str());
                 }
             }
