@@ -13,6 +13,10 @@ static void CBLBlob_EntryDelete(void* ptr) {
     CBLBlob_Release(static_cast<CBLBlob *>(ptr));
 }
 
+static void CBLBlobWriteStream_EntryDelete(void* ptr) {
+    CBLBlobWriter_Close(static_cast<CBLBlobWriteStream *>(ptr));
+}
+
 static void FLSliceResult_EntryDelete(void* ptr) {
     auto* slice = static_cast<FLSliceResult *>(ptr);
     FLSliceResult_Release(*slice);
@@ -55,7 +59,26 @@ namespace blob_methods {
     }
 
     void blob_createImageStream(nlohmann::json& body, mg_connection* conn) {
-        mg_send_http_error(conn, 501, "Cannot use this method without passing a database");
+        string imageLocation = file_resolution::resolve_path(body["image"].get<string>(), false);
+        with<CBLDatabase *>(body, "database", [&imageLocation, conn](CBLDatabase* db) {
+            CBLBlobWriteStream* stream;
+            CBLError err;
+            TRY(stream = CBLBlobWriter_Create(db, &err), err);
+            ifstream fin(imageLocation, ios_base::binary);
+            char buffer[8192];
+            while(!fin.eof()) {
+                auto read = fin.readsome(buffer, 8192);
+                if(!CBLBlobWriter_Write(stream, buffer, read, &err)) {
+                    CBLBlobWriter_Close(stream);
+                    fin.close();
+                    string errMsg = to_string(CBLError_Message(&err));
+                    throw domain_error(errMsg);
+                }
+            }
+
+            fin.close();
+            write_serialized_body(conn, memory_map::store(stream, CBLBlobWriteStream_EntryDelete));
+        });
     }
 
     void blob_createImageFileUrl(nlohmann::json& body, mg_connection* conn) {
