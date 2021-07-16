@@ -176,7 +176,7 @@ namespace replicator_methods {
 
     void replicator_getActivityLevel(json& body, mg_connection* conn) {
         static string activityLevelNames[] = {
-            "stopped", "offline", "connecting", "busy", "idle"
+            "stopped", "offline", "connecting", "idle", "busy"
         };
 
         with<CBLReplicator *>(body, "replicator", [conn](CBLReplicator* r)
