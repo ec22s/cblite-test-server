@@ -137,7 +137,7 @@ namespace database_methods {
                 CBLDocument_Release(doc);
             };
 
-            if(!doc && (err.domain != CBLDomain || err.code != CBLErrorNotFound)) {
+            if(!doc && (err.domain != CBLDomain || err.code != (int)CBLErrorNotFound)) {
                 std::string errMsg = to_string(CBLError_Message(&err));
                 throw std::domain_error(errMsg);
             }
@@ -223,7 +223,12 @@ namespace database_methods {
                 }
 
                 CBLError err;
-                TRY(CBLDatabase_SaveDocumentWithConcurrencyControl(db, d, concurrencyType, &err), err)
+                if(!CBLDatabase_SaveDocumentWithConcurrencyControl(db, d, concurrencyType, &err)) {
+                    if(err.domain != CBLDomain || err.code != (int)CBLErrorConflict) {
+                        string errMsg = to_string(CBLError_Message(&err));
+                        throw domain_error(errMsg);
+                    }
+                }
             });
         });
 
