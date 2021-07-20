@@ -133,10 +133,6 @@ namespace database_methods {
         {
             CBLError err;
             doc = CBLDatabase_GetDocument(db, flstr(docId), &err);
-            DEFER {
-                CBLDocument_Release(doc);
-            };
-
             if(!doc && (err.domain != CBLDomain || err.code != (int)CBLErrorNotFound)) {
                 std::string errMsg = to_string(CBLError_Message(&err));
                 throw std::domain_error(errMsg);
