@@ -303,4 +303,13 @@ namespace replicator_methods {
             write_serialized_body(conn, listener->changes().size());
         });
     }
+
+    void replicator_resetCheckpoint(json& body, mg_connection* conn) {
+        with<CBLReplicator *>(body, "replicator", [](CBLReplicator* r) 
+        {
+            CBLReplicator_Start(r, true);
+        });
+
+        mg_send_http_ok(conn, "application/text", 0);
+    }
 }
