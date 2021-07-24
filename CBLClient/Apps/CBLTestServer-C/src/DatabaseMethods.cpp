@@ -341,6 +341,8 @@ namespace database_methods {
                 writeFleece(newContent, key, value);
             }
 
+            CBLDocument_SetProperties(doc, newContent);
+            FLMutableDict_Release(newContent);
             TRY(CBLDatabase_SaveDocument(db, doc, &err), err)
         });
 
@@ -370,6 +372,8 @@ namespace database_methods {
                     writeFleece(newContent, key, value);
                 }
 
+                CBLDocument_SetProperties(doc, newContent);
+                FLMutableDict_Release(newContent);
                 TRY(CBLDatabase_SaveDocument(db, doc, &err), err)
             }
 
