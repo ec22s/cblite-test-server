@@ -182,8 +182,10 @@ namespace replicator_configuration_methods {
             memset(config, 0, sizeof(CBLReplicatorConfiguration));
             config->database = db;
             if(body.contains("target_url")) {
+                CBLError err;
                 const auto url = body["target_url"].get<string>();
-                auto* endpoint = CBLEndpoint_CreateWithURL(flstr(url));
+                CBLEndpoint* endpoint;
+                TRY(endpoint = CBLEndpoint_CreateWithURL(flstr(url), &err), err);
                 config->endpoint = endpoint;
             } else if(body.contains("target_db")) {
                 with<CBLDatabase *>(body, "target_db", [config](CBLDatabase* db) {
