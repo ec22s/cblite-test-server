@@ -51,9 +51,7 @@ static const CBLDocument* local_wins_conflict_resolution(void *context, FLString
     }
 
     checkMismatchDocID(localDocument, remoteDocument, to_string(documentID));
-
-    // Retain this so we can release the return value of any conflict resolver unconditionally
-    return CBLDocument_Retain(localDocument);
+    return localDocument;
 }
 
 static const CBLDocument* remote_wins_conflict_resolution(void *context, FLString documentID, 
@@ -63,9 +61,7 @@ static const CBLDocument* remote_wins_conflict_resolution(void *context, FLStrin
     }
 
     checkMismatchDocID(localDocument, remoteDocument, to_string(documentID));
-    
-    // Retain this so we can release the return value of any conflict resolver unconditionally
-    return CBLDocument_Retain(remoteDocument);
+    return remoteDocument;
 }
 
 static const CBLDocument* null_conflict_resolution(void *context, FLString documentID, 
@@ -170,7 +166,6 @@ static void CBLReplicatorConfig_EntryDelete(void* ptr) {
         free((void *)config->pinnedServerCertificate.buf);
     }
 
-    CBLAuth_Free(config->authenticator);
     CBLEndpoint_Free(config->endpoint);
     FLArray_Release(config->documentIDs);
     FLArray_Release(config->channels);

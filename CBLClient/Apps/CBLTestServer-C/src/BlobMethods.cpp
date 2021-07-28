@@ -46,15 +46,15 @@ namespace blob_methods {
     void blob_createImageContent(nlohmann::json& body, mg_connection* conn) {
         const auto imageLocation = file_resolution::resolve_path(body["image"].get<string>(), false);
         ifstream fin(imageLocation.c_str(), ios::binary|ios::ate);
+        fin.exceptions(ios::badbit|ios::failbit);
         size_t len = fin.tellg();
         FLSliceResult* resultPtr = static_cast<FLSliceResult *>(malloc(sizeof(FLSliceResult)));
-        *resultPtr = FLSliceResult_New(len);
-        char* data = static_cast<char *>(malloc(len));
+        auto data = static_cast<char *>(malloc(len));
         fin.seekg(0, ios::beg);
-        fin.read(data, len);
+        fin.read(const_cast<char *>(data), len);
         fin.close();
 
-        resultPtr->buf = data;
+        *resultPtr = FLSliceResult_CreateWith(data, len);
         write_serialized_body(conn, memory_map::store(resultPtr, FLSliceResult_EntryDelete));
     }
 
@@ -66,8 +66,8 @@ namespace blob_methods {
             TRY(stream = CBLBlobWriter_Create(db, &err), err);
             ifstream fin(imageLocation, ios_base::binary);
             char buffer[8192];
-            while(!fin.eof()) {
-                auto read = fin.readsome(buffer, 8192);
+            streamsize read;
+            while((read = fin.readsome(buffer, 8192)) > 0) {
                 if(!CBLBlobWriter_Write(stream, buffer, read, &err)) {
                     CBLBlobWriter_Close(stream);
                     fin.close();
