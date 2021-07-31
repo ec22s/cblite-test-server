@@ -133,7 +133,7 @@ namespace database_methods {
         {
             CBLError err;
             doc = CBLDatabase_GetDocument(db, flstr(docId), &err);
-            if(!doc && (err.domain != CBLDomain || err.code != (int)CBLErrorNotFound)) {
+            if(!doc && (err.domain != kCBLDomain || err.code != (int)kCBLErrorNotFound)) {
                 std::string errMsg = to_string(CBLError_Message(&err));
                 throw std::domain_error(errMsg);
             }
@@ -220,7 +220,7 @@ namespace database_methods {
 
                 CBLError err;
                 if(!CBLDatabase_SaveDocumentWithConcurrencyControl(db, d, concurrencyType, &err)) {
-                    if(err.domain != CBLDomain || err.code != (int)CBLErrorConflict) {
+                    if(err.domain != kCBLDomain || err.code != (int)kCBLErrorConflict) {
                         string errMsg = to_string(CBLError_Message(&err));
                         throw domain_error(errMsg);
                     }

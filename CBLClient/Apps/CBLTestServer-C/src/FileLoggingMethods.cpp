@@ -115,17 +115,17 @@ namespace file_logging_methods {
         if(body.contains("log_level")) {
             const auto logLevel = body["log_level"].get<string>();
             if(logLevel == "debug") {
-                config.level = CBLLogDebug;
+                config.level = kCBLLogDebug;
             } else if(logLevel == "verbose") {
-                config.level = CBLLogVerbose;
+                config.level = kCBLLogVerbose;
             } else if(logLevel == "info") {
-                config.level = CBLLogInfo;
+                config.level = kCBLLogInfo;
             } else if(logLevel == "warning") {
-                config.level = CBLLogWarning;
+                config.level = kCBLLogWarning;
             } else if(logLevel == "error") {
-                config.level = CBLLogError;
+                config.level = kCBLLogError;
             } else {
-                config.level = CBLLogNone;
+                config.level = kCBLLogNone;
             }
         }
 
@@ -202,17 +202,17 @@ namespace file_logging_methods {
         const auto level = body["log_level"].get<string>();
         CBLLogFileConfiguration config = *CBLLog_FileConfig();
         if(level == "debug") {
-            config.level = CBLLogDebug;
+            config.level = kCBLLogDebug;
         } else if(level == "verbose") {
-            config.level = CBLLogVerbose;
+            config.level = kCBLLogVerbose;
         } else if(level == "info") {
-            config.level = CBLLogInfo;
+            config.level = kCBLLogInfo;
         } else if(level == "error") {
-            config.level = CBLLogError;
+            config.level = kCBLLogError;
         } else if(level == "warning") {
-            config.level = CBLLogWarning;
+            config.level = kCBLLogWarning;
         } else {
-            config.level = CBLLogNone;
+            config.level = kCBLLogNone;
         }
 
         CBLError err;

@@ -65,6 +65,10 @@ namespace blob_methods {
             CBLError err;
             TRY(stream = CBLBlobWriter_Create(db, &err), err);
             ifstream fin(imageLocation, ios_base::binary);
+            if(!fin.good()) {
+                throw domain_error(string("Unable to open ") + imageLocation);
+            }
+
             char buffer[8192];
             streamsize read;
             while((read = fin.readsome(buffer, 8192)) > 0) {

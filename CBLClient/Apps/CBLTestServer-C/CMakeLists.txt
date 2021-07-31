@@ -153,6 +153,13 @@ else()
             src/FileLoggingMethods+Apple.mm
         )
     endif()
+    
+    if(CMAKE_COMPILER_IS_GNUCC)
+        target_compile_options(testserver PRIVATE -Wno-psabi)
+        if(CBL_STATIC_CXX)
+            target_compile_options(testserver PRIVATE -static-libstdc++)
+        endif()
+    endif()
 
     target_sources(
         testserver PRIVATE
