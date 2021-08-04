@@ -37,6 +37,7 @@ namespace blob_methods {
         } else if(body.contains("stream")) {
             auto* stream = static_cast<CBLBlobWriteStream *>(memory_map::get(body["stream"].get<string>()));
             auto* blob = CBLBlob_CreateWithStream(flstr(contentType), stream);
+            CBLBlobWriter_Close(stream);
             write_serialized_body(conn, memory_map::store(blob, CBLBlob_EntryDelete));
         } else if(body.contains("fileURL")) {
             mg_send_http_error(conn, 501, "Not supported in C API");
@@ -65,14 +66,12 @@ namespace blob_methods {
             CBLError err;
             TRY(stream = CBLBlobWriter_Create(db, &err), err);
             ifstream fin(imageLocation, ios_base::binary);
-            if(!fin.good()) {
-                throw domain_error(string("Unable to open ") + imageLocation);
-            }
+            fin.exceptions(ios::badbit);
 
             char buffer[8192];
-            streamsize read;
-            while((read = fin.readsome(buffer, 8192)) > 0) {
-                if(!CBLBlobWriter_Write(stream, buffer, read, &err)) {
+            while(!fin.eof()) {
+                fin.read(buffer, 8192);
+                if(!CBLBlobWriter_Write(stream, buffer, fin.gcount(), &err)) {
                     CBLBlobWriter_Close(stream);
                     fin.close();
                     string errMsg = to_string(CBLError_Message(&err));
