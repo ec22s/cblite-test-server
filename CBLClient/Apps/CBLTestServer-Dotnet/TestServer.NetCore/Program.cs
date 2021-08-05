@@ -49,7 +49,6 @@ namespace Couchbase.Lite.Testing.NetCore
 
         static void Main(string[] args)
         {
-            Couchbase.Lite.Support.NetDesktop.Activate();
             Extend();
 
             Database.Log.Console.Level = Logging.LogLevel.None;
