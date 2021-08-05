@@ -394,7 +394,7 @@ namespace database_methods {
         const auto dbPath = body["dbPath"].get<string>();
         char cwd[1024];
         cbl_getcwd(cwd, 1024);
-        const auto databasePath = string(cwd) + DIRECTORY_SEPARATOR + dbName;
+        const auto databasePath = string(cwd) + DIRECTORY_SEPARATOR + dbPath;
         const auto* dbConfig = static_cast<const CBLDatabaseConfiguration *>(memory_map::get(body["dbConfig"].get<string>()));
         CBLError err;
         TRY(CBL_CopyDatabase(flstr(databasePath), flstr(dbName), dbConfig, &err), err)
