@@ -11,7 +11,7 @@ case "${OSTYPE}" in
               ZIP_EXT="zip"
               ;;
     linux*)   OS="linux"
-              LIBCBL="**/libcblite.so*"
+              LIBCBL="libcblite.so*"
               ZIP_CMD="tar xvf"
               ZIP_EXT="tar.gz"
               ;;
@@ -40,6 +40,9 @@ pushd $BUILD_DIR
 cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
+if [ "${OS}" = "linux" ]; then
+    cp -Pf $DOWNLOAD_DIR/lib/*.so* out/bin/
+fi
 
 ZIP_FILENAME=testserver_${OS}_x64.zip
 cp $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem out/bin
