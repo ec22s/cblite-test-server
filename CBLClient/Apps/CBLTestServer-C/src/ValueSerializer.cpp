@@ -106,7 +106,7 @@ namespace value_serializer {
             }
             case kFLArray:
             {
-                json stringList;
+                json stringList = json::array();
                 FLArrayIterator i;
                 FLArrayIterator_Begin(FLValue_AsArray(val), &i);
                 const int count = static_cast<int>(FLArrayIterator_GetCount(&i));
@@ -118,7 +118,7 @@ namespace value_serializer {
             }
             case kFLDict:
             {
-                json stringMap;
+                json stringMap = json::object();
                 FLDictIterator i;
                 FLDictIterator_Begin(FLValue_AsDict(val), &i);
                 const int count = static_cast<int>(FLDictIterator_GetCount(&i));
