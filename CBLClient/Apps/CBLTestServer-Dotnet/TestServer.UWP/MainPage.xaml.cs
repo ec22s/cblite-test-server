@@ -25,8 +25,6 @@ namespace Couchbase.Lite.Testing.UWP
         public MainPage()
         {
             this.InitializeComponent();
-
-            Couchbase.Lite.Support.UWP.EnableTextLogging();
 			TestServer.FilePathResolver = ResolvePath;
             var listener = new TestServer();
             listener.Start();
