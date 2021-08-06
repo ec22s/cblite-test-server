@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    DEF_VERSION = "3.0.0-149"
+    DEF_VERSION = "3.0.0-160"
     COUCHBASE_LITE_VERSION = System.getProperty('version', DEF_VERSION)
 
     PROJECT_DIR = "${projectDir}"
@@ -66,9 +66,10 @@ android {
     }
 }
 
-
 repositories {
-    maven { url "http://proget.build.couchbase.com/maven2/internalmaven" }
+    // for build version < 3.0.0-160, use below maven url
+    // maven { url "http://proget.build.couchbase.com/maven2/internalmaven" }
+    maven { url "http://mobile.nuget.couchbase.com/maven2/internalmaven/"}
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     google()
     jcenter()
@@ -84,7 +85,9 @@ dependencies {
     // Using snapshot code to validate our product is incredibly dubious...
     implementation 'org.nanohttpd:nanohttpd:2.3.2-SNAPSHOT'
 
-    implementation "com.couchbase.lite:couchbase-lite-android-ee:${COUCHBASE_LITE_VERSION}"
+    // for build version < 3.0.0-160, use below package name
+    // implementation "com.couchbase.lite:couchbase-lite-android-ee:${COUCHBASE_LITE_VERSION}"
+    implementation "com.couchbase.lite:couchbase-lite-kt-android-ee:${COUCHBASE_LITE_VERSION}"
     testImplementation 'junit:junit:4.12'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
