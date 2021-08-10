@@ -37,7 +37,7 @@ namespace database_methods {
             TRY(CBLDatabase_PerformMaintenance(db, kCBLMaintenanceTypeCompact, &err), err)
         });
 
-        mg_send_http_ok(conn, "text/plain", 0);
+        write_empty_body(conn);
     }
 
     void database_close(json& body, mg_connection* conn) {
@@ -47,7 +47,7 @@ namespace database_methods {
             TRY(CBLDatabase_Close(db, &err), err)
         });
 
-        mg_send_http_ok(conn, "text/plain", 0);
+        write_empty_body(conn);
     }
 
     void database_getPath(json& body, mg_connection* conn) {
@@ -65,7 +65,7 @@ namespace database_methods {
             TRY(CBLDatabase_Delete(db, &err), err)
         });
 
-        mg_send_http_ok(conn, "text/plain", 0);
+        write_empty_body(conn);
     }
 
     void database_delete(json& body, mg_connection* conn) {
@@ -78,7 +78,7 @@ namespace database_methods {
             });
         });
 
-        mg_send_http_ok(conn, "text/plain", 0);
+        write_empty_body(conn);
     }
 
     void database_deleteBulkDocs(json& body, mg_connection* conn) {
@@ -115,7 +115,7 @@ namespace database_methods {
             success = true;
         });
 
-        mg_send_http_ok(conn, "text/plain", 0);
+        write_empty_body(conn);
     }
 
     void database_getName(json& body, mg_connection* conn) {
@@ -140,7 +140,7 @@ namespace database_methods {
         });
 
         if(!doc) {
-            mg_send_http_ok(conn, "application/text", 0);
+            write_empty_body(conn);
             return;
         }
 
@@ -176,7 +176,7 @@ namespace database_methods {
             success = true;
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void database_purge(json& body, mg_connection* conn) {
@@ -189,7 +189,7 @@ namespace database_methods {
             });
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void database_save(json& body, mg_connection* conn) {
@@ -228,7 +228,7 @@ namespace database_methods {
             });
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void database_deleteWithConcurrency(json& body, mg_connection* conn) {
@@ -251,7 +251,7 @@ namespace database_methods {
             });
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void database_getCount(json& body, mg_connection* conn) {
@@ -341,7 +341,7 @@ namespace database_methods {
             TRY(CBLDatabase_SaveDocument(db, doc, &err), err)
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void database_updateDocuments(json& body, mg_connection* conn) {
@@ -375,7 +375,7 @@ namespace database_methods {
             success = true;
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void database_exists(json& body, mg_connection* conn) {
@@ -393,7 +393,7 @@ namespace database_methods {
         const auto* dbConfig = static_cast<const CBLDatabaseConfiguration *>(memory_map::get(body["dbConfig"].get<string>()));
         CBLError err;
         TRY(CBL_CopyDatabase(flstr(databasePath), flstr(dbName), dbConfig, &err), err)
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void database_getPreBuiltDb(json& body, mg_connection* conn) {
@@ -418,7 +418,7 @@ namespace database_methods {
                 TRY(CBLDatabase_ChangeEncryptionKey(db, &encryptionKey, &err), err);
             }
 
-            mg_send_http_ok(conn, "application/text", 0);
+            write_empty_body(conn);
         });
     }
 }

@@ -13,6 +13,11 @@ namespace router {
     }
 }
 
+static void write_empty_body(mg_connection* conn) {
+    mg_send_http_ok(conn, "text/plain", 3);
+    mg_write(conn, "I-1", 3);
+}
+
 template<typename T>
 void write_serialized_body(mg_connection* conn, T object, bool success = true) {
     const std::string encoded = value_serializer::serialize(object);

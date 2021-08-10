@@ -139,7 +139,7 @@ namespace replicator_methods {
             CBLReplicator_Start(r, false);
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void replicator_stop(json& body, mg_connection* conn) {
@@ -148,7 +148,7 @@ namespace replicator_methods {
             CBLReplicator_Stop(r);
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void replicator_status(json& body, mg_connection* conn) {
@@ -246,7 +246,7 @@ namespace replicator_methods {
             listener->unregisterListener();
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void replicator_removeChangeListener(json& body, mg_connection* conn) {
@@ -255,7 +255,7 @@ namespace replicator_methods {
             listener->unregisterListener();
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void replicator_replicatorEventGetChanges(json& body, mg_connection* conn) {
@@ -310,6 +310,6 @@ namespace replicator_methods {
             CBLReplicator_Start(r, true);
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 }

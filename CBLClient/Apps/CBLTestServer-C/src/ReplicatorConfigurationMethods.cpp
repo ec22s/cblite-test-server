@@ -330,7 +330,7 @@ namespace replicator_configuration_methods {
             });
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void replicatorConfiguration_setReplicatorType(json& body, mg_connection* conn) {
@@ -348,7 +348,7 @@ namespace replicator_configuration_methods {
             }
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 
     void replicatorConfiguration_isContinuous(json& body, mg_connection* conn) {

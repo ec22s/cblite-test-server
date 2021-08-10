@@ -27,12 +27,12 @@ using endpoint_handler = function<void(json&, mg_connection*)>;
 static void releaseObject(json& body, mg_connection* conn) {
     const auto id = body["object"].get<string>();
     memory_map::release(id);
-    mg_send_http_ok(conn, nullptr, 0);
+    write_empty_body(conn);
 }
 
 static void flushMemory(json& body, mg_connection* conn) {
     memory_map::clear();
-    mg_send_http_ok(conn, nullptr, 0);
+    write_empty_body(conn);
 }
 
 static const unordered_map<string, endpoint_handler> ROUTE_MAP = {

@@ -131,7 +131,7 @@ namespace file_logging_methods {
 
         CBLError err;
         TRY(CBLLog_SetFileConfig(config, &err), err)
-        mg_send_http_ok(conn, "text/plain", 0);
+        write_empty_body(conn);
     }
 
     void logging_getPlainTextStatus(json& body, mg_connection* conn) {

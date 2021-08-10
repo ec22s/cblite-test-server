@@ -39,6 +39,6 @@ namespace query_methods {
             CBLListener_Remove(token);
         });
 
-        mg_send_http_ok(conn, "application/text", 0);
+        write_empty_body(conn);
     }
 }
