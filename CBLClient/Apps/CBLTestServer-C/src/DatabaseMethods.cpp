@@ -289,39 +289,34 @@ namespace database_methods {
 
     void database_getDocuments(json& body, mg_connection* conn) {
         const auto ids = body["ids"];
+        FLMutableDict retVal = FLMutableDict_New();
+
         vector<const CBLDocument *> docs;
         DEFER {
             for(const auto* doc : docs) {
                 CBLDocument_Release(doc);
             }
-        };
 
-        with<CBLDatabase *>(body, "database", [&ids, &docs](CBLDatabase* db)
+            FLMutableDict_Release(retVal);
+        };
+        
+        with<CBLDatabase *>(body, "database", [retVal, &ids, &docs](CBLDatabase* db)
         {
             for(const auto& idJson : ids) {
                 const auto id = idJson.get<string>();
                 const CBLDocument* doc;
                 CBLError err;
-                TRY((doc = CBLDatabase_GetDocument(db, flstr(id), &err)), err)
-                docs.push_back(doc);
+                TRY((doc = CBLDatabase_GetDocument(db, flstr(id), &err)), err);
+                if(!doc) {
+                    continue;
+                }
+
+                auto* slot = FLMutableDict_Set(retVal, flstr(id));
+                FLSlot_SetValue(slot, reinterpret_cast<FLValue>(CBLDocument_Properties(doc)));
             }
         });
 
-        if(docs.size() != ids.size()) {
-            mg_send_http_error(conn, 500, "Didn't successfully get all docs");
-            return;
-        }
-
-        FLMutableDict retVal = FLMutableDict_New();
-        for(uint32_t i = 0; i < ids.size(); i++) {
-            const auto id = ids[i].get<string>();
-            const auto* doc = docs[i];
-            auto* slot = FLMutableDict_Set(retVal, flstr(id));
-            FLSlot_SetValue(slot, reinterpret_cast<FLValue>(CBLDocument_Properties(doc)));
-        }
-
         write_serialized_body(conn, reinterpret_cast<FLValue>(retVal));
-        FLMutableDict_Release(retVal);
     }
 
     void database_updateDocument(json& body, mg_connection* conn) {

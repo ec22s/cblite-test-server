@@ -42,7 +42,7 @@ inline std::string to_string(FLSliceResult sr) {
     return retVal;
 }
 
-#define TRY(logic, err) if(!(logic)) { \
+#define TRY(logic, err) if(!(logic) && err.code != 0) { \
     std::string errMsg = to_string(CBLError_Message(&err)); \
     throw std::domain_error(errMsg); \
 }
