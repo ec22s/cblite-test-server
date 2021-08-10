@@ -80,7 +80,7 @@ def check_toolchain(name: str):
     toolchain_path = Path.home() / '.cbl_cross' / f'{name}-toolchain'
     if toolchain_path.exists() and toolchain_path.is_dir() and len(os.listdir(toolchain_path)) > 0:
         print(f'{toolchain_path} found, not downloading...')
-        return
+        return toolchain_path
 
     json_data=read_manifest()
     if not name in json_data:
