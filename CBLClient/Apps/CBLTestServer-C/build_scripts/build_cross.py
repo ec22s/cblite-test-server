@@ -150,7 +150,7 @@ if __name__ == '__main__':
 
     if toolchain_path:
         existing_path = os.environ['PATH']
-        os.environ['PATH'] = f'{str(toolchain_path)}:{existing_path}'
+        os.environ['PATH'] = f'{str(toolchain_path)}/bin:{existing_path}'
 
     os.environ['ROOTFS'] = str(sysroot_path)
 
