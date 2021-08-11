@@ -13,10 +13,6 @@ static void CBLBlob_EntryDelete(void* ptr) {
     CBLBlob_Release(static_cast<CBLBlob *>(ptr));
 }
 
-static void CBLBlobWriteStream_EntryDelete(void* ptr) {
-    CBLBlobWriter_Close(static_cast<CBLBlobWriteStream *>(ptr));
-}
-
 static void FLSliceResult_EntryDelete(void* ptr) {
     auto* slice = static_cast<FLSliceResult *>(ptr);
     FLSliceResult_Release(*slice);
@@ -37,7 +33,6 @@ namespace blob_methods {
         } else if(body.contains("stream")) {
             auto* stream = static_cast<CBLBlobWriteStream *>(memory_map::get(body["stream"].get<string>()));
             auto* blob = CBLBlob_CreateWithStream(flstr(contentType), stream);
-            CBLBlobWriter_Close(stream);
             write_serialized_body(conn, memory_map::store(blob, CBLBlob_EntryDelete));
         } else if(body.contains("fileURL")) {
             mg_send_http_error(conn, 501, "Not supported in C API");
@@ -80,7 +75,10 @@ namespace blob_methods {
             }
 
             fin.close();
-            write_serialized_body(conn, memory_map::store(stream, CBLBlobWriteStream_EntryDelete));
+
+            // Possible leak.  CBLBlob is supposed to release this but we haven't created it yet
+            // if anything interferes with that, this blob write stream will leak
+            write_serialized_body(conn, memory_map::store(stream, nullptr));
         });
     }
 
