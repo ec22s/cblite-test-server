@@ -8,7 +8,7 @@ case "${OSTYPE}" in
     darwin*)  OS="macosx"
               LIBCBL="libcblite*.dylib"
               ZIP_CMD="unzip"
-              ZIP_EXT="zip --symlinks"
+              ZIP_EXT="zip"
               ;;
     linux*)   OS="linux"
               LIBCBL="libcblite.so*"
