@@ -113,7 +113,8 @@ namespace dictionary_methods {
             if(FLDict_IsBlob(FLValue_AsDict(val))) {
                 write_serialized_body(conn, nullptr);
             } else {
-                write_serialized_body(conn, val);
+                auto pointer = memory_map::store(val, nullptr);
+                write_serialized_body(conn, pointer);
             }
         });
     }
@@ -275,18 +276,14 @@ namespace dictionary_methods {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];
         const auto handle = body["dictionary"].get<string>();
-        with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
+        with<FLMutableDict>(body, "dictionary", [&body, &key, &val](FLMutableDict d)
         {
-            FLString flKey { key.data(), key.size() };
-            FLSlot slot = FLMutableDict_Set(d, flKey);
-
-            FLMutableDict subDict = FLMutableDict_New();
-            for(const auto& [key, value] : val.items()) {
-                writeFleece(subDict, key, value);
-            }
-
-            FLSlot_SetDict(slot, subDict);
-            FLMutableDict_Release(subDict);
+            with<FLDict>(body, "value", [&key, d](FLDict dict)
+            {
+                FLString flKey { key.data(), key.size() };
+                FLSlot slot = FLMutableDict_Set(d, flKey);
+                FLSlot_SetDict(slot, dict);
+            });
         });
 
         write_serialized_body(conn, handle);

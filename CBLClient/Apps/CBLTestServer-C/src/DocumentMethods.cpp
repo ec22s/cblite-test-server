@@ -324,7 +324,8 @@ namespace document_methods {
             if(flVal && FLDict_IsBlob(reinterpret_cast<FLDict>(flVal))) {
                 write_serialized_body(conn, nullptr);
             } else {
-                write_serialized_body(conn, flVal);
+                auto pointer = memory_map::store(flVal, nullptr);
+                write_serialized_body(conn, pointer);
             }
         });
     }
@@ -333,19 +334,15 @@ namespace document_methods {
         const auto key = body["key"].get<string>();
         const auto value = body["value"];
         const auto handle = body["document"].get<string>();
-        with<CBLDocument*>(body, "document", [&key, &value](CBLDocument* doc)
+        with<CBLDocument*>(body, "document", [&body, &key, &value](CBLDocument* doc)
         {
-            FLString flKey { key.data(), key.size() };
-            FLMutableDict properties = CBLDocument_MutableProperties(doc);
-            FLSlot slot = FLMutableDict_Set(properties, flKey);
-
-            FLMutableDict subDict = FLMutableDict_New();
-            for(const auto& [ key, val ] : value.items()) {
-                writeFleece(subDict, key, val);
-            }
-
-            FLSlot_SetDict(slot, subDict);
-            FLMutableDict_Release(subDict);
+            with<FLDict>(body, "value", [&key, doc](FLDict dict)
+            {
+                FLString flKey { key.data(), key.size() };
+                FLMutableDict properties = CBLDocument_MutableProperties(doc);
+                FLSlot slot = FLMutableDict_Set(properties, flKey);
+                FLSlot_SetDict(slot, dict);
+            });
         });
 
         write_serialized_body(conn, handle);

@@ -6,6 +6,7 @@
 #include "SessionAuthenticationMethods.h"
 #include "DatabaseConfigurationMethods.h"
 #include "DatabaseMethods.h"
+#include "DataTypeMethods.h"
 #include "DictionaryMethods.h"
 #include "DocumentMethods.h"
 #include "FileLoggingMethods.h"
@@ -172,6 +173,14 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "query_selectAll", query_methods::query_selectAll },
     { "query_addChangeListener", query_methods::query_addChangeListener },
     { "query_removeChangeListener", query_methods::query_removeChangeListener },
+    { "datatype_setLong", datatype_methods::datatype_setLong },
+    { "datatype_setDouble", datatype_methods::datatype_setDouble },
+    { "datatype_setFloat", datatype_methods::datatype_setFloat },
+    { "datatype_compare", datatype_methods::datatype_compare },
+    { "datatype_compareLong", datatype_methods::datatype_compareLong },
+    { "datatype_compareDouble", datatype_methods::datatype_compareDouble },
+    { "datatype_setDate", datatype_methods::datatype_setDate },
+    { "datatype_compareDate", datatype_methods::datatype_compareDate },
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };
