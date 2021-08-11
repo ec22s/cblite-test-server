@@ -76,6 +76,7 @@ set(
     src/BlobMethods.cpp
     src/DatabaseMethods.cpp
     src/DatabaseConfigurationMethods.cpp
+    src/DataTypeMethods.cpp
     src/DictionaryMethods.cpp
     src/DocumentMethods.cpp
     src/FileLoggingMethods.cpp
