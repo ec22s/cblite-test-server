@@ -96,7 +96,7 @@ static const CBLDocument* merge_conflict_resolution(void *context, FLString docu
     do {
         auto key = FLDictIterator_GetKeyString(&i);
         const auto* val = FLDict_Get(localProperties, key);
-        if(val != nullptr) {
+        if(!val) {
             FLSlot slot = FLMutableDict_Set(properties, key);
             FLSlot_SetValue(slot, FLDictIterator_GetValue(&i));
         }
