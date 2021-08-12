@@ -7,6 +7,8 @@
 
 #include "../TestServer.h"
 #include "../FilePathResolver.h"
+#include <cbl/CouchbaseLite.h>
+using namespace std;
 
 android_app* GlobalApp;
 
@@ -15,7 +17,25 @@ extern "C" {
 
     }
 
+    string filesDir;
+    string tmpDir;
+
     void android_main(struct android_app* pApp) {
+        filesDir = string(pApp->activity->internalDataPath) + "/.couchbase";
+        tmpDir = string(pApp->activity->externalDataPath) + "/CouchbaseLiteTemp";
+        mkdir(filesDir.c_str(), 0755);
+        mkdir(tmpDir.c_str(), 0755);
+        CBLInitContext init {
+            .filesDir = filesDir.c_str(),
+            .tempDir = tmpDir.c_str()
+        };
+
+        CBLError err;
+        if(!CBL_Init(init, &err)) {
+            __android_log_print(ANDROID_LOG_FATAL, "TestServer", "Failed to init CBL (%d / %d)", err.domain, err.code);
+            return;
+        }
+
         __android_log_print(ANDROID_LOG_INFO, "TestServer", "Entering android_main...");
         GlobalApp = pApp;
 
