@@ -62,20 +62,6 @@ def tar_extract_callback(archive : tarfile.TarFile):
     pbar.finish()
     pbar = None
 
-def zip_extract_callback(archive: zipfile.ZipFile):
-    global pbar
-    count=0
-    pbar = ProgressBar(maxval=len(archive.namelist()))
-    pbar.start()
-
-    for member in archive.namelist():
-        count += 1
-        pbar.update(count)
-        yield member
-
-    pbar.finish()
-    pbar = None
-
 def check_toolchain(name: str):
     toolchain_path = Path.home() / '.cbl_cross' / f'{name}-toolchain'
     if toolchain_path.exists() and toolchain_path.is_dir() and len(os.listdir(toolchain_path)) > 0:
@@ -121,13 +107,13 @@ def check_sysroot(name: str):
 
     print(f'Downloading {name} sysroot...')
     sysroot_name=json_data[name]['sysroot']
-    urllib.request.urlretrieve(f'http://downloads.build.couchbase.com/mobile/sysroot/{sysroot_name}', 'sysroot.zip', show_download_progress)
+    urllib.request.urlretrieve(f'http://downloads.build.couchbase.com/mobile/sysroot/{sysroot_name}', 'sysroot.tar.gz', show_download_progress)
     os.makedirs(sysroot_path, 0o755, True)
     print(f'Extracting {name} sysroot to {sysroot_path}...')
-    with zipfile.ZipFile('sysroot.zip', 'r') as zip:
-        zip.extractall(sysroot_path, members=zip_extract_callback(zip))
+    with tarfile.open("sysroot.tar.gz", 'r:gz') as tar:
+            tar.extractall(sysroot_path, members=tar_extract_callback(tar))
 
-    os.remove("sysroot.zip")
+    os.remove("sysroot.tar.gz")
 
 if __name__ == '__main__':
     print("Downloading latest cross compilation manifest...")
@@ -169,8 +155,8 @@ if __name__ == '__main__':
     os.chdir(BUILD_DIR)
 
     cmake_args=['cmake', '..', f'-DCMAKE_PREFIX_PATH={DOWNLOAD_DIR}', '-DCMAKE_BUILD_TYPE=Release', 
-        f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
-    if args.os == "raspbian9":
+        f'-DEDITION={args.edition}', f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
+    if args.os == "raspbian9" or args.os == "debian9_x64":
         cmake_args.append('-DCBL_STATIC_CXX=ON')
     elif args.os == "raspios10_arm64":
         cmake_args.append('-D64_BIT=ON')

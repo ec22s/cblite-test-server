@@ -10,10 +10,16 @@ case "${OSTYPE}" in
               ZIP_CMD="unzip"
               ZIP_EXT="zip"
               ;;
-    linux*)   OS="linux"
-              LIBCBL="libcblite.so*"
+              LIBCBL="**/libcblite.so*"
               ZIP_CMD="tar xvf"
               ZIP_EXT="tar.gz"
+              OS_NAME=`lsb_release -is`
+              OS_VERSION=`lsb_release -rs`
+              OS_ARCH=`uname -m`
+              if [ $OS_ARCH == "x86_64" ]; then
+                  OS_ARCH="x64"
+              fi
+              OS=${OS_NAME,,}${OS_VERSION}_${OS_ARCH}
               ;;
     *)        echo "unknown: $OSTYPE"
               exit 1;;
@@ -40,16 +46,13 @@ pushd $BUILD_DIR
 cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
-if [ "${OS}" = "linux" ]; then
-    cp -Pf $DOWNLOAD_DIR/lib/*.so* out/bin/
-fi
 
-ZIP_FILENAME=testserver_${OS}_x64.zip
+ZIP_FILENAME=testserver_${OS}.zip
 cp $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/certs out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/Databases out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/Files out/bin
 pushd out/bin
-zip -r ${ZIP_FILENAME} *
+zip -r --symlinks ${ZIP_FILENAME} *
 mkdir -p $ZIPS_DIR
 mv ${ZIP_FILENAME} $ZIPS_DIR
