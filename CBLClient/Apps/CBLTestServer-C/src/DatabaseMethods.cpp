@@ -403,6 +403,9 @@ namespace database_methods {
     }
 
     void database_changeEncryptionKey(json& body, mg_connection* conn) {
+#ifndef COUCHBASE_ENTERPRISE
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+#else
         with<CBLDatabase *>(body, "database", [body, conn](CBLDatabase* db) {
             CBLError err;
             auto password = body["password"].get<string>();
@@ -420,5 +423,6 @@ namespace database_methods {
 
             write_empty_body(conn);
         });
+#endif
     }
 }

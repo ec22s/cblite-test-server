@@ -47,6 +47,10 @@ namespace database_configuration_methods {
 #endif
         
         if(body.contains("password")) {
+ #ifndef COUCHBASE_ENTERPRISE
+            mg_send_http_error(conn, 501, "Not supported in CE edition");
+            return;
+#else
             CBLEncryptionKey key;
             if(!CBLEncryptionKey_FromPassword(&key, flstr(body["password"].get<string>()))) {
                 mg_send_http_error(conn, 501, "Error deriving key from password material");
@@ -54,12 +58,16 @@ namespace database_configuration_methods {
             }
             
             databaseConfig->encryptionKey = key;
+#endif
         }
 
         write_serialized_body(conn, memory_map::store(databaseConfig, CBLDatabaseConfiguration_EntryDelete));
     }
 
     void database_configuration_setEncryptionKey(json &body, mg_connection *conn) {
+#ifndef COUCHBASE_ENTERPRISE
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+#else
         with<CBLDatabaseConfiguration *>(body, "config", [body, conn](CBLDatabaseConfiguration* dbconfig) {
             auto password = body["password"].get<string>();
             CBLEncryptionKey encryptionKey;
@@ -71,5 +79,6 @@ namespace database_configuration_methods {
             dbconfig->encryptionKey = encryptionKey;
             write_empty_body(conn);
         });
+#endif
     }
 }

@@ -123,6 +123,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Perform a cross compilation of Couchbase Lite C')
     parser.add_argument('version', type=str, help='The version of the build')
     parser.add_argument('bld_num', type=int, help='The build number for this build')
+    parser.add_argument('edition', type=str, choices=["community", "enterprise"], help='The edition to build (community or enterprise)')
     parser.add_argument('os', type=str, help="The target OS to compile for")
     parser.add_argument('toolchain', type=str, help='The CMake toolchain file to use for building')
     args = parser.parse_args()
@@ -145,7 +146,7 @@ if __name__ == '__main__':
     os.chdir(DOWNLOAD_DIR)
 
     print(f"==== Downloading Couchbase Lite C [{args.os}] {args.version}-{args.bld_num} ====")
-    zip_filename=f'couchbase-lite-c-{args.os}-{args.version}-{args.bld_num}-enterprise.tar.gz'
+    zip_filename=f'couchbase-lite-c-{args.os}-{args.version}-{args.bld_num}-{args.edition}.tar.gz'
     urllib.request.urlretrieve(f'http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/{args.version}/{args.bld_num}/{zip_filename}', zip_filename, show_download_progress)
     with tarfile.open(zip_filename, 'r:gz') as tar:
         tar.extractall(DOWNLOAD_DIR)

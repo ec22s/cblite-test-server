@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$Version,
-    [Parameter(Mandatory=$true)][string]$BuildNum
+    [Parameter(Mandatory=$true)][string]$BuildNum,
+    [Parameter(Mandatory=$true)][string]$Edition
 )
 
 #$ErrorActionPreference="Stop"
@@ -11,7 +12,7 @@ $ZIPS_DIR="$PSScriptRoot\..\zips"
 Remove-Item -Recurse -Force -ErrorAction Ignore $DOWNLOAD_DIR
 New-Item -ItemType Directory $DOWNLOAD_DIR
 
-$ZIP_FILENAME="couchbase-lite-c-windows-x64-$Version-$BuildNum-enterprise.zip"
+$ZIP_FILENAME="couchbase-lite-c-windows-x64-$Version-$BuildNum-$Edition.zip"
 Invoke-WebRequest http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${Version}/${BuildNum}/${ZIP_FILENAME} -OutFile "$DOWNLOAD_DIR\$ZIP_FILENAME"
 Push-Location $DOWNLOAD_DIR
 7z x -y $ZIP_FILENAME
@@ -22,7 +23,7 @@ New-Item -ErrorAction Ignore -ItemType Directory $BUILD_DIR
 Push-Location $BUILD_DIR
 
 try {
-    & "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 15 2017" -A x64 -DCMAKE_PREFIX_PATH="${DOWNLOAD_DIR}" -DCMAKE_BUILD_TYPE=Release ..
+    & "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 15 2017" -A x64 -DCMAKE_PREFIX_PATH="${DOWNLOAD_DIR}" -DCMAKE_BUILD_TYPE=Release -DEDITION="${EDITION}" ..
     if($LASTEXITCODE -ne 0) {
         throw "Cmake failed!"
     } 

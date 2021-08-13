@@ -187,10 +187,16 @@ namespace replicator_configuration_methods {
                 CBLEndpoint* endpoint;
                 TRY(endpoint = CBLEndpoint_CreateWithURL(flstr(url), &err), err);
                 config->endpoint = endpoint;
-            } else if(body.contains("target_db")) {
+            } 
+            else if(body.contains("target_db")) {
+#ifndef COUCHBASE_ENTERPRISE
+                mg_send_http_error(conn, 501, "Not supported in CE edition");
+                return;
+#else
                 with<CBLDatabase *>(body, "target_db", [config](CBLDatabase* db) {
                     config->endpoint = CBLEndpoint_CreateWithLocalDB(db);
                 });
+#endif
             } else {
                 throw domain_error("Illegal arguments provided");
             }

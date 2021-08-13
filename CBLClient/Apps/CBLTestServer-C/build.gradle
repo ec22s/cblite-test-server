@@ -53,14 +53,14 @@ android {
         debug {
             externalNativeBuild {
                 cmake {
-                    arguments "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()}"
+                    arguments "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()} -DCBL_EDITION=${readCblEdition()}"
                 }
             }
         }
         release {
             externalNativeBuild {
                 cmake {
-                    arguments "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()}"
+                    arguments "-DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${readCmakePrefixPath()} -DCBL_EDITION=${readCblEdition()}"
                 }
             }
 
@@ -94,4 +94,14 @@ def readCmakePrefixPath() {
     def path = properties.getProperty('cmake.prefixPath')
     if(path == null) { throw new IllegalStateException("Please define cmake.prefixPath in local.properties") }
     return path
+}
+
+def readCblEdition() {
+    Properties properties = new Properties()
+    File propFile = project.rootProject.file('local.properties')
+    if(!propFile.exists()) { throw new IllegalStateException("Please define cbl.edition in local.properties") }
+    properties.load(propFile.newDataInputStream())
+    def edition = properties.getProperty('cbl.edition')
+    if(edition == null) { throw new IllegalStateException("Please define cbl.edition in local.properties") }
+    return edition
 }

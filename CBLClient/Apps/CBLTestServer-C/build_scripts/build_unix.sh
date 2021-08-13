@@ -3,6 +3,7 @@
 # Global define
 VERSION=${1}
 BLD_NUM=${2}
+EDITION=${3}
 
 case "${OSTYPE}" in
     darwin*)  OS="macosx"
@@ -34,7 +35,7 @@ rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
 pushd $DOWNLOAD_DIR
 
-ZIP_FILENAME=couchbase-lite-c-${OS}-${VERSION}-${BLD_NUM}-enterprise.${ZIP_EXT}
+ZIP_FILENAME=couchbase-lite-c-${OS}-${VERSION}-${BLD_NUM}-${EDITION}.${ZIP_EXT}
 curl -O http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${VERSION}/${BLD_NUM}/${ZIP_FILENAME}
 ${ZIP_CMD} ${ZIP_FILENAME}
 rm ${ZIP_FILENAME}
@@ -43,7 +44,7 @@ popd
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 
-cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release -DEDITION=$EDITION ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
 
