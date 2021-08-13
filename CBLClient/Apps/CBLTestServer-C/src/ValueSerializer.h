@@ -4,6 +4,7 @@
 
 #include <string>
 #include <nlohmann/json.hpp>
+#include <sstream>
 #include INCLUDE_FLEECE(Fleece.h)
 
 namespace value_serializer {
