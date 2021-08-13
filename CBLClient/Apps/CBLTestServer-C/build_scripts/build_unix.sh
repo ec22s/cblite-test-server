@@ -44,11 +44,11 @@ popd
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 
-cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release -DEDITION=$EDITION ..
+cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release -DCBL_EDITION=$EDITION ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
 
-ZIP_FILENAME=testserver_${OS}.zip
+ZIP_FILENAME=testserver_${OS}_${EDITION}.zip
 cp $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/certs out/bin
 cp -R $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer.NetCore/Databases out/bin

@@ -156,7 +156,7 @@ if __name__ == '__main__':
     os.chdir(BUILD_DIR)
 
     cmake_args=['cmake', '..', f'-DCMAKE_PREFIX_PATH={DOWNLOAD_DIR}', '-DCMAKE_BUILD_TYPE=Release', 
-        f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
+        f'-DCBL_EDITION={args.edition}', f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
     if args.os == "raspbian9" or args.os == "debian9_x64":
         cmake_args.append('-DCBL_STATIC_CXX=ON')
     elif args.os == "raspios10_arm64":
@@ -169,7 +169,7 @@ if __name__ == '__main__':
         shutil.copy2(lib_file, 'out/bin')
    
     print("==== Copying resources to output folder ====")
-    zip_filename=f'testserver_{args.os}.zip'
+    zip_filename=f'testserver_{args.os}_{args.edition}.zip'
     shutil.copy2(f'{SCRIPT_DIR}/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem', 'out/bin')
     pbar = ProgressBar(3)
     pbar.start()

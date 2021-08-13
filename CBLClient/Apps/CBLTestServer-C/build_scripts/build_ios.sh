@@ -35,4 +35,4 @@ mkdir -p $ZIPS_DIR
 pushd $ZIPS_DIR
 mv $SCRIPT_DIR/../ios/TestServer/$BUILD_SIM_FOLDER/Build/Products/Release-iphonesimulator/TestServer.app .
 mv $SCRIPT_DIR/../ios/TestServer/$BUILD_DEVICE_FOLDER/Build/Products/Release-iphoneos/TestServer.app TestServer-Device.app
-zip -ry CBLTestServer-iOS.zip *.app
+zip -ry CBLTestServer-iOS_${EDITION}.zip *.app
