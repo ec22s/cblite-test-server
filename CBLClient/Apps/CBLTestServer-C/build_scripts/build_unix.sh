@@ -10,7 +10,7 @@ case "${OSTYPE}" in
               ZIP_CMD="unzip"
               ZIP_EXT="zip"
               ;;
-              LIBCBL="**/libcblite.so*"
+    linux*)   LIBCBL="**/libcblite.so*"
               ZIP_CMD="tar xvf"
               ZIP_EXT="tar.gz"
               OS_NAME=`lsb_release -is`
