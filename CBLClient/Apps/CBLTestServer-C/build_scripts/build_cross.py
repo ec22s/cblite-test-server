@@ -155,7 +155,7 @@ if __name__ == '__main__':
     os.chdir(BUILD_DIR)
 
     cmake_args=['cmake', '..', f'-DCMAKE_PREFIX_PATH={DOWNLOAD_DIR}', '-DCMAKE_BUILD_TYPE=Release', 
-        f'-DEDITION={args.edition}', f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
+        f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
     if args.os == "raspbian9" or args.os == "debian9_x64":
         cmake_args.append('-DCBL_STATIC_CXX=ON')
     elif args.os == "raspios10_arm64":
