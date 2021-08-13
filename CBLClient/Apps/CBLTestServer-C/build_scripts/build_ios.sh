@@ -3,6 +3,7 @@
 # Global define
 VERSION=${1}
 BLD_NUM=${2}
+EDITION=${3}
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 DOWNLOAD_DIR=$SCRIPT_DIR/../ios/Frameworks
@@ -14,7 +15,7 @@ rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
 
 pushd $DOWNLOAD_DIR
-ZIP_FILENAME=couchbase-lite-c-ios-${VERSION}-${BLD_NUM}-enterprise.zip
+ZIP_FILENAME=couchbase-lite-c-ios-${VERSION}-${BLD_NUM}-${EDITION}.zip
 curl -O http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${VERSION}/${BLD_NUM}/${ZIP_FILENAME}
 unzip ${ZIP_FILENAME}
 rm ${ZIP_FILENAME}

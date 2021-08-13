@@ -44,6 +44,11 @@ extern "C" {
         mg_init_library(0);
         TestServer server{};
         server.start();
+    #ifdef COUCHBASE_ENTERPRISE
+         __android_log_print(ANDROID_LOG_INFO, "TestServer", "Using CBL C version %s-%d (Enterprise)", CBLITE_VERSION, CBLITE_BUILD_NUMBER);
+    #else
+         __android_log_print(ANDROID_LOG_INFO, "TestServer", "Using CBL C version %s-%d", CBLITE_VERSION, CBLITE_BUILD_NUMBER);
+    #endif
         __android_log_print(ANDROID_LOG_INFO, "TestServer", "Listening on port %d...", TestServer::PORT);
 
         int events;

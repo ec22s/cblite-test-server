@@ -23,6 +23,5 @@ popd
 pushd $SCRIPT_DIR/..
 echo "sdk.dir=${ANDROID_HOME}" > local.properties
 echo "cmake.prefixPath=${DOWNLOAD_DIR}" >> local.properties
-echo "cbl.edition=${EDITION}" >> local.properties
 ./gradlew assembleRelease
 mv $BUILD_DIR/outputs/apk/release/CBLTestServer-C-release.apk $BUILD_DIR/outputs/apk/release/CBLTestServer-C-$EDITION.apk

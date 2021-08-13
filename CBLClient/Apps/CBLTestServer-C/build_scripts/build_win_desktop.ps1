@@ -23,7 +23,7 @@ New-Item -ErrorAction Ignore -ItemType Directory $BUILD_DIR
 Push-Location $BUILD_DIR
 
 try {
-    & "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 15 2017" -A x64 -DCMAKE_PREFIX_PATH="${DOWNLOAD_DIR}" -DCMAKE_BUILD_TYPE=Release -DCBL_EDITION="${EDITION}" ..
+    & "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 15 2017" -A x64 -DCMAKE_PREFIX_PATH="${DOWNLOAD_DIR}" -DCMAKE_BUILD_TYPE=Release ..
     if($LASTEXITCODE -ne 0) {
         throw "Cmake failed!"
     } 

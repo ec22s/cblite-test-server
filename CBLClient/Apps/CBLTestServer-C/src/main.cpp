@@ -15,7 +15,11 @@ int main(int argc, const char** argv) {
 
     TestServer server{};
     server.start();
-    cout << "Using CBL C version " << CBLITE_VERSION << "-" << CBLITE_BUILD_NUMBER << endl;
+    cout << "Using CBL C version " << CBLITE_VERSION << "-" << CBLITE_BUILD_NUMBER;
+#ifdef COUCHBASE_ENTERPRISE
+    cout << " (Enterprise)";
+#endif
+    cout << endl;
     cout << "Listening on port " << TestServer::PORT << "..." << endl;
 
     while(true) {

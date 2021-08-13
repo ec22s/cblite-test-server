@@ -44,7 +44,7 @@ popd
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 
-cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release -DCBL_EDITION=$EDITION ..
+cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
 cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
 

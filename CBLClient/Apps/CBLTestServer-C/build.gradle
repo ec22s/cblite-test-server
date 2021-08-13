@@ -95,13 +95,3 @@ def readCmakePrefixPath() {
     if(path == null) { throw new IllegalStateException("Please define cmake.prefixPath in local.properties") }
     return path
 }
-
-def readCblEdition() {
-    Properties properties = new Properties()
-    File propFile = project.rootProject.file('local.properties')
-    if(!propFile.exists()) { throw new IllegalStateException("Please define cbl.edition in local.properties") }
-    properties.load(propFile.newDataInputStream())
-    def edition = properties.getProperty('cbl.edition')
-    if(edition == null) { throw new IllegalStateException("Please define cbl.edition in local.properties") }
-    return edition
-}
