@@ -8,6 +8,7 @@ EDITION=${3}
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 DOWNLOAD_DIR=$SCRIPT_DIR/../downloaded
 ZIPS_DIR=$SCRIPT_DIR/../zips
+BUILD_DIR=$SCRIPT_DIR/../build
 
 rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
@@ -24,3 +25,4 @@ echo "sdk.dir=${ANDROID_HOME}" > local.properties
 echo "cmake.prefixPath=${DOWNLOAD_DIR}" >> local.properties
 echo "cbl.edition=${EDITION}" >> local.properties
 ./gradlew assembleRelease
+mv $BUILD_DIR/outputs/apk/release/CBLTestServer-C-release.apk $BUILD_DIR/outputs/apk/release/CBLTestServer-C-$EDITION.apk
