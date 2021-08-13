@@ -3,13 +3,20 @@
 #include "MemoryMap.h"
 #include "FleeceHelpers.h"
 #include "Defines.h"
+#include "date.h"
 
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
 using namespace nlohmann;
+using namespace chrono;
+using namespace date;
 
 void CBLDocument_EntryDelete(void* ptr) {
     CBLDocument_Release(static_cast<CBLDocument *>(ptr));
+}
+
+void DateTime_EntryDelete(void* ptr) {
+    delete (milliseconds *)ptr;
 }
 
 namespace document_methods {
@@ -173,7 +180,8 @@ namespace document_methods {
 
     void document_setDouble(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
-        const auto value = body["value"].get<double>();
+        const auto valStr = body["value"].get<string>();
+        double value = atof(valStr.c_str());
         const auto handle = body["document"].get<string>();
         with<CBLDocument*>(body, "document", [&key, &value](CBLDocument* doc)
         {
@@ -284,19 +292,23 @@ namespace document_methods {
                 return;
             }
 
-            if(FLValue_GetType(val) == kFLString) {
-                write_serialized_body(conn, val);
-                return;
-            }
-
-            char dateString[kFormattedISO8601DateMaxSize];
-            FormatISO8601Date(dateString, timestamp, true);
-            write_serialized_body(conn, dateString);
+            auto* stored = new milliseconds(timestamp);
+            write_serialized_body(conn, memory_map::store(stored, DateTime_EntryDelete));
         });
     }
 
     void document_setDate(json& body, mg_connection* conn) {
-        document_setString(body, conn);
+        const auto key = body["key"].get<string>();
+        auto* value = (chrono::milliseconds *)memory_map::get(body["value"].get<string>());
+        const auto handle = body["document"].get<string>();
+        with<CBLDocument*>(body, "document", [conn, &key, value](CBLDocument* doc)
+        {
+            FLMutableDict properties = CBLDocument_MutableProperties(doc);
+            FLString flKey { key.data(), key.size() };
+            FLMutableDict_SetInt(properties, flKey, value->count());
+        });
+
+        write_serialized_body(conn, handle);
     }
 
     void document_setData(json& body, mg_connection* conn) {

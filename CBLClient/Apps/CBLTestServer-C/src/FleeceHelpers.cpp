@@ -194,6 +194,7 @@ FLSlice FormatISO8601Date(char buf[], int64_t time, bool asUTC) {
     }
     
     memcpy(buf, timestream.str().c_str(), timestream.str().size());
+    buf[timestream.str().length()] = 0;
     return {buf, timestream.str().length()};
 }
 

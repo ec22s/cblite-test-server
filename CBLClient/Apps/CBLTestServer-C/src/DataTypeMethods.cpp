@@ -5,16 +5,15 @@
 #include "FleeceHelpers.h"
 #include "Defines.h"
 #include "FilePathResolver.h"
-#include <chrono>
+#include "date.h"
 
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
 using namespace nlohmann;
-using datetime = chrono::time_point<chrono::system_clock>;
+using namespace chrono;
+using namespace date;
 
-void DateTime_EntryDelete(void* ptr) {
-    delete (datetime *)ptr;
-}
+void DateTime_EntryDelete(void* ptr);
 
 namespace datatype_methods {
     void datatype_setLong(json& body, mg_connection* conn) {
@@ -33,7 +32,7 @@ namespace datatype_methods {
     }
 
     void datatype_setDate(json& body, mg_connection* conn) {
-        auto now = new datetime(chrono::system_clock::now());
+        auto now = new milliseconds(duration_cast<milliseconds>(system_clock::now().time_since_epoch()));
         write_serialized_body(conn, memory_map::store(now, DateTime_EntryDelete));
     }
 
@@ -50,14 +49,14 @@ namespace datatype_methods {
     }
 
     void datatype_compare(json& body, mg_connection* conn) {
-        auto first = body["first"].get<string>();
-        auto second = body["second"].get<string>();
+        auto first = body["first"].get<int>();
+        auto second = body["second"].get<int>();
         write_serialized_body(conn, first == second);
     }
 
     void datatype_compareDate(json& body, mg_connection* conn) {
-        auto date1 = (datetime *)memory_map::get(body["date1"].get<string>());
-        auto date2 = (datetime *)memory_map::get(body["date2"].get<string>());
+        auto date1 = (milliseconds *)memory_map::get(body["date1"].get<string>());
+        auto date2 = (milliseconds *)memory_map::get(body["date2"].get<string>());
         write_serialized_body(conn, *date1 == *date2);
     }
 }

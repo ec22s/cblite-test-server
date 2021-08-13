@@ -8,8 +8,12 @@
 #include INCLUDE_FLEECE(Fleece.h)
 #include INCLUDE_CBL(CouchbaseLite.h)
 
-using namespace nlohmann;
 using namespace std;
+using namespace nlohmann;
+using namespace chrono;
+using namespace date;
+
+void DateTime_EntryDelete(void* ptr);
 
 static void FLMutableDict_EntryDelete(void* ptr) {
     FLMutableDict_Release(static_cast<FLMutableDict>(ptr));
@@ -94,14 +98,8 @@ namespace dictionary_methods {
                 return;
             }
 
-            if(FLValue_GetType(val) == kFLString) {
-                write_serialized_body(conn, val);
-                return;
-            }
-
-            char dateString[kFormattedISO8601DateMaxSize];
-            FormatISO8601Date(dateString, timestamp, true);
-            write_serialized_body(conn, dateString);
+            auto* stored = new milliseconds(timestamp);
+            write_serialized_body(conn, memory_map::store(stored, DateTime_EntryDelete));
         });
     }
 
@@ -269,7 +267,16 @@ namespace dictionary_methods {
     }
 
     void dictionary_setDate(json& body, mg_connection* conn) {
-        dictionary_setString(body, conn);
+        const auto key = body["key"].get<string>();
+        auto* val = (chrono::milliseconds *)memory_map::get(body["value"].get<string>());
+        const auto handle = body["dictionary"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, val](FLMutableDict d)
+        {
+            FLString flKey { key.data(), key.size() };
+            FLMutableDict_SetInt(d, flKey, val->count());
+        });
+
+        write_serialized_body(conn, handle);
     }
 
     void dictionary_setDictionary(json& body, mg_connection* conn) {
