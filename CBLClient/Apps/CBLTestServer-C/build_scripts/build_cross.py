@@ -155,8 +155,8 @@ if __name__ == '__main__':
     os.makedirs(BUILD_DIR, 0o755, True)
     os.chdir(BUILD_DIR)
 
-    cmake_args=['cmake', '..', f'-DCMAKE_PREFIX_PATH={DOWNLOAD_DIR}', '-DCMAKE_BUILD_TYPE=Release', 
-        f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
+    cmake_args=['cmake', '..', f'-DCMAKE_PREFIX_PATH={DOWNLOAD_DIR}/libcblite-{args.version}', 
+        '-DCMAKE_BUILD_TYPE=Release', f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
     if args.os == "raspbian9" or args.os == "debian9_x64":
         cmake_args.append('-DCBL_STATIC_CXX=ON')
     elif args.os == "raspios10_arm64":
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     subprocess.run(cmake_args)
     subprocess.run(['make', '-j8', 'install'])
 
-    for lib_file in glob.glob(f'{DOWNLOAD_DIR}/lib/**/libcblite.so*'):
+    for lib_file in glob.glob(f'{DOWNLOAD_DIR}/libcblite-{args.version}/lib/**/libcblite.so*'):
         shutil.copy2(lib_file, 'out/bin')
    
     print("==== Copying resources to output folder ====")

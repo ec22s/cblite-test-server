@@ -23,7 +23,7 @@ New-Item -ErrorAction Ignore -ItemType Directory $BUILD_DIR
 Push-Location $BUILD_DIR
 
 try {
-    & "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 15 2017" -A x64 -DCMAKE_PREFIX_PATH="${DOWNLOAD_DIR}" -DCMAKE_BUILD_TYPE=Release ..
+    & "C:\Program Files\CMake\bin\cmake.exe" -G "Visual Studio 15 2017" -A x64 -DCMAKE_PREFIX_PATH="${DOWNLOAD_DIR}/libcblite-${Version}" -DCMAKE_BUILD_TYPE=Release ..
     if($LASTEXITCODE -ne 0) {
         throw "Cmake failed!"
     } 
@@ -33,7 +33,7 @@ try {
         throw "Build failed!"
     } 
 
-    Copy-Item "$DOWNLOAD_DIR\bin\cblite.dll" out\bin
+    Copy-Item "$DOWNLOAD_DIR\libcblite-$VERSION\bin\cblite.dll" out\bin
     Copy-Item -ErrorAction Ignore $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer\sg_cert.pem out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\certs out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Databases out\bin

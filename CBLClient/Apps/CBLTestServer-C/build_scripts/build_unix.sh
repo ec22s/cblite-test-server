@@ -44,9 +44,9 @@ popd
 mkdir -p $BUILD_DIR
 pushd $BUILD_DIR
 
-cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR -DCMAKE_BUILD_TYPE=Release ..
+cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR/libcblite-$VERSION -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
-cp $DOWNLOAD_DIR/lib/$LIBCBL out/bin/
+cp $DOWNLOAD_DIR/libcblite-$VERSION/lib/$LIBCBL out/bin/
 
 ZIP_FILENAME=testserver_${OS}_${EDITION}.zip
 cp $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem out/bin
