@@ -53,14 +53,14 @@ android {
         debug {
             externalNativeBuild {
                 cmake {
-                    arguments "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()} -DCBL_EDITION=${readCblEdition()}"
+                    arguments "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()}"
                 }
             }
         }
         release {
             externalNativeBuild {
                 cmake {
-                    arguments "-DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${readCmakePrefixPath()} -DCBL_EDITION=${readCblEdition()}"
+                    arguments "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()}"
                 }
             }
 
