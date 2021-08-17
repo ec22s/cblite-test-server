@@ -157,9 +157,9 @@ if __name__ == '__main__':
 
     cmake_args=['cmake', '..', f'-DCMAKE_PREFIX_PATH={DOWNLOAD_DIR}/libcblite-{args.version}', 
         '-DCMAKE_BUILD_TYPE=Release', f'-DCMAKE_TOOLCHAIN_FILE={args.toolchain}']
-    if args.os == "raspbian9" or args.os == "debian9_x64":
+    if args.os == "raspbian9" or args.os == "debian9-x86_64":
         cmake_args.append('-DCBL_STATIC_CXX=ON')
-    elif args.os == "raspios10_arm64":
+    elif args.os == "raspios10-arm64":
         cmake_args.append('-D64_BIT=ON')
 
     subprocess.run(cmake_args)
