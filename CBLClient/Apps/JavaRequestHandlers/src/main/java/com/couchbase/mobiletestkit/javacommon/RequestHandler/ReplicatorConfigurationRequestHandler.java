@@ -358,14 +358,14 @@ class DefaultReplicatorFilterCallback implements ReplicationFilter {
 class ReplicatorDeletedFilterCallback implements ReplicationFilter {
     @Override
     public boolean filtered(Document document, EnumSet<DocumentFlag> flags) {
-        return !(flags.contains(DocumentFlag.DocumentFlagsDeleted));
+        return !(flags.contains(DocumentFlag.DELETED));
     }
 }
 
 class ReplicatorAccessRevokedFilterCallback implements ReplicationFilter {
     @Override
     public boolean filtered(Document document, EnumSet<DocumentFlag> flags) {
-        return !(flags.contains(DocumentFlag.DocumentFlagsAccessRemoved));
+        return !(flags.contains(DocumentFlag.ACCESS_REMOVED));
     }
 }
 
