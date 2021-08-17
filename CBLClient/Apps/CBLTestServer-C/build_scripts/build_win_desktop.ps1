@@ -39,7 +39,7 @@ try {
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Databases out\bin
     Copy-Item -ErrorAction Ignore -Recurse $PSScriptRoot\..\..\CBLTestServer-Dotnet\TestServer.NetCore\Files out\bin
     Push-Location out\bin
-    7za a -bb1 -tzip -mx5 $ZIPS_DIR\testserver_windesktop_x64_$Edition.zip testserver.exe cblite.dll certs Databases Files sg_cert.pem
+    7za a -bb1 -tzip -mx5 $ZIPS_DIR\testserver_windesktop-x86_64_$Edition.zip testserver.exe cblite.dll certs Databases Files sg_cert.pem
     Pop-Location
 } finally {
     Pop-Location
