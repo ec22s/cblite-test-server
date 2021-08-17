@@ -46,6 +46,6 @@ public class CouchbaseLiteServ extends Application {
         setTestServerContext(new TestServerContext());
 
         Log.init(new TestServerLogger());
-        CouchbaseLite.init(this);
+        CouchbaseLite.init(this, true);
     }
 }
