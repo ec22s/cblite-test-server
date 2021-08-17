@@ -146,7 +146,7 @@ if __name__ == '__main__':
     os.chdir(DOWNLOAD_DIR)
 
     print(f"==== Downloading Couchbase Lite C [{args.os}] {args.version}-{args.bld_num} ====")
-    zip_filename=f'couchbase-lite-c-{args.os}-{args.version}-{args.bld_num}-{args.edition}.tar.gz'
+    zip_filename=f'couchbase-lite-c-{args.edition}-{args.version}-{args.bld_num}-{args.os}.tar.gz'
     urllib.request.urlretrieve(f'http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/{args.version}/{args.bld_num}/{zip_filename}', zip_filename, show_download_progress)
     with tarfile.open(zip_filename, 'r:gz') as tar:
         tar.extractall(DOWNLOAD_DIR)

@@ -14,7 +14,7 @@ rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
 
 pushd $DOWNLOAD_DIR
-ZIP_FILENAME=couchbase-lite-c-android-${VERSION}-${BLD_NUM}-${EDITION}.zip
+ZIP_FILENAME=couchbase-lite-c-${EDITION}-${VERSION}-${BLD_NUM}-android.zip
 curl -O http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${VERSION}/${BLD_NUM}/${ZIP_FILENAME}
 unzip ${ZIP_FILENAME}
 rm ${ZIP_FILENAME}

@@ -17,9 +17,6 @@ case "${OSTYPE}" in
               OS_NAME=`lsb_release -is`
               OS_VERSION=`lsb_release -rs`
               OS_ARCH=`uname -m`
-              if [ $OS_ARCH == "x86_64" ]; then
-                  OS_ARCH="x64"
-              fi
               OS=${OS_NAME,,}${OS_VERSION}_${OS_ARCH}
               ;;
     *)        echo "unknown: $OSTYPE"
@@ -35,7 +32,7 @@ rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
 pushd $DOWNLOAD_DIR
 
-ZIP_FILENAME=couchbase-lite-c-${OS}-${VERSION}-${BLD_NUM}-${EDITION}.${ZIP_EXT}
+ZIP_FILENAME=couchbase-lite-c-${EDITION}-${VERSION}-${BLD_NUM}-${OS}.${ZIP_EXT}
 curl -O http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${VERSION}/${BLD_NUM}/${ZIP_FILENAME}
 ${ZIP_CMD} ${ZIP_FILENAME}
 rm ${ZIP_FILENAME}
