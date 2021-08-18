@@ -201,6 +201,8 @@ namespace database_methods {
                 TRY(CBLDatabase_SaveDocument(db, d, &err), err)
             });
         });
+
+        write_empty_body(conn);
     }
 
     void database_saveWithConcurrency(json& body, mg_connection* conn) {
