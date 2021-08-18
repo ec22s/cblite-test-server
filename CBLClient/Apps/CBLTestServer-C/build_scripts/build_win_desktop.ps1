@@ -12,7 +12,7 @@ $ZIPS_DIR="$PSScriptRoot\..\zips"
 Remove-Item -Recurse -Force -ErrorAction Ignore $DOWNLOAD_DIR
 New-Item -ItemType Directory $DOWNLOAD_DIR
 
-$ZIP_FILENAME="couchbase-lite-c-windows-$Edition-$Version-$BuildNum-x86_64.zip"
+$ZIP_FILENAME="couchbase-lite-c-$Edition-$Version-$BuildNum-windows-x86_64.zip"
 Invoke-WebRequest http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${Version}/${BuildNum}/${ZIP_FILENAME} -OutFile "$DOWNLOAD_DIR\$ZIP_FILENAME"
 Push-Location $DOWNLOAD_DIR
 7z x -y $ZIP_FILENAME
