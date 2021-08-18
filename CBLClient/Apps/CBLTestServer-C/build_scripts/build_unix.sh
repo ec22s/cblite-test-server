@@ -17,7 +17,7 @@ case "${OSTYPE}" in
               OS_NAME=`lsb_release -is`
               OS_VERSION=`lsb_release -rs`
               OS_ARCH=`uname -m`
-              OS=${OS_NAME,,}${OS_VERSION}_${OS_ARCH}
+              OS=${OS_NAME,,}${OS_VERSION}-${OS_ARCH}
               ;;
     *)        echo "unknown: $OSTYPE"
               exit 1;;
