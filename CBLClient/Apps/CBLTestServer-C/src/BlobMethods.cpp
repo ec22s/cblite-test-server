@@ -63,6 +63,10 @@ namespace blob_methods {
             ifstream fin(imageLocation, ios_base::binary);
             fin.exceptions(ios::badbit);
 
+            if(!fin.is_open()) {
+                throw domain_error("Unable to open file");
+            }
+
             char buffer[8192];
             while(!fin.eof()) {
                 fin.read(buffer, 8192);
