@@ -15,6 +15,10 @@ namespace file_resolution {
         NSString* extension = [nsRelative pathExtension];
         nsRelative = [nsRelative stringByDeletingPathExtension];
         NSString* finalPath = [[NSBundle mainBundle] pathForResource:nsRelative ofType:extension];
+        if(!finalPath) {
+            throw domain_error("Unable to find file in main bundle!");
+        }
+        
         return [finalPath cStringUsingEncoding:NSUTF8StringEncoding];
     }
 }
