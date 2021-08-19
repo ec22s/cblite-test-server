@@ -340,7 +340,7 @@ namespace replicator_configuration_methods {
     }
 
     void replicatorConfiguration_setReplicatorType(json& body, mg_connection* conn) {
-        auto replicatorType = body["replication_type"].get<string>();
+        auto replicatorType = body["replType"].get<string>();
         tolower(replicatorType);
                 
         with<CBLReplicatorConfiguration *>(body, "configuration", [&replicatorType](CBLReplicatorConfiguration *repConf)
