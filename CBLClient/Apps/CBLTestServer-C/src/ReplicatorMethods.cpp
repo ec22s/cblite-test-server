@@ -195,9 +195,21 @@ namespace replicator_methods {
                 return;
             }
 
+            auto code = status.error.code;
+            auto domain = status.error.domain;
+            if(status.error.domain == kCBLWebSocketDomain) {
+                // TODO: Once other platforms switch to more domains, remove this offset;
+                code += 10000;
+                domain = kCBLDomain;
+            } else if(status.error.domain == kCBLNetworkDomain) {
+                 // TODO: Once other platforms switch to more domains, remove this offset;
+                code += 5000;
+                domain = kCBLDomain;
+            }
+
             stringstream ss;
             string errMsg = to_string(CBLError_Message(&status.error));
-            ss << "Error " << status.error.domain << " / " << status.error.code << ": " << errMsg;
+            ss << "Error " << domain << " / " << code << ": " << errMsg;
             write_serialized_body(conn, ss.str());
         });
     }
