@@ -6,15 +6,7 @@ BLD_NUM=${2}
 EDITION=${3}
 
 case "${OSTYPE}" in
-    darwin*)  OS="macos"
-              LIBCBL="libcblite*.dylib"
-              ZIP_CMD="unzip"
-              ZIP_EXT="zip"
-              ;;
-    linux*)   LIBCBL="**/libcblite.so*"
-              ZIP_CMD="tar xvf"
-              ZIP_EXT="tar.gz"
-              OS_NAME=`lsb_release -is`
+    linux*)   OS_NAME=`lsb_release -is`
               OS_VERSION=`lsb_release -rs`
               OS_ARCH=`uname -m`
               OS=${OS_NAME,,}${OS_VERSION}-${OS_ARCH}
@@ -32,9 +24,9 @@ rm -rf $DOWNLOAD_DIR 2> /dev/null
 mkdir -p $DOWNLOAD_DIR
 pushd $DOWNLOAD_DIR
 
-ZIP_FILENAME=couchbase-lite-c-${EDITION}-${VERSION}-${BLD_NUM}-${OS}.${ZIP_EXT}
+ZIP_FILENAME=couchbase-lite-c-${EDITION}-${VERSION}-${BLD_NUM}-${OS}.tar.gz
 curl -O http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/${VERSION}/${BLD_NUM}/${ZIP_FILENAME}
-${ZIP_CMD} ${ZIP_FILENAME}
+tar xvf ${ZIP_FILENAME}
 rm ${ZIP_FILENAME}
 
 popd
@@ -43,7 +35,7 @@ pushd $BUILD_DIR
 
 cmake -DCMAKE_PREFIX_PATH=$DOWNLOAD_DIR/libcblite-$VERSION -DCMAKE_BUILD_TYPE=Release ..
 make -j8 install
-cp $DOWNLOAD_DIR/libcblite-$VERSION/lib/$LIBCBL out/bin/
+cp $DOWNLOAD_DIR/libcblite-$VERSION/lib/**/libcblite.so* out/bin/
 
 ZIP_FILENAME=testserver_${OS}_${EDITION}.zip
 cp $SCRIPT_DIR/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem out/bin

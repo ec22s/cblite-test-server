@@ -9,7 +9,9 @@ if(NOT DEFINED CMAKE_OSX_SYSROOT)
     set(CMAKE_OSX_SYSROOT macosx)
 endif()
 
-set(CMAKE_OSX_ARCHITECTURES x86_64 arm64)
+if(DEFINED CBL_MACOS_ARCH)
+    set(CMAKE_OSX_ARCHITECTURES ${CBL_MACOS_ARCH})
+endif()
 
 project(testsuite)
 
@@ -156,7 +158,7 @@ else()
             src/FileLoggingMethods+Apple.mm
         )
     endif()
-    
+
     if(CMAKE_COMPILER_IS_GNUCC)
         target_compile_options(testserver PRIVATE -Wno-psabi)
         if(CBL_STATIC_CXX)
