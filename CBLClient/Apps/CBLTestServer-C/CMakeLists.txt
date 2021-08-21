@@ -65,6 +65,9 @@ if(APPLE)
     set(CMAKE_INSTALL_RPATH "@loader_path")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(CMAKE_INSTALL_RPATH "\$ORIGIN")
+    if(CBL_STATIC_CXX)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++")
+    endif()
 endif()
 
 set(
