@@ -39,9 +39,9 @@ void array_methods::array_addString(json& body, mg_connection* conn) {
 
 void array_methods::array_create(json& body, mg_connection* conn) {
     string arrayId;
+    FLMutableArray arr = FLMutableArray_New();
     if(body.contains("content_array")) {
         const auto content = body["content_array"];
-        FLMutableArray arr = FLMutableArray_New();
         if(content.type() != value_t::array) {
             throw invalid_argument("Non-array received in array_create");
         }
@@ -49,11 +49,9 @@ void array_methods::array_create(json& body, mg_connection* conn) {
         for(const auto& element : content) {
             writeFleece(arr, element);
         }
-
-        string id = memory_map::store(arr, FLMutableArray_EntryDelete);
-        mg_send_http_ok(conn, "text/plain", id.length());
-        mg_write(conn, id.c_str(), id.size());
     }
+
+    write_serialized_body(conn, memory_map::store(arr, FLMutableArray_EntryDelete));
 }
 
 void array_methods::array_getArray(json& body, mg_connection* conn) {
