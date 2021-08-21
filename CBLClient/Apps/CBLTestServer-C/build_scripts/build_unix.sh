@@ -6,7 +6,7 @@ BLD_NUM=${2}
 EDITION=${3}
 
 case "${OSTYPE}" in
-    darwin*)  OS="macosx-x86_64"
+    darwin*)  OS="macos"
               LIBCBL="libcblite*.dylib"
               ZIP_CMD="unzip"
               ZIP_EXT="zip"

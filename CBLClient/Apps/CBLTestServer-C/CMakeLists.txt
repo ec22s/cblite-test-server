@@ -9,6 +9,8 @@ if(NOT DEFINED CMAKE_OSX_SYSROOT)
     set(CMAKE_OSX_SYSROOT macosx)
 endif()
 
+set(CMAKE_OSX_ARCHITECTURES x86_64 arm64)
+
 project(testsuite)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
