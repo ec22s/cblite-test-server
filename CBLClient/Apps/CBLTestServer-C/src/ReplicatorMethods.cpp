@@ -86,7 +86,19 @@ public:
 
         for(unsigned i = 0; i < numDocs; i++) {
             auto doc = docs[i];
-            args.docs.emplace_back(doc.ID, doc.flags, doc.error);
+            auto error = doc.error;
+            if(error.domain == kCBLWebSocketDomain) {
+                // TODO: Stop doing this once the other platforms start using
+                // more domains.  For now, make it "backwards compatible" for the
+                // functional tests.
+                error.domain = kCBLDomain;
+                error.code += 10000;
+            } else if(error.domain == kCBLNetworkDomain) {
+                error.domain = kCBLDomain;
+                error.code += 5000;
+            }
+
+            args.docs.emplace_back(doc.ID, doc.flags, error);
         }
 
         _changes.push_back(args);
