@@ -25,7 +25,7 @@ static void tolower(string& str) {
 static bool replicator_boolean_filter_callback(void* context, CBLDocument* doc, CBLDocumentFlags flags) {
     const auto* properties = CBLDocument_Properties(doc);
     FLValue val = FLDict_Get(properties, FLSTR("new_field_1"));
-    return val != nullptr && FLValue_AsBool(val);
+    return val == nullptr || FLValue_AsBool(val);
 }
 
 static bool replicator_deleted_filter_callback(void* context, CBLDocument* doc, CBLDocumentFlags flags) {
