@@ -220,12 +220,10 @@ namespace database_methods {
                     concurrencyType = kCBLConcurrencyControlFailOnConflict;
                 }
 
-                CBLError err;
-                if(!CBLDatabase_SaveDocumentWithConcurrencyControl(db, d, concurrencyType, &err)) {
-                    if(err.domain != kCBLDomain || err.code != (int)kCBLErrorConflict) {
-                        string errMsg = to_string(CBLError_Message(&err));
-                        throw domain_error(errMsg);
-                    }
+                CBLError err {};
+                if(!CBLDatabase_SaveDocumentWithConcurrencyControl(db, d, concurrencyType, &err) && err.code != (int)kCBLErrorConflict) {
+                    string errMsg = to_string(CBLError_Message(&err));
+                    throw domain_error(errMsg);
                 }
             });
         });
@@ -248,8 +246,11 @@ namespace database_methods {
                     concurrencyType = kCBLConcurrencyControlFailOnConflict;
                 }
 
-                CBLError err;
-                TRY(CBLDatabase_DeleteDocumentWithConcurrencyControl(db, d, concurrencyType, &err), err)
+                CBLError err {};
+                if(!CBLDatabase_DeleteDocumentWithConcurrencyControl(db, d, concurrencyType, &err) && err.code != (int)kCBLErrorConflict) {
+                    string errMsg = to_string(CBLError_Message(&err));
+                    throw domain_error(errMsg);
+                }
             });
         });
 
