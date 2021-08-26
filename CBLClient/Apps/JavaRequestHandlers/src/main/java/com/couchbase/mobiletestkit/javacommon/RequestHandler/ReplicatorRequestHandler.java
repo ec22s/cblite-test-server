@@ -95,7 +95,7 @@ public class ReplicatorRequestHandler {
                     error_domain = document.getError().getDomain();
                 }
                 error = error + error_code + ", error_domain: " + error_domain;
-                String flags = ", flags: " + document.flags();
+                String flags = ", flags: " + document.getFlags();
                 String push = ", push: " + change.isPush();
                 event_list.add(doc_id + error + push + flags);
             }

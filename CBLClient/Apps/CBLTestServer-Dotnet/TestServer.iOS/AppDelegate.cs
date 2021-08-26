@@ -29,7 +29,7 @@ namespace Couchbase.Lite.Testing.iOS
             // make the window visible
             Window.MakeKeyAndVisible();
 
-            Couchbase.Lite.Support.iOS.Activate();
+            
             Database.Log.Console.Level = Logging.LogLevel.None;
 
             TestServer.FilePathResolver = ResolvePath;
