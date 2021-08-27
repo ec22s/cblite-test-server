@@ -279,7 +279,7 @@ namespace database_methods {
 
             CBLResultSet* results;
             TRY((results = CBLQuery_Execute(query, &err)), err)
-            json ids(0, nullptr);
+            json ids = json::array();
             while(CBLResultSet_Next(results)) {
                 FLString nextId = FLValue_AsString(CBLResultSet_ValueAtIndex(results, 0));
                 ids.push_back(string(static_cast<const char *>(nextId.buf), nextId.size));

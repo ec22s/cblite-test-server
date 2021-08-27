@@ -53,7 +53,7 @@ namespace value_serializer {
                 return serialize(j.get<string>());
             case value_t::array:
                 {
-                    json newJson;
+                    json newJson = json::array();
                     for(const auto& element : j) {
                         newJson.push_back(serialize(element));
                     }
@@ -62,7 +62,7 @@ namespace value_serializer {
                 }
             case value_t::object:
                 {
-                    json newJson;
+                    json newJson = json::object();
                     for(auto& [key, value] : j.items()) {
                         newJson[key] = serialize(value);
                     }
