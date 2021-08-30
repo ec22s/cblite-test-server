@@ -258,6 +258,12 @@ public class ReplicatorConfigurationRequestHandler {
             replicatorConfiguration.documentIDs = documentIds
             return replicatorConfiguration
             
+        case "replicatorConfiguration_setAutoPurge":
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            let auto_purge: Bool = args.get(name: "auto_purge")!
+            replicatorConfiguration.enableAutoPurge = auto_purge
+            return replicatorConfiguration
+
         case "replicatorConfiguration_setPinnedServerCertificate":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let cert: SecCertificate? = args.get(name: "cert")!

@@ -399,7 +399,7 @@ namespace Couchbase.Lite.Testing
             });
         }
 
-        public static void setAutoPurge([NotNull] NameValueCollection args,
+        public static void SetAutoPurge([NotNull] NameValueCollection args,
              [NotNull] IReadOnlyDictionary<string, object> postBody,
              [NotNull] HttpListenerResponse response)
         {
