@@ -77,7 +77,7 @@ namespace database_configuration_methods {
             }
             
             dbconfig->encryptionKey = encryptionKey;
-            write_empty_body(conn);
+            write_serialized_body(conn, body["config"].get<string>());
         });
 #endif
     }
