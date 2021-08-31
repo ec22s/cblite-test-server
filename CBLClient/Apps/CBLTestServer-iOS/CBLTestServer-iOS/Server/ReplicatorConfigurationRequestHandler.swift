@@ -62,6 +62,7 @@ public class ReplicatorConfigurationRequestHandler {
             let heartbeat: String? = args.get(name: "heartbeat")
             let maxRetries: String? = args.get(name: "max_retries")
             let maxRetryWaitTime: String? = args.get(name: "max_timeout")
+            let auto_purge: String? = args.get(name: "auto_purge")
             
             var replicatorType = ReplicatorType.pushAndPull
             
@@ -191,6 +192,14 @@ public class ReplicatorConfigurationRequestHandler {
             if let maxRetryWaitTime = maxRetryWaitTime, let maxRetryWaitTimeDouble = Double(maxRetryWaitTime) {
                 config.maxAttemptWaitTime = maxRetryWaitTimeDouble
             }
+            if auto_purge != nil {
+                if auto_purge == "enabled" {
+                    config.enableAutoPurge = true
+                }
+                if auto_purge == "disabled" {
+                    config.enableAutoPurge = false
+                }
+            }
             return config
 
         case "replicatorConfiguration_getAuthenticator":
@@ -249,6 +258,12 @@ public class ReplicatorConfigurationRequestHandler {
             replicatorConfiguration.documentIDs = documentIds
             return replicatorConfiguration
             
+        case "replicatorConfiguration_setAutoPurge":
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
+            let auto_purge: Bool = args.get(name: "auto_purge")!
+            replicatorConfiguration.enableAutoPurge = auto_purge
+            return replicatorConfiguration
+
         case "replicatorConfiguration_setPinnedServerCertificate":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "configuration")!
             let cert: SecCertificate? = args.get(name: "cert")!

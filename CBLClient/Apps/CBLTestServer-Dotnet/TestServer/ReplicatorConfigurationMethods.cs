@@ -160,6 +160,20 @@ namespace Couchbase.Lite.Testing
                     }
                 }
 
+                if (postBody.ContainsKey("auto_purge"))
+                {
+                    String auto_purge = postBody["auto_purge"].ToString();
+                    if (auto_purge.Equals("disabled", StringComparison.OrdinalIgnoreCase))
+                    {
+                        config.EnableAutoPurge = false;
+                    }
+                    if (auto_purge.Equals("enabled", StringComparison.OrdinalIgnoreCase))
+                    {
+                        config.EnableAutoPurge = true;
+                    }
+                    // leave CBLite default if no proper value set
+                }
+
                 if (postBody.ContainsKey("pinnedservercert"))
                 {
                     var cert_file = postBody["pinnedservercert"].ToString();
@@ -382,6 +396,17 @@ namespace Couchbase.Lite.Testing
             With<ReplicatorConfiguration>(postBody, "configuration", repConf =>
             {
                 repConf.DocumentIDs = documentIds;
+            });
+        }
+
+        public static void SetAutoPurge([NotNull] NameValueCollection args,
+             [NotNull] IReadOnlyDictionary<string, object> postBody,
+             [NotNull] HttpListenerResponse response)
+        {
+            Boolean autoPurge = (Boolean)postBody["auto_purge"];
+            With<ReplicatorConfiguration>(postBody, "configuration", repConf =>
+            {
+                repConf.EnableAutoPurge = autoPurge;
             });
         }
 

@@ -74,6 +74,7 @@ public class ReplicatorConfigurationRequestHandler {
         String heartbeat = args.get("heartbeat");
         String maxRetries = args.get("max_retries");
         String maxRetryWaitTime = args.get("max_timeout");
+        String auto_purge = args.get("auto_purge");
 
         if (replicatorType == null) {
             replicatorType = "push_pull";
@@ -131,6 +132,19 @@ public class ReplicatorConfigurationRequestHandler {
         }
         if (maxRetryWaitTime != null && !maxRetryWaitTime.trim().isEmpty()){
             config.setMaxAttemptWaitTime(Integer.parseInt(maxRetryWaitTime));
+        }
+        if (auto_purge != null){
+            if (auto_purge.equalsIgnoreCase("enabled")){
+                Log.i(TAG, "auto purge is enabled explicitly");
+                config.setAutoPurgeEnabled(true);
+            }
+            else if (auto_purge.equalsIgnoreCase("disabled")){
+                Log.i(TAG, "auto purge is disabled");
+                config.setAutoPurgeEnabled(false);
+            }
+        }
+        else {
+            Log.i(TAG, "auto purge not specified, use the default setting.");
         }
 
         Log.d(TAG, "Args: " + args);
@@ -303,6 +317,12 @@ public class ReplicatorConfigurationRequestHandler {
                 replicatorType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
         }
         replicatorConfiguration.setReplicatorType(replicatorType);
+    }
+
+    public void setAutoPurge(Args args) {
+        ReplicatorConfiguration replicatorConfiguration = args.get("configuration");
+        Boolean auto_purge = args.get("auto_purge");
+        replicatorConfiguration.setAutoPurgeEnabled(auto_purge);
     }
 
     private byte[] getPinnedCertFile() {

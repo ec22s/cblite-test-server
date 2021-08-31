@@ -167,6 +167,7 @@ namespace Couchbase.Lite.Testing
                 ["replicatorConfiguration_setAuthenticator"] = ReplicatorConfigurationMethods.SetAuthenticator,
                 ["replicatorConfiguration_setReplicatorType"] = ReplicatorConfigurationMethods.SetReplicatorType,
                 ["replicatorConfiguration_isContinuous"] = ReplicatorConfigurationMethods.IsContinuous,
+                ["replicatorConfiguration_setAutoPurge"] = ReplicatorConfigurationMethods.SetAutoPurge,
                 ["replicator_changeListenerChangesCount"] = ReplicationMethods.ChangeListenerChangesCount,
                 ["replicator_changeListenerGetChanges"] = ReplicationMethods.ChangeListenerChanges,
                 ["replicator_resetCheckpoint"] = ReplicationMethods.ResetCheckpoint,
