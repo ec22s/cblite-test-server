@@ -114,4 +114,17 @@ namespace encryptable_methods {
         mg_send_http_error(conn, 501, "Not supported in CE edition");
 #endif
     }
+
+    void encryptable_isEncryptableValue(json& body, mg_connection* conn) {
+#ifdef COUCHBASE_ENTERPRISE
+        with<CBLDocument *>(body, "document", [&body, conn](CBLDocument *doc) {
+            auto key = body["key"].get<string>();
+            auto properties = CBLDocument_Properties(doc);
+            auto val = FLDict_Get(properties, {key.data(), key.size()});
+            write_serialized_body(conn, FLValue_IsEncryptableValue(val));
+        });
+#else
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+#endif
+    }
 }

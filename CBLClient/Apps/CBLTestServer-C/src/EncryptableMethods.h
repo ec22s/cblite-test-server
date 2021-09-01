@@ -42,5 +42,5 @@ private:
 namespace encryptable_methods {
     void encryptable_createValue(nlohmann::json& body, mg_connection* conn);
     void encryptable_createEncryptor(nlohmann::json& body, mg_connection* conn);
-
+    void encryptable_isEncryptableValue(nlohmann::json& body, mg_connection* conn);
 }

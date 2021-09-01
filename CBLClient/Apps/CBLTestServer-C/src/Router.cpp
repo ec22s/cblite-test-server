@@ -185,6 +185,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "datatype_compareDate", datatype_methods::datatype_compareDate },
     { "encryptable_createValue", encryptable_methods::encryptable_createValue },
     { "encryptable_createEncryptor", encryptable_methods::encryptable_createEncryptor },
+    { "encryptable_isEncryptableValue", encryptable_methods::encryptable_isEncryptableValue },
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };
