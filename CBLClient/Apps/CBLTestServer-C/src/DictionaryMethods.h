@@ -30,6 +30,7 @@ namespace dictionary_methods {
     void dictionary_setInt(nlohmann::json& body, mg_connection* conn);
     void dictionary_setLong(nlohmann::json& body, mg_connection* conn);
     void dictionary_setString(nlohmann::json& body, mg_connection* conn);
+    void dictionary_setEncryptable(nlohmann::json& body, mg_connection* conn);
     void dictionary_setValue(nlohmann::json& body, mg_connection* conn);
     void dictionary_toMap(nlohmann::json& body, mg_connection* conn);
     void dictionary_toMutableDictionary(nlohmann::json& body, mg_connection* conn);

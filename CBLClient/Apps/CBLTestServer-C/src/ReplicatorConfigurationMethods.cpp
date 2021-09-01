@@ -1,4 +1,5 @@
 #include "ReplicatorConfigurationMethods.h"
+#include "EncryptableMethods.h"
 #include "MemoryMap.h"
 #include "Defines.h"
 #include "FleeceHelpers.h"
@@ -15,6 +16,32 @@
 
 using namespace nlohmann;
 using namespace std;
+
+static FLSliceResult replicator_encrypt(void* context, FLString documentID, FLDict properties, FLString keyPath, 
+    FLSlice input, FLStringResult* algorithm, FLStringResult* kid, CBLError* error) {
+    auto* cryptoContext = (CryptoContext *)context;
+
+    string algorithm_ = cryptoContext->algorithm();
+    string kid_ = cryptoContext->kid();
+    *algorithm = FLSliceResult_CreateWith(algorithm_.data(), algorithm_.size());
+    *kid = FLSliceResult_CreateWith(kid_.data(), kid_.size());
+
+    string input_((const char *)input.buf, input.size);
+    string result = cryptoContext->encrypt(input_);
+    return FLSliceResult_CreateWith(result.data(), result.size());
+}
+
+static FLSliceResult replicator_decrypt(void* context, FLString documentID, FLDict properties, FLString keyPath, 
+    FLSlice input, FLString algorithm, FLString kid, CBLError* error) {
+    auto* cryptoContext = (CryptoContext *)context;
+
+    string input_((const char *)input.buf, input.size);
+    string algorithm_((const char *)algorithm.buf, algorithm.size);
+    string kid_((const char *)kid.buf, kid.size);
+
+    string result = cryptoContext->decrypt(input_, algorithm_, kid_);
+    return FLSliceResult_CreateWith(result.data(), result.size());
+}
 
 static void tolower(string& str) {
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
@@ -317,6 +344,13 @@ namespace replicator_configuration_methods {
                 } else {
                     config->conflictResolver = CBLDefaultConflictResolver;
                 }
+            }
+
+            if(body.contains("encryptor")) {
+                auto* context = (CryptoContext *)memory_map::get(body["encryptor"].get<string>());
+                config->propertyEncryptor = replicator_encrypt;
+                config->propertyDecryptor = replicator_decrypt;
+                config->context = context;
             }
 
             write_serialized_body(conn, memory_map::store(config, CBLReplicatorConfig_EntryDelete));

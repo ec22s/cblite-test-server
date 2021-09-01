@@ -86,6 +86,7 @@ set(
     src/DataTypeMethods.cpp
     src/DictionaryMethods.cpp
     src/DocumentMethods.cpp
+    src/EncryptableMethods.cpp
     src/FileLoggingMethods.cpp
     src/ReplicatorMethods.cpp
     src/ReplicatorConfigurationMethods.cpp

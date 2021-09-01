@@ -362,6 +362,19 @@ namespace dictionary_methods {
         write_serialized_body(conn, handle);
     }
 
+    void dictionary_setEncryptable(json& body, mg_connection* conn) {
+        const auto key = body["key"].get<string>();
+        auto* val = static_cast<CBLEncryptable *>(memory_map::get(body["value"].get<string>()));
+        const auto handle = body["dictionary"].get<string>();
+        with<FLMutableDict>(body, "dictionary", [&key, &val](FLMutableDict d)
+        {
+            FLSlot slot = FLMutableDict_Set(d, flstr(key));
+            FLSlot_SetEncryptableValue(slot, val);
+        });
+
+        write_serialized_body(conn, handle);
+    }
+
     void dictionary_setValue(json& body, mg_connection* conn) {
         const auto key = body["key"].get<string>();
         const auto val = body["value"];

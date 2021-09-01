@@ -23,6 +23,11 @@ static void CBLReplicator_EntryDelete(void* ptr) {
     CBLReplicator_Release(static_cast<CBLReplicator *>(ptr));
 }
 
+template<typename T>
+static void Vector_EntryDelete(void* ptr) {
+    delete (std::vector<T> *)ptr;
+}
+
 class ReplicationChangeListenerProxy {
 public:
     void handleChange(const CBLReplicatorStatus* change) {
@@ -326,6 +331,12 @@ namespace replicator_methods {
         {
             write_serialized_body(conn, listener->changes().size());
         });
+    }
+
+    void replicator_changeListenerGetChanges(json& body, mg_connection* conn) {
+        // Currently this endpoint is meaningless.  Python client does nothing interesting with it
+        // So only the minimum amount of effort will go into it (i.e. it returns a valid response)
+        write_serialized_body(conn, "not-useful");
     }
 
     void replicator_resetCheckpoint(json& body, mg_connection* conn) {

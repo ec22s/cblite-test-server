@@ -13,6 +13,7 @@
 #include "ReplicatorConfigurationMethods.h"
 #include "ReplicatorMethods.h"
 #include "QueryMethods.h"
+#include "EncryptableMethods.h"
 #include <functional>
 #include <utility>
 #include <civetweb.h>
@@ -169,6 +170,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "replicatorConfiguration_setReplicatorType", replicator_configuration_methods::replicatorConfiguration_setReplicatorType },
     { "replicatorConfiguration_isContinuous", replicator_configuration_methods::replicatorConfiguration_isContinuous },
     { "replicator_changeListenerChangesCount", replicator_methods::replicator_changeListenerChangesCount },
+    { "replicator_changeListenerGetChanges", replicator_methods::replicator_changeListenerGetChanges },
     { "replicatorConfiguration_configure", replicator_configuration_methods::replicatorConfiguration_create },
     { "query_selectAll", query_methods::query_selectAll },
     { "query_addChangeListener", query_methods::query_addChangeListener },
@@ -181,6 +183,8 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "datatype_compareDouble", datatype_methods::datatype_compareDouble },
     { "datatype_setDate", datatype_methods::datatype_setDate },
     { "datatype_compareDate", datatype_methods::datatype_compareDate },
+    { "encryptable_createValue", encryptable_methods::encryptable_createValue },
+    { "encryptable_createEncryptor", encryptable_methods::encryptable_createEncryptor },
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };

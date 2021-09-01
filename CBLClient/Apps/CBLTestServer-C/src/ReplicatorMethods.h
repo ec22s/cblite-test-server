@@ -21,4 +21,5 @@ namespace replicator_methods {
     void replicator_resetCheckpoint(nlohmann::json& body, mg_connection* conn);
     void replicator_replicatorEventChangesCount(nlohmann::json& body, mg_connection* conn);
     void replicator_changeListenerChangesCount(nlohmann::json& body, mg_connection* conn);
+    void replicator_changeListenerGetChanges(nlohmann::json& body, mg_connection* conn);
 }
