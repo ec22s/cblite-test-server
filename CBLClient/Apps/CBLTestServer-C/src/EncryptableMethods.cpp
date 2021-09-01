@@ -55,12 +55,17 @@ string XorCryptoContext::decrypt(const string& input, const string& algorithm, c
     return encrypt(input); // XOR decrypt and encrypt are the same
 }
 
+#ifdef COUCHBASE_ENTERPRISE
+
 static void CBLEncryptable_EntryDelete(void* ptr) {
     CBLEncryptable_Release((CBLEncryptable *)ptr);
 }
 
+#endif
+
 namespace encryptable_methods {
     void encryptable_createValue(json& body, mg_connection* conn) {
+#ifdef COUCHBASE_ENTERPRISE
         auto type = body["type"].get<string>();
         CBLEncryptable* value;
         if(type == "String") {
@@ -94,12 +99,19 @@ namespace encryptable_methods {
         }
 
         write_serialized_body(conn, memory_map::store(value, CBLEncryptable_EntryDelete));
+#else
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+#endif
     }
 
     void encryptable_createEncryptor(json& body, mg_connection* conn) {
+#ifdef COUCHBASE_ENTERPRISE
         auto algorithm = body["algo"].get<string>();
         auto key = body["key"].get<string>();
         auto* cryptor = CryptoContext::create(algorithm, key);
         write_serialized_body(conn, memory_map::store(cryptor, CryptoContext_EntryDelete));
+#else
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+#endif
     }
 }

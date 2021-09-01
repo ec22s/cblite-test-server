@@ -17,6 +17,8 @@
 using namespace nlohmann;
 using namespace std;
 
+#ifdef COUCHBASE_ENTERPRISE
+
 static FLSliceResult replicator_encrypt(void* context, FLString documentID, FLDict properties, FLString keyPath, 
     FLSlice input, FLStringResult* algorithm, FLStringResult* kid, CBLError* error) {
     auto* cryptoContext = (CryptoContext *)context;
@@ -42,6 +44,8 @@ static FLSliceResult replicator_decrypt(void* context, FLString documentID, FLDi
     string result = cryptoContext->decrypt(input_, algorithm_, kid_);
     return FLSliceResult_CreateWith(result.data(), result.size());
 }
+
+#endif
 
 static void tolower(string& str) {
     transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
@@ -346,12 +350,14 @@ namespace replicator_configuration_methods {
                 }
             }
 
+#ifdef COUCHBASE_ENTERPRISE
             if(body.contains("encryptor")) {
                 auto* context = (CryptoContext *)memory_map::get(body["encryptor"].get<string>());
                 config->propertyEncryptor = replicator_encrypt;
                 config->propertyDecryptor = replicator_decrypt;
                 config->context = context;
             }
+#endif
 
             write_serialized_body(conn, memory_map::store(config, CBLReplicatorConfig_EntryDelete));
         });

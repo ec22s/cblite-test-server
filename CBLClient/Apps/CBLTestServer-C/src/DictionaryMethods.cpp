@@ -363,6 +363,7 @@ namespace dictionary_methods {
     }
 
     void dictionary_setEncryptable(json& body, mg_connection* conn) {
+#ifdef COUCHBASE_ENTERPRISE
         const auto key = body["key"].get<string>();
         auto* val = static_cast<CBLEncryptable *>(memory_map::get(body["value"].get<string>()));
         const auto handle = body["dictionary"].get<string>();
@@ -373,6 +374,9 @@ namespace dictionary_methods {
         });
 
         write_serialized_body(conn, handle);
+#else
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+#endif
     }
 
     void dictionary_setValue(json& body, mg_connection* conn) {
