@@ -58,7 +58,7 @@ string XorCryptoContext::decrypt(const string& input, const string& algorithm, c
 #ifdef COUCHBASE_ENTERPRISE
 
 static void CBLEncryptable_EntryDelete(void* ptr) {
-    CBLEncryptable_Release((CBLEncryptable *)ptr);
+    //CBLEncryptable_Release((CBLEncryptable *)ptr);
 }
 
 #endif
