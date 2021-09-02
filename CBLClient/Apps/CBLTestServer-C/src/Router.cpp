@@ -102,6 +102,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "dictionary_setLong", dictionary_methods::dictionary_setLong },
     { "dictionary_getValue", dictionary_methods::dictionary_getValue },
     { "dictionary_setString", dictionary_methods::dictionary_setString },
+    { "dictionary_setEncryptable", dictionary_methods::dictionary_setEncryptable },
     { "dictionary_setValue", dictionary_methods::dictionary_setValue },
     { "dictionary_toMap", dictionary_methods::dictionary_toMap },
     { "dictionary_toMutableDictionary", dictionary_methods::dictionary_toMutableDictionary },
@@ -211,6 +212,10 @@ void router::internal::handle(string url, mg_connection* connection) {
         s >> body;
     }
 
-    json deserialized = value_serializer::deserialize(body);
-    handler->second(deserialized, connection);
+    if(body.contains("$no_dumb_encoding") && body["$no_dumb_encoding"].get<bool>()) {
+        handler->second(body, connection);
+    } else {
+        json deserialized = value_serializer::deserialize(body);
+        handler->second(deserialized, connection);
+    }
 }
