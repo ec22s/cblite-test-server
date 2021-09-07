@@ -70,13 +70,13 @@ android {
         }
     }
 
-//    sourceSets {
-//        main {
-//            assets.srcDirs = [
-//                    ASSET_DIR
-//            ]
-//        }
-//    }
+   sourceSets {
+       main {
+           assets.srcDirs = [
+                   ASSET_DIR
+           ]
+       }
+   }
 
     externalNativeBuild {
         cmake {
