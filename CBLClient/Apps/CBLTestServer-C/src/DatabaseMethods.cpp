@@ -5,6 +5,9 @@
 #include "FleeceHelpers.h"
 #include "Defines.h"
 #include "FilePathResolver.h"
+extern "C" {
+    #include "cdecode.h"
+}
 
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
@@ -165,7 +168,22 @@ namespace database_methods {
                 auto* doc = CBLDocument_CreateWithID(flstr(key));
                 auto* body = FLMutableDict_New();
                 for (const auto& [ bodyKey, bodyValue ] : docBody.items()) {
-                    writeFleece(body, bodyKey, bodyValue);
+                    if(bodyKey == "_attachments") {
+                        for (const auto& [ blobKey, blobValue ] : bodyValue.items()) {
+                            base64_decodestate state;
+                            base64_init_decodestate(&state);
+                            auto b64 = blobValue["data"].get<string>();
+                            auto tmp = malloc(b64.size());
+                            size_t size = base64_decode_block((const uint8_t *)b64.c_str(), b64.size(), tmp, &state);
+                            auto blobContent = FLSliceResult_CreateWith(tmp, size);
+                            auto blob = CBLBlob_CreateWithData(FLSTR("application/octet-stream"), FLSliceResult_AsSlice(blobContent));
+                            auto slot = FLMutableDict_Set(body, flstr(blobKey));
+                            FLSlot_SetBlob(slot, blob);
+                            FLSliceResult_Release(blobContent);
+                        }
+                    } else {
+                        writeFleece(body, bodyKey, bodyValue);
+                    }
                 }
 
                 CBLDocument_SetProperties(doc, body);
