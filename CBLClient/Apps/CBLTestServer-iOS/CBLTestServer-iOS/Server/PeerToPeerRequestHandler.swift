@@ -71,7 +71,7 @@ public class PeerToPeerRequestHandler {
             let tlsAuthType: String = args.get(name:"tls_auth_type")!
             let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
             let enable_delta_sync: Bool? = args.get(name: "enable_delta_sync")!
-            let auth: ListenerAuthenticator? = args.get(name: "basic_auth")!
+
             config.port = UInt16(wsPort)
             config.disableTLS = tls_disable!
             
@@ -98,7 +98,7 @@ public class PeerToPeerRequestHandler {
                 print("========== Setting CreateIdentity =========")
             }
 
-            if auth != nil {
+            if let auth: ListenerPasswordAuthenticator = args.get(name: "basic_auth") {
                config.authenticator = auth
             }
 

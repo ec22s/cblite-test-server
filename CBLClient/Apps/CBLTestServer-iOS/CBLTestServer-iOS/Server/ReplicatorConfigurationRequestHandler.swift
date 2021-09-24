@@ -62,7 +62,6 @@ public class ReplicatorConfigurationRequestHandler {
             let heartbeat: String? = args.get(name: "heartbeat")
             let maxRetries: String? = args.get(name: "max_retries")
             let maxRetryWaitTime: String? = args.get(name: "max_timeout")
-            let auto_purge: String? = args.get(name: "auto_purge")
             
             var replicatorType = ReplicatorType.pushAndPull
             
@@ -192,13 +191,8 @@ public class ReplicatorConfigurationRequestHandler {
             if let maxRetryWaitTime = maxRetryWaitTime, let maxRetryWaitTimeDouble = Double(maxRetryWaitTime) {
                 config.maxAttemptWaitTime = maxRetryWaitTimeDouble
             }
-            if auto_purge != nil {
-                if auto_purge == "enabled" {
-                    config.enableAutoPurge = true
-                }
-                if auto_purge == "disabled" {
-                    config.enableAutoPurge = false
-                }
+            if let auto_purge: String = args.get(name: "auto_purge") {
+                config.enableAutoPurge = auto_purge.lowercased() == "enabled"
             }
             return config
 
