@@ -3,6 +3,8 @@ import com.couchbase.lite.ListenerPasswordAuthenticator;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.util.PasswordAuthenticator;
 
+import java.util.Arrays;
+
 
 public class ListenerAuthenticatorRequestHandler {
 
@@ -10,10 +12,9 @@ public class ListenerAuthenticatorRequestHandler {
         String username = args.get("username");
         String pass = args.get("password");
         char[] password = pass.toCharArray();
-        PasswordAuthenticator passwordAuthenticator = new PasswordAuthenticator();
-        ListenerPasswordAuthenticator listenerPasswordAuthenticator = new ListenerPasswordAuthenticator(
-                passwordAuthenticator);
-        return listenerPasswordAuthenticator;
+        return new ListenerPasswordAuthenticator(
+                (validUser, validPassword) ->
+                        username.equals(validUser) && Arrays.equals(password, validPassword));
     }
 
 }
