@@ -115,7 +115,8 @@ public class TestServerWS extends HttpServlet {
 
             if (body instanceof String) {
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.setHeader("Content-Type", "text/plain");
+                response.setContentType("text/plain; charset=UTF-8");
+                response.setCharacterEncoding("UTF-8");
                 response.getOutputStream().write(body.toString().getBytes());
                 response.getOutputStream().flush();
                 response.getOutputStream().close();
