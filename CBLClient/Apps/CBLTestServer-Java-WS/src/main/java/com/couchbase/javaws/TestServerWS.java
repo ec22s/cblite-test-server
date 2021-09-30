@@ -11,7 +11,9 @@ import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -117,7 +119,7 @@ public class TestServerWS extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentType("text/plain; charset=UTF-8");
                 response.setCharacterEncoding("UTF-8");
-                response.getOutputStream().write(body.toString().getBytes());
+                response.getOutputStream().write(body.toString().getBytes(Charset.forName("UTF-8")));
                 response.getOutputStream().flush();
                 response.getOutputStream().close();
 
@@ -128,6 +130,7 @@ public class TestServerWS extends HttpServlet {
 
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setHeader("Content-Type", dataObj.contentType);
+                response.setCharacterEncoding("UTF-8");
                 response.getOutputStream().write(dataObj.data);
                 response.getOutputStream().flush();
                 response.getOutputStream().close();
