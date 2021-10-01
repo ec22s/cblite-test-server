@@ -408,6 +408,7 @@ namespace Couchbase.Lite.Testing
             {
                 repConf.EnableAutoPurge = autoPurge;
             });
+            response.WriteEmptyBody();
         }
 
         public static void SetReplicatorType([NotNull] NameValueCollection args,
