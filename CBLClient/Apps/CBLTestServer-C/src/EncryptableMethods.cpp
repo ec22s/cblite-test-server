@@ -69,10 +69,10 @@ namespace encryptable_methods {
         auto type = body["type"].get<string>();
         CBLEncryptable* value;
         if(type == "String") {
-            auto toEncrypt = body["encrytableValue"].get<string>();
+            auto toEncrypt = body["encryptableValue"].get<string>();
             value = CBLEncryptable_CreateWithString(flstr(toEncrypt));
         } else if(type == "Bool") {
-            auto toEncrypt = body["encrytableValue"].get<bool>();
+            auto toEncrypt = body["encryptableValue"].get<bool>();
             value = CBLEncryptable_CreateWithBool(toEncrypt);
         } else if(type == "Double") {
             auto toEncrypt = body["encryptableValue"].get<double>();
