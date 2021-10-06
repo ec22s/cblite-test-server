@@ -176,6 +176,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "query_selectAll", query_methods::query_selectAll },
     { "query_addChangeListener", query_methods::query_addChangeListener },
     { "query_removeChangeListener", query_methods::query_removeChangeListener },
+    { "query_docsLimitOffset", query_methods::query_docsLimitOffset },
     { "datatype_setLong", datatype_methods::datatype_setLong },
     { "datatype_setDouble", datatype_methods::datatype_setDouble },
     { "datatype_setFloat", datatype_methods::datatype_setFloat },

@@ -7,4 +7,5 @@ namespace query_methods {
     void query_selectAll(nlohmann::json& body, mg_connection* conn);
     void query_addChangeListener(nlohmann::json& body, mg_connection* conn);
     void query_removeChangeListener(nlohmann::json& body, mg_connection* conn);
+    void query_docsLimitOffset(nlohmann::json& body, mg_connection* conn);
 }
