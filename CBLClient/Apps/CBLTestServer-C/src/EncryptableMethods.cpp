@@ -58,7 +58,7 @@ string XorCryptoContext::decrypt(const string& input, const string& algorithm, c
 #ifdef COUCHBASE_ENTERPRISE
 
 static void CBLEncryptable_EntryDelete(void* ptr) {
-    //CBLEncryptable_Release((CBLEncryptable *)ptr);
+    CBLEncryptable_Release((CBLEncryptable *)ptr);
 }
 
 #endif
@@ -89,11 +89,11 @@ namespace encryptable_methods {
             auto toEncrypt = body["encryptableValue"].get<uint64_t>();
             value = CBLEncryptable_CreateWithUInt(toEncrypt);
         } else if(type == "Array") {
-            auto toEncrypt = (FLArray *)memory_map::get(body["encryptableValue"].get<string>());
-            value = CBLEncryptable_CreateWithArray(*toEncrypt);
+            auto toEncrypt = (FLArray)memory_map::get(body["encryptableValue"].get<string>());
+            value = CBLEncryptable_CreateWithArray(toEncrypt);
         } else if(type == "Dict") {
-            auto toEncrypt = (FLDict *)memory_map::get(body["encryptableValue"].get<string>());
-            value = CBLEncryptable_CreateWithDict(*toEncrypt);
+            auto toEncrypt = (FLDict)memory_map::get(body["encryptableValue"].get<string>());
+            value = CBLEncryptable_CreateWithDict(toEncrypt);
         } else {
             throw domain_error(string("Invalid type passed: " + type));
         }
