@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.couchbase.lite.Dictionary;
 import com.couchbase.lite.MaintenanceType;
+import com.couchbase.lite.MutableDictionary;
 import com.couchbase.lite.internal.utils.Fn;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.Context;
@@ -177,6 +179,21 @@ public class DatabaseRequestHandler {
                 String id = entry.getKey();
                 Map<String, Object> data = entry.getValue();
                 MutableDocument document = new MutableDocument(id, data);
+
+                if (data.containsKey("_attachments")) {
+                    Map<String, Object> attachment_items = (Map<String, Object>) data.get("_attachments");
+                    Map<String, Object> newVal = new HashMap<>();
+                    for (Map.Entry<String, Object> attItem : attachment_items.entrySet()) {
+                        String attItemKey = attItem.getKey();
+                        HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
+                        Blob blob = new Blob("application/octet-stream",
+                                RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
+                        Map<String, Blob> newBlobData = new HashMap<>();
+                        newBlobData.put("data", blob);
+                        newVal.put(attItemKey, newBlobData);
+                    }
+                    data.put("_attachments", newVal);
+                }
                 try {
                     database.save(document);
                 }
