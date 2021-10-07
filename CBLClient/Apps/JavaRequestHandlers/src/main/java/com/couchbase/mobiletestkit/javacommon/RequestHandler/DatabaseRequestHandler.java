@@ -188,9 +188,7 @@ public class DatabaseRequestHandler {
                         HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
                         Blob blob = new Blob("application/octet-stream",
                                 RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
-                        Map<String, Blob> newBlobData = new HashMap<>();
-                        newBlobData.put("data", blob);
-                        newVal.put(attItemKey, newBlobData);
+                        newVal.put(attItemKey, blob);
                     }
                     data.put("_attachments", newVal);
                 }
