@@ -28,21 +28,17 @@ static FLSliceResult replicator_encrypt(void* context, FLString documentID, FLDi
     *algorithm = FLSliceResult_CreateWith(algorithm_.data(), algorithm_.size());
     *kid = FLSliceResult_CreateWith(kid_.data(), kid_.size());
 
-    string input_((const char *)input.buf, input.size);
-    string result = cryptoContext->encrypt(input_);
-    return FLSliceResult_CreateWith(result.data(), result.size());
+    return cryptoContext->encrypt(input);
 }
 
 static FLSliceResult replicator_decrypt(void* context, FLString documentID, FLDict properties, FLString keyPath, 
     FLSlice input, FLString algorithm, FLString kid, CBLError* error) {
     auto* cryptoContext = (CryptoContext *)context;
 
-    string input_((const char *)input.buf, input.size);
     string algorithm_((const char *)algorithm.buf, algorithm.size);
     string kid_((const char *)kid.buf, kid.size);
 
-    string result = cryptoContext->decrypt(input_, algorithm_, kid_);
-    return FLSliceResult_CreateWith(result.data(), result.size());
+    return cryptoContext->decrypt(input, algorithm_, kid_);
 }
 
 #endif

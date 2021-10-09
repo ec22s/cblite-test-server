@@ -36,18 +36,20 @@ XorCryptoContext::XorCryptoContext(const string& key)
 
 }
 
-string XorCryptoContext::encrypt(const string &input) {
-    stringstream ss;
-    int index = 0;
-    for(const auto& c : input) {
-        ss << (c ^ _key[index % _key.size()]);
-        index++;
+FLSliceResult XorCryptoContext::encrypt(FLSlice input) {
+    auto retVal = FLSliceResult_New(input.size);
+    const uint8_t* src = (const uint8_t *)input.buf;
+    uint8_t* dest = (uint8_t *)retVal.buf;
+    for(int index = 0; index < input.size; index++) {
+        *dest = (uint8_t)(*src ^ _key[index % _key.size()]);
+        src++;
+        dest++;
     }
 
-    return ss.str();
+    return retVal;
 }
 
-string XorCryptoContext::decrypt(const string& input, const string& algorithm, const string& kid) {
+FLSliceResult XorCryptoContext::decrypt(FLSlice input, const string& algorithm, const string& kid) {
     if(algorithm != "xor" || kid != this->kid()) {
         throw domain_error("mismatched algorithm or kid");
     }
