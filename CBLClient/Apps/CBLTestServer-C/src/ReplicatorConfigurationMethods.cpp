@@ -323,6 +323,16 @@ namespace replicator_configuration_methods {
                 }
             }
 
+            if(body.contains("auto_purge")) {
+                const auto autoPurge = body["auto_purge"].get<string>();
+                tolower(autoPurge);
+                if(autoPurge == "disabled") {
+                    config->enableAutoPurge = false;
+                } else {
+                    config->enableAutoPurge = true;
+                }
+            }
+
             if(body.contains("conflict_resolver")) {
                 const auto conflictResolver = body["conflict_resolver"].get<string>();
                 if(conflictResolver == "local_wins") {
@@ -398,5 +408,13 @@ namespace replicator_configuration_methods {
         {
             write_serialized_body(conn, repConf->continuous);
         });
+    }
+
+    void replicatorConfiguration_setAutoPurge(json& body, mg_connection* conn) {
+         auto purge = body["auto_purge"].get<bool>();
+         with<CBLReplicatorConfiguration *>(body, "configuration", [&replicatorType](CBLReplicatorConfiguration *repConf)
+         {
+            repConf->enableAutoPurge = purge;
+         }
     }
 }
