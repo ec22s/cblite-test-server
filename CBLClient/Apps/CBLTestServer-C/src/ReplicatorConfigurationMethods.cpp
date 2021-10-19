@@ -327,9 +327,9 @@ namespace replicator_configuration_methods {
                 const auto autoPurge = body["auto_purge"].get<string>();
                 tolower(autoPurge);
                 if(autoPurge == "disabled") {
-                    config->enableAutoPurge = false;
+                    config->disableAutoPurge = true;
                 } else {
-                    config->enableAutoPurge = true;
+                    config->disableAutoPurge = false;
                 }
             }
 
@@ -414,7 +414,7 @@ namespace replicator_configuration_methods {
          auto purge = body["auto_purge"].get<bool>();
          with<CBLReplicatorConfiguration *>(body, "configuration", [&replicatorType](CBLReplicatorConfiguration *repConf)
          {
-            repConf->enableAutoPurge = purge;
-         }
+            repConf->disableAutoPurge = purge;
+         });
     }
 }
