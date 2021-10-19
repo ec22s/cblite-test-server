@@ -412,7 +412,7 @@ namespace replicator_configuration_methods {
 
     void replicatorConfiguration_setAutoPurge(json& body, mg_connection* conn) {
          auto purge = body["auto_purge"].get<bool>();
-         with<CBLReplicatorConfiguration *>(body, "configuration", [conn](CBLReplicatorConfiguration *repConf)
+         with<CBLReplicatorConfiguration *>(body, "configuration", [&purge](CBLReplicatorConfiguration *repConf)
          {
             repConf->disableAutoPurge = purge;
          });
