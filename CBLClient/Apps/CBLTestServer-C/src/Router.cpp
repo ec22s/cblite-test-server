@@ -170,6 +170,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "replicatorConfiguration_setAuthenticator", replicator_configuration_methods::replicatorConfiguration_setAuthenticator },
     { "replicatorConfiguration_setReplicatorType", replicator_configuration_methods::replicatorConfiguration_setReplicatorType },
     { "replicatorConfiguration_isContinuous", replicator_configuration_methods::replicatorConfiguration_isContinuous },
+    { "replicatorConfiguration_setAutoPurge", replicator_configuration_methods::replicatorConfiguration_setAutoPurge },
     { "replicator_changeListenerChangesCount", replicator_methods::replicator_changeListenerChangesCount },
     { "replicator_changeListenerGetChanges", replicator_methods::replicator_changeListenerGetChanges },
     { "replicatorConfiguration_configure", replicator_configuration_methods::replicatorConfiguration_create },
