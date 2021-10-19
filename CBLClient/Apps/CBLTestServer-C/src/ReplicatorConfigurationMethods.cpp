@@ -411,10 +411,11 @@ namespace replicator_configuration_methods {
     }
 
     void replicatorConfiguration_setAutoPurge(json& body, mg_connection* conn) {
-         bool purge = body["auto_purge"].get<bool>();
+         auto purge = body["auto_purge"].get<bool>();
          with<CBLReplicatorConfiguration *>(body, "configuration", [conn](CBLReplicatorConfiguration *repConf)
          {
             repConf->disableAutoPurge = purge;
          });
+         write_empty_body(conn);
     }
 }
