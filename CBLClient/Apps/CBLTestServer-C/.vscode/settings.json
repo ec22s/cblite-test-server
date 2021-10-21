@@ -1,0 +1,13 @@
+{
+    "C_Cpp.default.includePath": [
+        "${default}",
+        "${HOME}/android-sdk/ndk/21.4.7075529/sysroot/usr/include/",
+        "${HOME}/android-sdk/ndk/21.4.7075529/sources/android/native_app_glue/",
+        "build/_deps/libzip-src/lib/",
+        "build/_deps/libzip-build/"
+    ],
+    "files.associations": {
+        "exception": "cpp",
+        "stdexcept": "cpp"
+    }
+}
