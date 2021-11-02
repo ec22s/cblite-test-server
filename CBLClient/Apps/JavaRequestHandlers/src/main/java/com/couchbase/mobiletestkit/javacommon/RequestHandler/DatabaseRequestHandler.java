@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.couchbase.lite.Dictionary;
 import com.couchbase.lite.MaintenanceType;
-import com.couchbase.lite.MutableDictionary;
 import com.couchbase.lite.internal.utils.Fn;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.Context;
