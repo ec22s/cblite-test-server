@@ -1,9 +1,12 @@
 package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 
+import android.os.Build;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -140,9 +143,10 @@ public class DatabaseRequestHandler {
         Database database = args.get("database");
         String id = args.get("id");
         Map<String, Object> data = args.get("data");
-        MutableDocument updateDoc = database.getDocument(id).toMutable();
-        updateDoc.setData(data);
-        database.save(updateDoc);
+        MutableDocument updatedDoc = database.getDocument(id).toMutable();
+        Map<String, Object> new_data = this.setDataBlob(data);
+        updatedDoc.setData(new_data);
+        database.save(updatedDoc);
     }
 
     public void updateDocuments(Args args) throws CouchbaseLiteException {
@@ -153,7 +157,8 @@ public class DatabaseRequestHandler {
                 String id = entry.getKey();
                 Map<String, Object> data = entry.getValue();
                 MutableDocument updatedDoc = database.getDocument(id).toMutable();
-                updatedDoc.setData(data);
+                Map<String, Object> new_data = this.setDataBlob(data);
+                updatedDoc.setData(new_data);
                 try {
                     database.save(updatedDoc);
                 }
@@ -178,20 +183,8 @@ public class DatabaseRequestHandler {
             for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
                 String id = entry.getKey();
                 Map<String, Object> data = entry.getValue();
-                MutableDocument document = new MutableDocument(id, data);
-
-                if (data.containsKey("_attachments")) {
-                    Map<String, Object> attachment_items = (Map<String, Object>) data.get("_attachments");
-                    Map<String, Object> newVal = new HashMap<>();
-                    for (Map.Entry<String, Object> attItem : attachment_items.entrySet()) {
-                        String attItemKey = attItem.getKey();
-                        HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
-                        Blob blob = new Blob("application/octet-stream",
-                                RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
-                        newVal.put(attItemKey, blob);
-                    }
-                    data.put("_attachments", newVal);
-                }
+                Map<String, Object> new_data = this.setDataBlob(data);
+                MutableDocument document = new MutableDocument(id, new_data);
                 try {
                     database.save(document);
                 }
@@ -366,6 +359,23 @@ public class DatabaseRequestHandler {
         return context.getFilesDir().getAbsolutePath() + "/" + dbFileName;
     }
 
+    private Map<String, Object> setDataBlob(Map<String, Object> data) {
+        if (!data.containsKey("_attachments")) {
+            return data;
+        }
+
+        Map<String, Object> attachment_items = (Map<String, Object>) data.get("_attachments");
+        for (Map.Entry<String, Object> attItem : attachment_items.entrySet()) {
+            String attItemKey = attItem.getKey();
+            HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
+            Blob blob = new Blob("image/jpeg",
+                    RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
+            data.put(attItemKey, blob);
+        }
+        data.remove("_attachments");
+
+        return data;
+    }
 }
 
 class MyDatabaseChangeListener implements DatabaseChangeListener {
