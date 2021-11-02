@@ -1,0 +1,97 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.2'
+    }
+}
+
+repositories {
+    google()
+    jcenter()
+}
+
+apply plugin: 'com.android.application'
+
+def TARGET_ABIS = (!hasProperty("targetAbis")) ? null : targetAbis.split(', *')
+
+ext {
+    PROJECT_DIR = "${projectDir}"
+    ROOT_DIR = "${PROJECT_DIR}/../"
+    JAVA_COMMON_DIR = "${ROOT_DIR}/JavaRequestHandlers"
+    ASSET_DIR = "${JAVA_COMMON_DIR}/src/main/assets"
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+    ndkVersion "21.4.7075529"
+
+    defaultConfig {
+        applicationId "com.couchbase.testsuite"
+        minSdkVersion 22
+        targetSdkVersion 30
+    
+        if(TARGET_ABIS != null) {
+            ndk { abiFilters TARGET_ABIS }
+        }
+    }
+
+    signingConfigs {
+          config {
+              keyAlias 'cbl-android-key'
+              keyPassword 'couchbase'
+              storeFile file('android-key')
+              storePassword 'couchbase'
+          }
+    }
+
+    buildTypes {
+        debug {
+            externalNativeBuild {
+                cmake {
+                    arguments "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()}"
+                }
+            }
+        }
+        release {
+            externalNativeBuild {
+                cmake {
+                    arguments "-DCMAKE_BUILD_TYPE=Release", "-DCMAKE_PREFIX_PATH=${readCmakePrefixPath()}"
+                }
+            }
+
+            signingConfig signingConfigs.config
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+   sourceSets {
+       main {
+           assets.srcDirs = [
+                   ASSET_DIR
+           ]
+       }
+   }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+            version "3.18.1"
+        }
+    }
+}
+
+def readCmakePrefixPath() {
+    Properties properties = new Properties()
+    File propFile = project.rootProject.file('local.properties')
+    if(!propFile.exists()) { throw new IllegalStateException("Please define cmake.prefixPath in local.properties") }
+    properties.load(propFile.newDataInputStream())
+    def path = properties.getProperty('cmake.prefixPath')
+    if(path == null) { throw new IllegalStateException("Please define cmake.prefixPath in local.properties") }
+    return path
+}
