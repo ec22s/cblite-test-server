@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.couchbase.lite.MaintenanceType;
 import com.couchbase.lite.internal.utils.Fn;
@@ -362,14 +364,28 @@ public class DatabaseRequestHandler {
         }
 
         Map<String, Object> attachment_items = (Map<String, Object>) data.get("_attachments");
+        Map<String, Object> existingBlobItems = new HashMap<>();
+
         for (Map.Entry<String, Object> attItem : attachment_items.entrySet()) {
             String attItemKey = attItem.getKey();
             HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
-            Blob blob = new Blob("image/jpeg",
-                    RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
-            data.put(attItemKey, blob);
+            if (attItemValue.get("data") != null){
+                Blob blob = new Blob("image/jpeg",
+                        RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
+                data.put(attItemKey, blob);
+
+            }
+            else if (attItemValue.containsKey("digest")){
+                existingBlobItems.put(attItemKey, attItemValue);
+            }
         }
-        data.remove("_attachments");
+
+        // deal with partial blob situation,
+        // remove all elements then add back blob type only items to _attachments key
+        if (existingBlobItems.size() > 0 && existingBlobItems.size() < attachment_items.size()){
+            data.remove("_attachments");
+            data.put("_attachments", existingBlobItems);
+        }
 
         return data;
     }
