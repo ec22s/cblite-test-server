@@ -1,18 +1,13 @@
 package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 
-import android.os.Build;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.couchbase.lite.MaintenanceType;
-import com.couchbase.lite.internal.utils.Fn;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
