@@ -512,3 +512,4 @@ CBLClient/Apps/CBLTestServer-Dotnet/TestServer.iOS/TestServer.iOS.csproj
 CBLClient/Apps/CBLTestServer-Dotnet/TestServer/TestServer.csproj
 
 CBLClient/Apps/CBLTestServer-iOS/Frameworks
+Package.resolved
