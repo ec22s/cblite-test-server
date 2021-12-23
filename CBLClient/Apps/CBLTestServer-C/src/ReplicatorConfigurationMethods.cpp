@@ -414,7 +414,7 @@ namespace replicator_configuration_methods {
          auto purge = body["auto_purge"].get<bool>();
          with<CBLReplicatorConfiguration *>(body, "configuration", [&purge](CBLReplicatorConfiguration *repConf)
          {
-            repConf->disableAutoPurge = purge;
+            repConf->disableAutoPurge = !purge;
          });
          write_empty_body(conn);
     }
