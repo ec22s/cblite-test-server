@@ -88,7 +88,9 @@ namespace Couchbase.Lite.Testing
         {
             string imageLocation = TestServer.FilePathResolver(postBody["image"].ToString(), false);
             
-            Uri fileUrl = new Uri(imageLocation);
+            string curLocation = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Uri fileUrl = new Uri(Path.Combine(curLocation, imageLocation));
+            
             response.WriteBody(MemoryMap.Store(fileUrl));
         }
 
