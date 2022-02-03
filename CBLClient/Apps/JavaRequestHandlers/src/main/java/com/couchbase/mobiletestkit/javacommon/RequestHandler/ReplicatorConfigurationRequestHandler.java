@@ -80,15 +80,15 @@ public class ReplicatorConfigurationRequestHandler {
             replicatorType = "push_pull";
         }
         replicatorType = replicatorType.toLowerCase();
-        ReplicatorConfiguration.ReplicatorType replType;
+        com.couchbase.lite.ReplicatorType replType;
         if (replicatorType.equals("push")) {
-            replType = ReplicatorConfiguration.ReplicatorType.PUSH;
+            replType = com.couchbase.lite.ReplicatorType.PUSH;
         }
         else if (replicatorType.equals("pull")) {
-            replType = ReplicatorConfiguration.ReplicatorType.PULL;
+            replType = com.couchbase.lite.ReplicatorType.PULL;
         }
         else {
-            replType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
+            replType = com.couchbase.lite.ReplicatorType.PUSH_AND_PULL;
         }
         ReplicatorConfiguration config;
         if (sourceDb != null && targetURL != null) {
@@ -114,7 +114,7 @@ public class ReplicatorConfigurationRequestHandler {
         if (authenticator != null) {
             config.setAuthenticator(authenticator);
         }
-        config.setReplicatorType(replType);
+        config.setType(replType);
         /*if (conflictResolver != null) {
             config.setConflictResolver(conflictResolver);
         }*/
@@ -253,7 +253,7 @@ public class ReplicatorConfigurationRequestHandler {
 
     public String getReplicatorType(Args args) {
         ReplicatorConfiguration replicatorConfiguration = args.get("configuration");
-        return replicatorConfiguration.getReplicatorType().toString();
+        return replicatorConfiguration.getType().toString();
     }
 
     public String getTarget(Args args) {
@@ -305,18 +305,18 @@ public class ReplicatorConfigurationRequestHandler {
     public void setReplicatorType(Args args) {
         ReplicatorConfiguration replicatorConfiguration = args.get("configuration");
         String type = args.get("replType");
-        ReplicatorConfiguration.ReplicatorType replicatorType;
+        com.couchbase.lite.ReplicatorType replicatorType;
         switch (type) {
             case "PUSH":
-                replicatorType = ReplicatorConfiguration.ReplicatorType.PUSH;
+                replicatorType = com.couchbase.lite.ReplicatorType.PUSH;
                 break;
             case "PULL":
-                replicatorType = ReplicatorConfiguration.ReplicatorType.PULL;
+                replicatorType = com.couchbase.lite.ReplicatorType.PULL;
                 break;
             default:
-                replicatorType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
+                replicatorType = com.couchbase.lite.ReplicatorType.PUSH_AND_PULL;
         }
-        replicatorConfiguration.setReplicatorType(replicatorType);
+        replicatorConfiguration.setType(replicatorType);
     }
 
     public void setAutoPurge(Args args) {
