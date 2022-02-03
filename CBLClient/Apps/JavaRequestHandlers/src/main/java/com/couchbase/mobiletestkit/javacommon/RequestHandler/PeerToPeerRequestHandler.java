@@ -64,13 +64,13 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             replicationType = "push_pull";
         }
         replicationType = replicationType.toLowerCase();
-        ReplicatorConfiguration.ReplicatorType replType;
+        ReplicatorType replType;
         if (replicationType.equals("push")) {
-            replType = ReplicatorConfiguration.ReplicatorType.PUSH;
+            replType = ReplicatorType.PUSH;
         } else if (replicationType.equals("pull")) {
-            replType = ReplicatorConfiguration.ReplicatorType.PULL;
+            replType = ReplicatorType.PULL;
         } else {
-            replType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
+            replType = ReplicatorType.PUSH_AND_PULL;
         }
         Log.i(TAG, "serverDBName is " + serverDBName);
         if (disableTls) {
@@ -88,7 +88,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         } else {
             throw new IllegalArgumentException("Incorrect EndPoint type");
         }
-        config.setReplicatorType(replType);
+        config.setType(replType);
         if (continuous != null) {
             config.setContinuous(continuous);
         } else {
