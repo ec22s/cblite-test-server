@@ -24,6 +24,7 @@ import com.couchbase.lite.Document;
 import com.couchbase.lite.DocumentFlag;
 import com.couchbase.lite.MutableDocument;
 import com.couchbase.lite.ReplicationFilter;
+import com.couchbase.lite.ReplicatorType;
 import com.couchbase.lite.ReplicatorConfiguration;
 import com.couchbase.lite.URLEndpoint;
 
@@ -80,15 +81,15 @@ public class ReplicatorConfigurationRequestHandler {
             replicatorType = "push_pull";
         }
         replicatorType = replicatorType.toLowerCase();
-        com.couchbase.lite.ReplicatorType replType;
+        ReplicatorType replType;
         if (replicatorType.equals("push")) {
-            replType = com.couchbase.lite.ReplicatorType.PUSH;
+            replType = ReplicatorType.PUSH;
         }
         else if (replicatorType.equals("pull")) {
-            replType = com.couchbase.lite.ReplicatorType.PULL;
+            replType = ReplicatorType.PULL;
         }
         else {
-            replType = com.couchbase.lite.ReplicatorType.PUSH_AND_PULL;
+            replType = ReplicatorType.PUSH_AND_PULL;
         }
         ReplicatorConfiguration config;
         if (sourceDb != null && targetURL != null) {
@@ -305,16 +306,16 @@ public class ReplicatorConfigurationRequestHandler {
     public void setReplicatorType(Args args) {
         ReplicatorConfiguration replicatorConfiguration = args.get("configuration");
         String type = args.get("replType");
-        com.couchbase.lite.ReplicatorType replicatorType;
+        ReplicatorType replicatorType;
         switch (type) {
             case "PUSH":
-                replicatorType = com.couchbase.lite.ReplicatorType.PUSH;
+                replicatorType = ReplicatorType.PUSH;
                 break;
             case "PULL":
-                replicatorType = com.couchbase.lite.ReplicatorType.PULL;
+                replicatorType = ReplicatorType.PULL;
                 break;
             default:
-                replicatorType = com.couchbase.lite.ReplicatorType.PUSH_AND_PULL;
+                replicatorType = ReplicatorType.PUSH_AND_PULL;
         }
         replicatorConfiguration.setType(replicatorType);
     }

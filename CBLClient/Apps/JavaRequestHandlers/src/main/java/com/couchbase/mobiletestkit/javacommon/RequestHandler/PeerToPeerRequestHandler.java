@@ -64,13 +64,13 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
             replicationType = "push_pull";
         }
         replicationType = replicationType.toLowerCase();
-        com.couchbase.lite.ReplicatorType replType;
+        ReplicatorType replType;
         if (replicationType.equals("push")) {
-            replType = com.couchbase.lite.ReplicatorType.PUSH;
+            replType = ReplicatorType.PUSH;
         } else if (replicationType.equals("pull")) {
-            replType = com.couchbase.lite.ReplicatorType.PULL;
+            replType = ReplicatorType.PULL;
         } else {
-            replType = com.couchbase.lite.ReplicatorType.PUSH_AND_PULL;
+            replType = ReplicatorType.PUSH_AND_PULL;
         }
         Log.i(TAG, "serverDBName is " + serverDBName);
         if (disableTls) {
