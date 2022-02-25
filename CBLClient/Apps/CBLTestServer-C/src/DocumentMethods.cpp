@@ -260,16 +260,15 @@ namespace document_methods {
         const auto key = body["key"].get<string>();
         const auto value = body["value"];
         const auto handle = body["document"].get<string>();
-        with<CBLDocument*>(body, "document", [&key, &value](CBLDocument* doc)
+        with<CBLDocument*>(body, "document", [&body, &key, &value](CBLDocument* doc)
         {
-            FLString flKey { key.data(), key.size() };
-            FLMutableDict properties = CBLDocument_MutableProperties(doc);
-            FLSlot slot = FLMutableDict_Set(properties, flKey);
-
-            FLMutableArray subArr = FLMutableArray_New();
-            writeFleece(subArr, value);
-            FLSlot_SetArray(slot, subArr);
-            FLMutableArray_Release(subArr);
+            with<FLArray>(body, "value", [&key, doc](FLArray arr)
+            {
+                FLString flKey { key.data(), key.size() };
+                FLMutableDict properties = CBLDocument_MutableProperties(doc);
+                FLSlot slot = FLMutableDict_Set(properties, flKey);
+                FLSlot_SetArray(slot, arr);
+            });
         });
 
         write_serialized_body(conn, handle);
