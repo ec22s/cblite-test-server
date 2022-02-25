@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.couchbase.mobiletestkit.javacommon.Args;
@@ -31,6 +32,11 @@ public class BlobRequestHandler {
         if (fileURL != null) { return new Blob(contentType, fileURL); }
 
         throw new IOException("Incorrect parameters provided");
+    }
+
+    public byte[] createUTFBytesContent(Args args) {
+        String content = args.get("content");
+        return content.getBytes(StandardCharsets.UTF_8);
     }
 
     public InputStream createImageStream(Args args) throws IOException {
