@@ -365,7 +365,8 @@ public class DatabaseRequestHandler {
             String attItemKey = attItem.getKey();
             HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
             if (attItemValue.get("data") != null){
-                Blob blob = new Blob("image/jpeg",
+                String contentType = attItemKey.endsWith(".png") ? "image/jpeg": "text/plain";
+                Blob blob = new Blob(contentType,
                         RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
                 data.put(attItemKey, blob);
 
