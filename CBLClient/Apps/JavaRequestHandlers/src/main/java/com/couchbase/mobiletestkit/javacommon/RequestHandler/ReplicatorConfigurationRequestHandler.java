@@ -24,6 +24,7 @@ import com.couchbase.lite.Document;
 import com.couchbase.lite.DocumentFlag;
 import com.couchbase.lite.MutableDocument;
 import com.couchbase.lite.ReplicationFilter;
+import com.couchbase.lite.ReplicatorType;
 import com.couchbase.lite.ReplicatorConfiguration;
 import com.couchbase.lite.URLEndpoint;
 
@@ -80,15 +81,15 @@ public class ReplicatorConfigurationRequestHandler {
             replicatorType = "push_pull";
         }
         replicatorType = replicatorType.toLowerCase();
-        ReplicatorConfiguration.ReplicatorType replType;
+        ReplicatorType replType;
         if (replicatorType.equals("push")) {
-            replType = ReplicatorConfiguration.ReplicatorType.PUSH;
+            replType = ReplicatorType.PUSH;
         }
         else if (replicatorType.equals("pull")) {
-            replType = ReplicatorConfiguration.ReplicatorType.PULL;
+            replType = ReplicatorType.PULL;
         }
         else {
-            replType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
+            replType = ReplicatorType.PUSH_AND_PULL;
         }
         ReplicatorConfiguration config;
         if (sourceDb != null && targetURL != null) {
@@ -114,7 +115,7 @@ public class ReplicatorConfigurationRequestHandler {
         if (authenticator != null) {
             config.setAuthenticator(authenticator);
         }
-        config.setReplicatorType(replType);
+        config.setType(replType);
         /*if (conflictResolver != null) {
             config.setConflictResolver(conflictResolver);
         }*/
@@ -253,7 +254,7 @@ public class ReplicatorConfigurationRequestHandler {
 
     public String getReplicatorType(Args args) {
         ReplicatorConfiguration replicatorConfiguration = args.get("configuration");
-        return replicatorConfiguration.getReplicatorType().toString();
+        return replicatorConfiguration.getType().toString();
     }
 
     public String getTarget(Args args) {
@@ -305,18 +306,18 @@ public class ReplicatorConfigurationRequestHandler {
     public void setReplicatorType(Args args) {
         ReplicatorConfiguration replicatorConfiguration = args.get("configuration");
         String type = args.get("replType");
-        ReplicatorConfiguration.ReplicatorType replicatorType;
+        ReplicatorType replicatorType;
         switch (type) {
             case "PUSH":
-                replicatorType = ReplicatorConfiguration.ReplicatorType.PUSH;
+                replicatorType = ReplicatorType.PUSH;
                 break;
             case "PULL":
-                replicatorType = ReplicatorConfiguration.ReplicatorType.PULL;
+                replicatorType = ReplicatorType.PULL;
                 break;
             default:
-                replicatorType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
+                replicatorType = ReplicatorType.PUSH_AND_PULL;
         }
-        replicatorConfiguration.setReplicatorType(replicatorType);
+        replicatorConfiguration.setType(replicatorType);
     }
 
     public void setAutoPurge(Args args) {
