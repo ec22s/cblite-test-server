@@ -24,4 +24,5 @@ public interface Context {
      * android.util.Base64 in android apps
      */
     String encodeBase64(byte[] hashBytes);
+    byte[] decodeBase64(String encodedBytes);
 }
