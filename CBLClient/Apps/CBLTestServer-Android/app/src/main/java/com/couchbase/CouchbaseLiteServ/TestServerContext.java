@@ -191,6 +191,11 @@ public class TestServerContext implements Context {
         return Base64.encodeToString(hashBytes, Base64.NO_WRAP);
     }
 
+    @Override
+    public byte[] decodeBase64(String encodedBytes){
+        return Base64.decode(encodedBytes, Base64.NO_WRAP);
+    }
+
     private InputStream getCertFile(String name) {
         InputStream is = null;
         try {
