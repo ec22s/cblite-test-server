@@ -62,6 +62,15 @@ namespace Couchbase.Lite.Testing
             #endregion
         }
 
+        public static void CreateUTFBytesContent([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
+        {
+            var content = postBody["content"].ToString();
+            var bytes = Encoding.UTF8.GetBytes(content);
+            response.WriteBody(MemoryMap.Store(bytes));
+        }
+
         public static void CreateImageStream([NotNull] NameValueCollection args,
             [NotNull] IReadOnlyDictionary<string, object> postBody,
             [NotNull] HttpListenerResponse response)

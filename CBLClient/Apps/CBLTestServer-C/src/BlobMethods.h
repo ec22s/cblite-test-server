@@ -8,4 +8,5 @@ namespace blob_methods {
     void blob_createImageContent(nlohmann::json& body, mg_connection* conn);
     void blob_createImageStream(nlohmann::json& body, mg_connection* conn);
     void blob_createImageFileUrl(nlohmann::json& body, mg_connection* conn);
+    void blob_createUTFBytesContent(nlohmann::json& body, mg_connection* conn);
 }
