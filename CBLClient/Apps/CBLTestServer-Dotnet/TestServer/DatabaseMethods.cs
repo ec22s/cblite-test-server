@@ -478,6 +478,7 @@ namespace Couchbase.Lite.Testing
                        var docBody = (Dictionary<string, object>)body.Value;
                        docBody.Remove("_id");
                        MutableDocument doc = new MutableDocument(id, docBody);
+                       Dictionary<string, Object> new_data = SetDataBlob(docBody);
                        db.Save(doc);
 
                    }
@@ -496,7 +497,8 @@ namespace Couchbase.Lite.Testing
                 string id = postBody["id"].ToString();
                 Dictionary<string, Object> data = (Dictionary<string, Object>)postBody["data"];
                 MutableDocument UpdateDoc = db.GetDocument(id).ToMutable();
-                UpdateDoc.SetData(data);
+                Dictionary<string, Object> new_data = SetDataBlob(data);
+                UpdateDoc.SetData(new_data);
                 db.Save(UpdateDoc);
                 response.WriteEmptyBody();
             });
@@ -516,7 +518,8 @@ namespace Couchbase.Lite.Testing
                         string id = body.Key;
                         Dictionary<string, Object> docVal = (Dictionary<string, object>)body.Value;
                         MutableDocument UpdateDoc = db.GetDocument(id).ToMutable();
-                        UpdateDoc.SetData(docVal);
+                        Dictionary <string, Object> new_data = SetDataBlob(docVal);
+                        UpdateDoc.SetData(new_data);
                         db.Save(UpdateDoc);
                     }
                 });
@@ -546,7 +549,44 @@ namespace Couchbase.Lite.Testing
             response.WriteBody(dbPath);
         }
 
+        private static Dictionary<string, object> SetDataBlob(Dictionary<string, object> data)
+        {
+            if (!data.ContainsKey("_attachments"))
+            {
+                return data;
+            }
+            Dictionary<string, object> attachment_items = (Dictionary<string, object>)data["_attachments"];
+            Dictionary<string, object> existingBlobItems = new Dictionary<string, object>();
+            foreach (var attItem in attachment_items)
+            {
+                string attItemKey = attItem.Key;
+                Dictionary<string, Object> attItemValue = (Dictionary<string, object>)attItem.Value;
+                if (attItemValue.ContainsKey("data"))
+                {
+                    string contentType;
+                    if (attItemKey.EndsWith(".png"))
+                    {
+                        contentType = "image/jpeg";
+                    }
+                    else
+                        contentType = "text/plain";
+                    var image = File.ReadAllBytes(attItemKey);
+                    Blob blob = new Blob(contentType, image);
+                    data.Add(attItemKey, blob);
+                }
+                else if (attItemValue.ContainsKey("digest"))
+                {
+                    existingBlobItems.Add(attItemKey, attItemValue);
+                }
+                if(existingBlobItems.Count > 0 && existingBlobItems.Count < attachment_items.Count)
+                {
+                    data.Remove("_attachments");
+                    data.Add("_attachments", existingBlobItems);
+                }
+            }
+            return data;
 
+        }
 
         #endregion
     }
