@@ -115,6 +115,12 @@ public class TestServerContext implements Context {
     }
 
     @Override
+    public byte[] decodeBase64(String encodedBytes) {
+        // load java.util.Base64 in java standalone app
+        return Base64.getDecoder().decode(encodedBytes);
+    }
+
+    @Override
     public TLSIdentity getCreateIdentity() {
         final String EXTERNAL_KEY_STORE_TYPE = "PKCS12";
         Calendar calendar = Calendar.getInstance();

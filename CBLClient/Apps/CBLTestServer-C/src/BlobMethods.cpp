@@ -39,6 +39,13 @@ namespace blob_methods {
         }
     }
 
+    void blob_createUTFBytesContent(nlohmann::json& body, mg_connection* conn){
+        string content = body["content"].get<string>();
+        FLSliceResult* resultPtr = static_cast<FLSliceResult *>(malloc(sizeof(FLSliceResult)));
+        *resultPtr = FLSliceResult_CreateWith(content.c_str(), content.length());
+        write_serialized_body(conn, memory_map::store(resultPtr, FLSliceResult_EntryDelete));        
+    }
+
     void blob_createImageContent(nlohmann::json& body, mg_connection* conn) {
         const auto imageLocation = file_resolution::resolve_path(body["image"].get<string>(), false);
         ifstream fin(imageLocation.c_str(), ios::binary|ios::ate);

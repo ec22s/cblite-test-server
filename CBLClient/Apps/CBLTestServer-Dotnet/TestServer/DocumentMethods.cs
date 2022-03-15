@@ -187,10 +187,10 @@ namespace Couchbase.Lite.Testing
         public static void DocumentSetBlob([NotNull] NameValueCollection args,
                                   [NotNull] IReadOnlyDictionary<string, object> postBody,
                                   [NotNull] HttpListenerResponse response)
-        {
+        {            
             var key = postBody["key"].ToString();
-            var val = (Blob)postBody["value"];
-            With<MutableDocument>(postBody, "document", doc => response.WriteBody(doc.SetBlob(key, val)));
+            var val = MemoryMap.Get<Blob>(postBody["value"].ToString());
+            With<MutableDocument>(postBody, "document", doc => response.WriteBody(MemoryMap.Store(doc.SetBlob(key, val))));
         }
 
         public static void DocumentGetArray([NotNull] NameValueCollection args,

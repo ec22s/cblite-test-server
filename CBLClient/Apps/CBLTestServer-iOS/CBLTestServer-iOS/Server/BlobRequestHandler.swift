@@ -34,6 +34,10 @@ public class BlobRequestHandler {
             } else {
                 throw RequestHandlerError.IOException("Incorrect parameters provided")
             }
+        
+        case "blob_createUTFBytesContent":
+            let content: String = args.get(name: "content")!
+            return content.data(using: .utf8)!
             
         case "blob_createImageContent":
             let image: String = args.get(name: "image")!

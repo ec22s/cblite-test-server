@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.couchbase.lite.MaintenanceType;
-import com.couchbase.lite.internal.utils.Fn;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
@@ -138,9 +137,10 @@ public class DatabaseRequestHandler {
         Database database = args.get("database");
         String id = args.get("id");
         Map<String, Object> data = args.get("data");
-        MutableDocument updateDoc = database.getDocument(id).toMutable();
-        updateDoc.setData(data);
-        database.save(updateDoc);
+        MutableDocument updatedDoc = database.getDocument(id).toMutable();
+        Map<String, Object> new_data = this.setDataBlob(data);
+        updatedDoc.setData(new_data);
+        database.save(updatedDoc);
     }
 
     public void updateDocuments(Args args) throws CouchbaseLiteException {
@@ -151,7 +151,8 @@ public class DatabaseRequestHandler {
                 String id = entry.getKey();
                 Map<String, Object> data = entry.getValue();
                 MutableDocument updatedDoc = database.getDocument(id).toMutable();
-                updatedDoc.setData(data);
+                Map<String, Object> new_data = this.setDataBlob(data);
+                updatedDoc.setData(new_data);
                 try {
                     database.save(updatedDoc);
                 }
@@ -176,7 +177,8 @@ public class DatabaseRequestHandler {
             for (Map.Entry<String, Map<String, Object>> entry : documents.entrySet()) {
                 String id = entry.getKey();
                 Map<String, Object> data = entry.getValue();
-                MutableDocument document = new MutableDocument(id, data);
+                Map<String, Object> new_data = this.setDataBlob(data);
+                MutableDocument document = new MutableDocument(id, new_data);
                 try {
                     database.save(document);
                 }
@@ -351,6 +353,38 @@ public class DatabaseRequestHandler {
         return context.getFilesDir().getAbsolutePath() + "/" + dbFileName;
     }
 
+    private Map<String, Object> setDataBlob(Map<String, Object> data) {
+        if (!data.containsKey("_attachments")) {
+            return data;
+        }
+
+        Map<String, Object> attachment_items = (Map<String, Object>) data.get("_attachments");
+        Map<String, Object> existingBlobItems = new HashMap<>();
+
+        for (Map.Entry<String, Object> attItem : attachment_items.entrySet()) {
+            String attItemKey = attItem.getKey();
+            HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
+            if (attItemValue.get("data") != null){
+                String contentType = attItemKey.endsWith(".png") ? "image/jpeg": "text/plain";
+                Blob blob = new Blob(contentType,
+                        RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
+                data.put(attItemKey, blob);
+
+            }
+            else if (attItemValue.containsKey("digest")){
+                existingBlobItems.put(attItemKey, attItemValue);
+            }
+        }
+
+        // deal with partial blob situation,
+        // remove all elements then add back blob type only items to _attachments key
+        if (existingBlobItems.size() > 0 && existingBlobItems.size() < attachment_items.size()){
+            data.remove("_attachments");
+            data.put("_attachments", existingBlobItems);
+        }
+
+        return data;
+    }
 }
 
 class MyDatabaseChangeListener implements DatabaseChangeListener {
