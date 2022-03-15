@@ -232,6 +232,7 @@ public class DatabaseRequestHandler {
                     let updated_doc = database.document(withID: id)!.toMutable()
                     let new_data: Dictionary<String, Any> = setDataBlob(data)
                     updated_doc.setData(new_data)
+                    print("called database update Documents with Sridevi....")
                     try database.saveDocument(updated_doc)
                 }
             }
@@ -245,6 +246,7 @@ public class DatabaseRequestHandler {
             let new_data: Dictionary<String, Any> = setDataBlob(data)
             
             updated_doc.setData(new_data)
+            print("called database update Document with Sridevi....")
             try! database.saveDocument(updated_doc)
             
                
@@ -339,26 +341,28 @@ private extension DatabaseRequestHandler {
         guard let attachment_items = data["_attachments"] as? Dictionary<String, Dictionary<String, Any>> else {
             return data
         }
-        
+        print("doc has _attachments with Sridevi")
         var existingBlobItems = [String: Any]()
         var updatedData = data;
         for (key, value) in attachment_items {
+            print("value once it has attachment is ", value)
             
-            if let d = value["data"] as? Data  {
+            if let d = value["data"] as? String  {
+            
                 let contentType = key.hasSuffix(".png") ? "image/jpeg" : "text/plain"
-                let blob = Blob(contentType: contentType, data: d)
+                print("doc with attachment has data..<sridevi>", contentType)
+                let blob = Blob(contentType: contentType, data: d.data(using: .utf8)!)
                 
                 updatedData[key] = blob
             } else if let _ = value["digest"] {
                 existingBlobItems[key] = value
             }
-         
           }
         
         if !existingBlobItems.isEmpty {
             updatedData["_attachments"] = existingBlobItems
         }
-        
+        print("updated data after setting the blob is ", updatedData)
         return updatedData
     }
 }
