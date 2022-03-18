@@ -375,7 +375,7 @@ public class DatabaseRequestHandler {
                 existingBlobItems.put(attItemKey, attItemValue);
             }
         }
-
+        data.remove("_attachments");
         // deal with partial blob situation,
         // remove all elements then add back blob type only items to _attachments key
         if (existingBlobItems.size() > 0 && existingBlobItems.size() < attachment_items.size()){

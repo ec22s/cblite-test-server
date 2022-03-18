@@ -212,7 +212,6 @@ public class DatabaseRequestHandler {
                         data.removeValue(forKey: "_id")
                     }
                     let new_data: Dictionary<String, Any> = setDataBlob(data)
-                    print("new data after setting the blob is ", new_data)
                     let document = MutableDocument(id: id, data: new_data)
                     try! database.saveDocument(document)
                     
@@ -233,7 +232,6 @@ public class DatabaseRequestHandler {
                     let updated_doc = database.document(withID: id)!.toMutable()
                     let new_data: Dictionary<String, Any> = setDataBlob(data)
                     updated_doc.setData(new_data)
-                    print("called database update Documents with Sridevi....")
                     try database.saveDocument(updated_doc)
                 }
             }
@@ -247,7 +245,6 @@ public class DatabaseRequestHandler {
             let new_data: Dictionary<String, Any> = setDataBlob(data)
             
             updated_doc.setData(new_data)
-            print("called database update Document with Sridevi....")
             try! database.saveDocument(updated_doc)
             
                
@@ -338,16 +335,12 @@ public class DatabaseRequestHandler {
 
 private extension DatabaseRequestHandler {
     func setDataBlob(_ data: Dictionary<String, Any>) -> Dictionary<String, Any> {
-        //let data: Dictionary<String, Any> = args.get(name: "data")!
         guard let attachment_items = data["_attachments"] as? Dictionary<String, Dictionary<String, Any>> else {
             return data
         }
-        print("doc has _attachments with Sridevi")
         var existingBlobItems = [String: Any]()
         var updatedData = data;
-        print("updated Data fist initialization : ", updatedData)
         for (key, value) in attachment_items {
-            print("value once it has attachment is ", value)
             
             if let d = value["data"] as? String  {
             
@@ -355,22 +348,15 @@ private extension DatabaseRequestHandler {
                 let blob = Blob(contentType: contentType, data: d.data(using: .utf8)!)
                 
                 updatedData[key] = blob
-                updatedData.removeValue(forKey: "_attachments")
-                // updatedData.updateValue(blob, forKey: key)
-                print("doc after creating blob..", blob)
-                print("doc after updated data updated with new blob ",updatedData[key] ?? "key is not updated")
-                print("key for the updated Data is ", key)
                 
             } else if let _ = value["digest"] {
-                print("Going into existing blob items")
                 existingBlobItems[key] = value
             }
           }
-        
+        updatedData.removeValue(forKey: "_attachments")
         if !existingBlobItems.isEmpty {
             updatedData["_attachments"] = existingBlobItems
         }
-        print("updated data after setting the blob is ", updatedData)
         return updatedData
     }
 }
