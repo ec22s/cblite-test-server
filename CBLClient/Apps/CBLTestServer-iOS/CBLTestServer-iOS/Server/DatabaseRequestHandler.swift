@@ -211,7 +211,8 @@ public class DatabaseRequestHandler {
                         data["id"] = id
                         data.removeValue(forKey: "_id")
                     }
-                    let document = MutableDocument(id: id, data: data)
+                    let new_data: Dictionary<String, Any> = setDataBlob(data)
+                    let document = MutableDocument(id: id, data: new_data)
                     try! database.saveDocument(document)
                     
                 }
@@ -229,7 +230,8 @@ public class DatabaseRequestHandler {
                         data.removeValue(forKey: "_id")
                     }
                     let updated_doc = database.document(withID: id)!.toMutable()
-                    updated_doc.setData(data)
+                    let new_data: Dictionary<String, Any> = setDataBlob(data)
+                    updated_doc.setData(new_data)
                     try database.saveDocument(updated_doc)
                 }
             }
@@ -240,11 +242,12 @@ public class DatabaseRequestHandler {
             let data: Dictionary<String, Any> = args.get(name: "data")!
             let docId: String = args.get(name: "id")!
             let updated_doc = database.document(withID: docId)!.toMutable()
+            let new_data: Dictionary<String, Any> = setDataBlob(data)
             
-            updated_doc.setData(data)
+            updated_doc.setData(new_data)
             try! database.saveDocument(updated_doc)
             
-            
+               
         case "database_getDocIds":
             let database: Database = args.get(name:"database")!
             let limit: Int = args.get(name:"limit")!
@@ -327,6 +330,34 @@ public class DatabaseRequestHandler {
             throw RequestHandlerError.MethodNotFound(method)
         }
         return DatabaseRequestHandler.VOID
+    }
+}
+
+private extension DatabaseRequestHandler {
+    func setDataBlob(_ data: Dictionary<String, Any>) -> Dictionary<String, Any> {
+        guard let attachment_items = data["_attachments"] as? Dictionary<String, Dictionary<String, Any>> else {
+            return data
+        }
+        var existingBlobItems = [String: Any]()
+        var updatedData = data;
+        for (key, value) in attachment_items {
+            
+            if let d = value["data"] as? String  {
+            
+                let contentType = key.hasSuffix(".png") ? "image/jpeg" : "text/plain"
+                let blob = Blob(contentType: contentType, data: d.data(using: .utf8)!)
+                
+                updatedData[key] = blob
+                
+            } else if let _ = value["digest"] {
+                existingBlobItems[key] = value
+            }
+          }
+        updatedData.removeValue(forKey: "_attachments")
+        if !existingBlobItems.isEmpty {
+            updatedData["_attachments"] = existingBlobItems
+        }
+        return updatedData
     }
 }
 
