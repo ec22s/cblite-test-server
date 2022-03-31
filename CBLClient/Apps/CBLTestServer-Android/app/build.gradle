@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 ext {
-    DEF_VERSION = "3.1.0-172"
+    DEF_VERSION = "3.0.0-178"
     COUCHBASE_LITE_VERSION = System.getProperty('version', DEF_VERSION)
 
     PROJECT_DIR = "${projectDir}"
@@ -14,7 +14,7 @@ ext {
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
-    //ndkVersion "22.0.7026061"
+    ndkVersion "22.0.7026061"
 
     defaultConfig {
         applicationId "com.couchbase.TestServerApp"
