@@ -40,8 +40,6 @@
 		42F2DA98265351B8001C9EC3 /* BlobMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA7C265351B8001C9EC3 /* BlobMethods.cpp */; };
 		42F2DA9A265351B8001C9EC3 /* DatabaseConfigurationMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA7E265351B8001C9EC3 /* DatabaseConfigurationMethods.cpp */; };
 		42F2DA9B265351B8001C9EC3 /* BasicAuthenticationMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DA81265351B8001C9EC3 /* BasicAuthenticationMethods.cpp */; };
-		42F2DAA326548EE4001C9EC3 /* CouchbaseLite.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42F2DA4426535167001C9EC3 /* CouchbaseLite.xcframework */; };
-		42F2DAA426548EE4001C9EC3 /* CouchbaseLite.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 42F2DA4426535167001C9EC3 /* CouchbaseLite.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		42F2DABA2655F430001C9EC3 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 42F2DAB92655F430001C9EC3 /* libz.tbd */; };
 		42F2DB482655F46C001C9EC3 /* zip_dir_add.c in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DABC2655F468001C9EC3 /* zip_dir_add.c */; };
 		42F2DB492655F46C001C9EC3 /* zip_error_strerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DABD2655F468001C9EC3 /* zip_error_strerror.c */; };
@@ -161,6 +159,9 @@
 		42F2DBCA2655F532001C9EC3 /* civetweb.c in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DBC92655F532001C9EC3 /* civetweb.c */; };
 		42F2DBCC2655F7A3001C9EC3 /* zip_err_str.c in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DBCB2655F7A3001C9EC3 /* zip_err_str.c */; };
 		42F2DBD12655FA3C001C9EC3 /* CBLTestServerBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 42F2DBD02655FA3C001C9EC3 /* CBLTestServerBridge.mm */; };
+		A374B3D628B617CF00CFF87E /* CollectionMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A374B3D428B617CF00CFF87E /* CollectionMethods.cpp */; };
+		A374B3D928B6181800CFF87E /* ScopeMethods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A374B3D728B6181800CFF87E /* ScopeMethods.cpp */; };
+		A374B3DA28B619C800CFF87E /* CouchbaseLite.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42F2DA4426535167001C9EC3 /* CouchbaseLite.xcframework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -170,7 +171,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				42F2DAA426548EE4001C9EC3 /* CouchbaseLite.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -368,6 +368,10 @@
 		42F2DBCE2655F9A8001C9EC3 /* TestServer-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TestServer-Bridging-Header.h"; path = "TestServer/TestServer-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		42F2DBD02655FA3C001C9EC3 /* CBLTestServerBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CBLTestServerBridge.mm; sourceTree = "<group>"; };
 		42F2DBD22655FA62001C9EC3 /* CBLTestServerBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBLTestServerBridge.h; sourceTree = "<group>"; };
+		A374B3D428B617CF00CFF87E /* CollectionMethods.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollectionMethods.cpp; sourceTree = "<group>"; };
+		A374B3D528B617CF00CFF87E /* CollectionMethods.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CollectionMethods.hpp; sourceTree = "<group>"; };
+		A374B3D728B6181800CFF87E /* ScopeMethods.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ScopeMethods.cpp; sourceTree = "<group>"; };
+		A374B3D828B6181800CFF87E /* ScopeMethods.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ScopeMethods.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -376,7 +380,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42F2DABA2655F430001C9EC3 /* libz.tbd in Frameworks */,
-				42F2DAA326548EE4001C9EC3 /* CouchbaseLite.xcframework in Frameworks */,
+				A374B3DA28B619C800CFF87E /* CouchbaseLite.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -486,6 +490,10 @@
 				42F2DA80265351B8001C9EC3 /* ReplicatorConfigurationMethods.h */,
 				42F2DA81265351B8001C9EC3 /* BasicAuthenticationMethods.cpp */,
 				4282713B268ED06800E35F5B /* FilePathResolver+Apple.mm */,
+				A374B3D428B617CF00CFF87E /* CollectionMethods.cpp */,
+				A374B3D528B617CF00CFF87E /* CollectionMethods.hpp */,
+				A374B3D728B6181800CFF87E /* ScopeMethods.cpp */,
+				A374B3D828B6181800CFF87E /* ScopeMethods.hpp */,
 			);
 			name = src;
 			path = ../../src;
@@ -771,6 +779,7 @@
 				42F2DBCA2655F532001C9EC3 /* civetweb.c in Sources */,
 				42F2DB742655F46C001C9EC3 /* zip_source_stat.c in Sources */,
 				42F2DBB72655F46C001C9EC3 /* zip_source_buffer.c in Sources */,
+				A374B3D928B6181800CFF87E /* ScopeMethods.cpp in Sources */,
 				42F2DB572655F46C001C9EC3 /* zip_extra_field.c in Sources */,
 				42B72B2C269D15F300F0D94F /* FileLoggingMethods+Apple.mm in Sources */,
 				42F2DB7B2655F46C001C9EC3 /* zip_source_close.c in Sources */,
@@ -787,6 +796,7 @@
 				42F2DBBE2655F46C001C9EC3 /* zip_progress.c in Sources */,
 				42F2DBBC2655F46C001C9EC3 /* zip_source_compress.c in Sources */,
 				42F2DB7A2655F46C001C9EC3 /* zip_add_entry.c in Sources */,
+				A374B3D628B617CF00CFF87E /* CollectionMethods.cpp in Sources */,
 				42F2DB522655F46C001C9EC3 /* zip_set_name.c in Sources */,
 				42F2DB5C2655F46C001C9EC3 /* zip_name_locate.c in Sources */,
 				42F2DBA62655F46C001C9EC3 /* zip_file_get_offset.c in Sources */,

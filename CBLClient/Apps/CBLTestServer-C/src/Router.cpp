@@ -13,6 +13,7 @@
 #include "ReplicatorConfigurationMethods.h"
 #include "ReplicatorMethods.h"
 #include "QueryMethods.h"
+#include "CollectionMethods.hpp"
 #include "EncryptableMethods.h"
 #include <functional>
 #include <utility>
@@ -190,6 +191,12 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "encryptable_createValue", encryptable_methods::encryptable_createValue },
     { "encryptable_createEncryptor", encryptable_methods::encryptable_createEncryptor },
     { "encryptable_isEncryptableValue", encryptable_methods::encryptable_isEncryptableValue },
+    { "collection_defaultScope", collection_methods::collection_defaultScope},
+    { "collection_documentCount", collection_methods::collection_documentCount},
+    { "collection_createCollection", collection_methods::collection_createCollection},
+    { "collection_deleteCollection", collection_methods::collection_deleteCollection},
+    { "collection_collectionNames", collection_methods::collection_collectionNames},
+    { "collection_getCollectionName", collection_methods::collection_getCollectionName},
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };
