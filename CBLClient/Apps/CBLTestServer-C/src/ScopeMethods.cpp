@@ -39,7 +39,7 @@ namespace scope_methods {
                 FLArrayIterator_Begin(collectionNames, &i);
                 do{
                     const auto name = FLArrayIterator_GetValue(&i);
-                    FLStringResult jsonString = FLValue_ToJSON(name);
+                    FLStringResult jsonString = FLValue_ToString(name);
                     names.push_back(jsonString);
                 } while(FLArrayIterator_Next(&i));
                 write_serialized_body(conn, names);

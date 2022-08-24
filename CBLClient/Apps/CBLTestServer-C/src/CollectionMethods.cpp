@@ -34,7 +34,7 @@ static void CBLCollection_DummyDocumentListener(void* context, const CBLDocument
 }
 
 namespace collection_methods {
-    //default scope name
+    //default scope object
     void collection_defaultScope(json& body, mg_connection* conn){
         with<CBLDatabase *>(body, "database", [conn](CBLDatabase* db)
         {
@@ -43,13 +43,12 @@ namespace collection_methods {
             if(err->code!=0)
                 write_serialized_body(conn, err->code);
             else {
-                auto scopeName = CBLScope_Name(scope);
-                write_serialized_body(conn, FLString(scopeName));
+                write_serialized_body(conn, memory_map::store(scope, CBLCollectionScope_EntryDelete));
             }
         });
     }
     
-    //default collection name
+    //default collection object
     void collection_defaultCollection(json& body, mg_connection* conn){
         with<CBLDatabase *>(body, "database", [conn](CBLDatabase* db)
         {
@@ -58,8 +57,7 @@ namespace collection_methods {
             if(err->code!=0)
                 write_serialized_body(conn, err->code);
             else {
-                auto collectionName = CBLCollection_Name(collection);
-                write_serialized_body(conn, FLString(collectionName));
+                write_serialized_body(conn, memory_map::store(collection,CBLCollection_EntryDelete));
             }
         });
     }
@@ -124,7 +122,7 @@ namespace collection_methods {
                 FLArrayIterator_Begin(collectionNames, &i);
                 do {
                     const auto collectionName = FLArrayIterator_GetValue(&i);
-                    FLStringResult jsonString = FLValue_ToJSON(collectionName);
+                    FLStringResult jsonString = FLValue_ToString(collectionName);
                     keys.push_back(jsonString);
                 } while(FLArrayIterator_Next(&i));
                 write_serialized_body(conn, keys);
@@ -136,12 +134,21 @@ namespace collection_methods {
     //names of all scopes in the database
     void collection_allScope(json& body, mg_connection* conn) {
         with<CBLDatabase *>(body,"database",[conn](CBLDatabase* db){
+            json scopes(0, nullptr);
             CBLError* err = new CBLError();
             auto scopeNames = CBLDatabase_ScopeNames(db, err);
-            if(err->code==0 && scopeNames)
-                write_serialized_body(conn, reinterpret_cast<FLMutableArray>(scopeNames));
-            else
+            if(err->code!=0)
                 write_serialized_body(conn, err->code);
+            else {
+                FLArrayIterator i;
+                FLArrayIterator_Begin(scopeNames, &i);
+                do {
+                    const auto scopename = FLArrayIterator_GetValue(&i);
+                    FLStringResult jsonString = FLValue_ToString(scopename);
+                    scopes.push_back(jsonString);
+                } while(FLArrayIterator_Next(&i));
+                write_serialized_body(conn, scopes);
+            }
         });
     }
     
@@ -395,7 +402,7 @@ namespace collection_methods {
                 FLArrayIterator_Begin(index_names, &i);
                 do{
                     const auto indexName = FLArrayIterator_GetValue(&i);
-                    FLStringResult jsonString = FLValue_ToJSON(indexName);
+                    FLStringResult jsonString = FLValue_ToString(indexName);
                     keys.push_back(jsonString);
                 } while(FLArrayIterator_Next(&i));
                 write_serialized_body(conn, keys);
