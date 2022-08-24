@@ -25,7 +25,6 @@ namespace scope_methods {
         });
     }
 
-
     //returns name of all collection in the scope
     void scope_collectionNames (json& body, mg_connection* conn) {
         with<CBLScope *>(body, "scope",[conn](CBLScope* scope) {

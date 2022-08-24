@@ -130,40 +130,6 @@ namespace collection_methods {
             }
         });
     }
-
-    //names of all scopes in the database
-    void collection_allScope(json& body, mg_connection* conn) {
-        with<CBLDatabase *>(body,"database",[conn](CBLDatabase* db){
-            json scopes(0, nullptr);
-            CBLError* err = new CBLError();
-            auto scopeNames = CBLDatabase_ScopeNames(db, err);
-            if(err->code!=0)
-                write_serialized_body(conn, err->code);
-            else {
-                FLArrayIterator i;
-                FLArrayIterator_Begin(scopeNames, &i);
-                do {
-                    const auto scopename = FLArrayIterator_GetValue(&i);
-                    FLStringResult jsonString = FLValue_ToString(scopename);
-                    scopes.push_back(jsonString);
-                } while(FLArrayIterator_Next(&i));
-                write_serialized_body(conn, scopes);
-            }
-        });
-    }
-    
-    //returns existing scope object with the given name
-    void collection_scope(json& body, mg_connection* conn) {
-        auto scopeName = body["scopeName"].get<string>();
-        with<CBLDatabase *>(body,"database",[conn,&scopeName](CBLDatabase* db){
-            CBLError* err = new CBLError();
-            auto scope = CBLDatabase_Scope(db, flstr(scopeName), err);
-            if(err->code!=0)
-                write_serialized_body(conn, err->code);
-            else
-                write_serialized_body(conn, memory_map::store(scope, CBLCollectionScope_EntryDelete));
-        });
-    }
     
     //returns collection object, function parameters are scope name and collection name
     void collection_collection(json& body, mg_connection* conn) {

@@ -14,6 +14,7 @@
 #include "ReplicatorMethods.h"
 #include "QueryMethods.h"
 #include "CollectionMethods.hpp"
+#include "ScopeMethods.hpp"
 #include "EncryptableMethods.h"
 #include <functional>
 #include <utility>
@@ -78,6 +79,8 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "database_copy", database_methods::database_copy }, 
     { "database_getPreBuiltDb", database_methods::database_getPreBuiltDb },
     { "database_changeEncryptionKey", database_methods::database_changeEncryptionKey },
+    { "database_allScope", database_methods::database_allScope},
+    { "database_scope", database_methods::database_scope},
     { "dictionary_contains", dictionary_methods::dictionary_contains },
     { "dictionary_count", dictionary_methods::dictionary_count },
     { "dictionary_create", dictionary_methods::dictionary_create },
@@ -192,11 +195,15 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "encryptable_createEncryptor", encryptable_methods::encryptable_createEncryptor },
     { "encryptable_isEncryptableValue", encryptable_methods::encryptable_isEncryptableValue },
     { "collection_defaultScope", collection_methods::collection_defaultScope},
+    { "collection_defaultCollection", collection_methods::collection_defaultCollection},
     { "collection_documentCount", collection_methods::collection_documentCount},
     { "collection_createCollection", collection_methods::collection_createCollection},
     { "collection_deleteCollection", collection_methods::collection_deleteCollection},
     { "collection_collectionNames", collection_methods::collection_collectionNames},
     { "collection_getCollectionName", collection_methods::collection_getCollectionName},
+    { "scope_scopeName", scope_methods::scope_scopeName},
+    { "scope_collection", scope_methods::scope_collection},
+    { "scope_collectionNames", scope_methods::scope_collectionName},
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };
