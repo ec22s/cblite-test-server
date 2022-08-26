@@ -34,20 +34,6 @@ static void CBLCollection_DummyDocumentListener(void* context, const CBLDocument
 }
 
 namespace collection_methods {
-    //default scope object
-    void collection_defaultScope(json& body, mg_connection* conn){
-        with<CBLDatabase *>(body, "database", [conn](CBLDatabase* db)
-        {
-            CBLError* err = new CBLError();
-            CBLScope* scope = CBLDatabase_DefaultScope(db, err);
-            if(err->code!=0)
-                write_serialized_body(conn, err->code);
-            else {
-                write_serialized_body(conn, memory_map::store(scope, CBLCollectionScope_EntryDelete));
-            }
-        });
-    }
-    
     //default collection object
     void collection_defaultCollection(json& body, mg_connection* conn){
         with<CBLDatabase *>(body, "database", [conn](CBLDatabase* db)

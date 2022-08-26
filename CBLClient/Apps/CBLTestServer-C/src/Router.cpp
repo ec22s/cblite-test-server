@@ -194,7 +194,6 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "encryptable_createValue", encryptable_methods::encryptable_createValue },
     { "encryptable_createEncryptor", encryptable_methods::encryptable_createEncryptor },
     { "encryptable_isEncryptableValue", encryptable_methods::encryptable_isEncryptableValue },
-    { "collection_defaultScope", collection_methods::collection_defaultScope},
     { "collection_defaultCollection", collection_methods::collection_defaultCollection},
     { "collection_documentCount", collection_methods::collection_documentCount},
     { "collection_createCollection", collection_methods::collection_createCollection},
@@ -204,6 +203,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "scope_scopeName", scope_methods::scope_scopeName},
     { "scope_collection", scope_methods::scope_collection},
     { "scope_collectionNames", scope_methods::scope_collectionNames},
+    { "scope_defaultScope", scope_methods::scope_defaultScope},
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };

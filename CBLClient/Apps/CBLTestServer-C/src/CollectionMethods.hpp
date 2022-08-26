@@ -5,7 +5,6 @@
 #include <civetweb.h>
 
 namespace collection_methods {
-    void collection_defaultScope(nlohmann::json& body, mg_connection* conn);
     void collection_defaultCollection(nlohmann::json& body, mg_connection* conn);
     void collection_documentCount(nlohmann::json& body, mg_connection* conn);
     void collection_createCollection(nlohmann::json& body, mg_connection* conn);

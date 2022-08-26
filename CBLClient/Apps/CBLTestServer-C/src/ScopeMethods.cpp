@@ -18,6 +18,19 @@ void CBLScopeCollection_EntryDelete (void* ptr)
 }
 
 namespace scope_methods {
+    //default scope object
+    void scope_defaultScope(json& body, mg_connection* conn){
+        with<CBLDatabase *>(body, "database", [conn](CBLDatabase* db) {
+            CBLError* err = new CBLError();
+            CBLScope* scope = CBLDatabase_DefaultScope(db, err);
+            if(err->code!=0)
+                write_serialized_body(conn, err->code);
+            else {
+                write_serialized_body(conn, memory_map::store(scope, CBLScope_EntryDelete));
+            }
+        });
+    }
+
     //return scope name using scope object
     void scope_scopeName(json &body, mg_connection* conn) {
         with<CBLScope *>(body, "scope", [conn](CBLScope* scope) {
