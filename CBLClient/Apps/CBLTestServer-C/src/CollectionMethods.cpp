@@ -277,7 +277,7 @@ namespace collection_methods {
             if(err->code!=0)
                 write_serialized_body(conn, CBLError_Message(err));
             else
-                write_serialized_body(conn, setExpiration);
+                write_serialized_body(conn, expiration);
         });
     }
 
@@ -298,7 +298,7 @@ namespace collection_methods {
     void collection_createValueIndex(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             CBLValueIndexConfiguration *config = new CBLValueIndexConfiguration();
-            config->expressionLanguage = body["expressionLanguage"];
+            config->expressionLanguage = kCBLN1QLLanguage;
             config->expressions = flstr(body["expression"]);
             const auto name = body["name"];
             CBLError* err = new CBLError();
@@ -316,8 +316,8 @@ namespace collection_methods {
             const auto name = flstr(body["name"]);
             CBLError *err = new CBLError();
             CBLFullTextIndexConfiguration *config = new CBLFullTextIndexConfiguration();
-            config->expressionLanguage = body["expressionLanguage"];
-            config->expressions = flstr(body["expressions"]);
+            config->expressionLanguage = kCBLN1QLLanguage;
+            config->expressions = flstr(body["expression"]);
             config->language = flstr(body["language"]);
             if(body["ignoreAccents"] == true)
                 config->ignoreAccents = true;
