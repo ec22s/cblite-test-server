@@ -21,10 +21,10 @@ namespace scope_methods {
     //default scope object
     void scope_defaultScope(json& body, mg_connection* conn){
         with<CBLDatabase *>(body, "database", [conn](CBLDatabase* db) {
-            CBLError* err = new CBLError();
-            CBLScope* scope = CBLDatabase_DefaultScope(db, err);
-            if(err->code!=0)
-                write_serialized_body(conn, err->code);
+            CBLError err = {};
+            CBLScope* scope = CBLDatabase_DefaultScope(db, &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else {
                 write_serialized_body(conn, memory_map::store(scope, CBLScope_EntryDelete));
             }
@@ -41,20 +41,12 @@ namespace scope_methods {
     //returns name of all collection in the scope
     void scope_collectionNames (json& body, mg_connection* conn) {
         with<CBLScope *>(body, "scope",[conn](CBLScope* scope) {
-            json names(0, nullptr);
-            CBLError *err = new CBLError();
-            FLMutableArray collectionNames = CBLScope_CollectionNames(scope, err);
-            if(err->code!=0)
-                write_serialized_body(conn, err->code);
+            CBLError err = {};
+            FLMutableArray collectionNames = CBLScope_CollectionNames(scope, &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else {
-                FLArrayIterator i;
-                FLArrayIterator_Begin(collectionNames, &i);
-                do{
-                    const auto name = FLArrayIterator_GetValue(&i);
-                    FLStringResult jsonString = FLValue_ToString(name);
-                    names.push_back(jsonString);
-                } while(FLArrayIterator_Next(&i));
-                write_serialized_body(conn, names);
+                write_serialized_body(conn, reinterpret_cast<const FLValue>(collectionNames));
             }
         });
     }
@@ -63,10 +55,10 @@ namespace scope_methods {
     void scope_collection (json& body, mg_connection* conn) {
         with<CBLScope *>(body, "scope", [conn,&body](CBLScope* scope) {
             const auto collectionName = flstr(body["collectionName"]);
-            CBLError* err = new CBLError();
-            CBLCollection *collection = CBLScope_Collection(scope, collectionName, err);
-            if(err->code!=0)
-                write_serialized_body(conn, err->code);
+            CBLError err = {};
+            CBLCollection *collection = CBLScope_Collection(scope, collectionName, &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
                 write_serialized_body(conn, memory_map::store(collection,CBLScopeCollection_EntryDelete));
         });

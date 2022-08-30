@@ -39,10 +39,10 @@ namespace collection_methods {
     void collection_defaultCollection(json& body, mg_connection* conn){
         with<CBLDatabase *>(body, "database", [conn](CBLDatabase* db)
         {
-            CBLError* err = new CBLError();
-            CBLCollection* collection = CBLDatabase_DefaultCollection(db, err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            auto collection = CBLDatabase_DefaultCollection(db, &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else {
                 write_serialized_body(conn, memory_map::store(collection,CBLCollection_EntryDelete));
             }
@@ -55,10 +55,10 @@ namespace collection_methods {
         const auto scopeName = body["scopeName"].get<string>();
         with<CBLDatabase *>(body,"database", [conn, &collectionName, &scopeName](CBLDatabase* db)
         {
-            CBLError* err = new CBLError();
-            CBLCollection* newCollection = CBLDatabase_CreateCollection(db, flstr(collectionName),  flstr(scopeName), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            CBLCollection* newCollection = CBLDatabase_CreateCollection(db, flstr(collectionName),  flstr(scopeName), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
                 write_serialized_body(conn, memory_map::store(newCollection, CBLCollection_EntryDelete));
         });
@@ -83,10 +83,10 @@ namespace collection_methods {
         const auto scopeName = body["scopeName"].get<string>();
         const auto collectionName = body["collectionName"].get<string>();
         with<CBLDatabase *>(body,"database",[conn, &scopeName, &collectionName](CBLDatabase* db) {
-            CBLError* err = new CBLError();
-            auto is_deleted = CBLDatabase_DeleteCollection(db, flstr(collectionName), flstr(scopeName), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            auto is_deleted = CBLDatabase_DeleteCollection(db, flstr(collectionName), flstr(scopeName), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
                 write_serialized_body(conn, is_deleted);
         });
@@ -96,24 +96,15 @@ namespace collection_methods {
     void collection_collectionNames(json& body, mg_connection* conn) {
         const auto scopeName = body["scopeName"].get<string>();
         with<CBLDatabase *>(body,"database",[conn,&scopeName](CBLDatabase* db) {
-            json keys(0, nullptr);
-            CBLError* err = new CBLError();
-            FLMutableArray collectionNames = CBLDatabase_CollectionNames(db, flstr(scopeName), err);
-            if(err->code!=0)
+            CBLError err = {};
+            FLMutableArray collectionNames = CBLDatabase_CollectionNames(db, flstr(scopeName), &err);
+            if(err.code!=0)
             {
-                write_serialized_body(conn, CBLError_Message(err));
+                write_serialized_body(conn, CBLError_Message(&err));
             }
             else
             {
-                FLArrayIterator i;
-                FLArrayIterator_Begin(collectionNames, &i);
-                do {
-                    const auto collectionName = FLArrayIterator_GetValue(&i);
-                    FLStringResult jsonString = FLValue_ToString(collectionName);
-                    keys.push_back(jsonString);
-                } while(FLArrayIterator_Next(&i));
-                write_serialized_body(conn, keys);
-
+                write_serialized_body(conn, reinterpret_cast<const FLValue>(collectionNames));
             }
         });
     }
@@ -123,10 +114,12 @@ namespace collection_methods {
         auto scopeName = body["scopeName"].get<string>();
         auto collectionName = body["collectionName"].get<string>();
         with<CBLDatabase *>(body,"database",[conn,&scopeName,&collectionName](CBLDatabase* db) {
-            CBLError* err = new CBLError();
-            CBLCollection* collection = CBLDatabase_Collection(db, flstr(collectionName), flstr(scopeName), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            auto collection = CBLDatabase_Collection(db, flstr(collectionName), flstr(scopeName), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
+            else if(!collection)
+                write_serialized_body(conn, NULL);
             else
                 write_serialized_body(conn, memory_map::store(collection, CBLCollection_EntryDelete));
         });
@@ -143,10 +136,12 @@ namespace collection_methods {
     void collection_getDocument(json& body, mg_connection* conn) {
         auto docId = body["docId"].get<string>();
         with<CBLCollection *>(body,"collection",[conn, &docId](CBLCollection* collection) {
-            CBLError* err = new CBLError();
-            auto document = CBLCollection_GetDocument(collection, flstr(docId), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            auto document = CBLCollection_GetDocument(collection, flstr(docId), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
+            else if(!document)
+                write_serialized_body(conn, NULL);
             else
                 write_serialized_body(conn, memory_map::store(document, CBLCollectionDocument_EntryDelete));
         });
@@ -157,10 +152,13 @@ namespace collection_methods {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             with<CBLDocument *>(body, "document", [conn, collection](CBLDocument* document) {
                 CBLError err;
-                TRY(CBLCollection_SaveDocument(collection, document, &err), err);
+                CBLCollection_SaveDocument(collection, document, &err);
+                if(err.code!=0)
+                    write_serialized_body(conn,CBLError_Message(&err));
+                else
+                    write_empty_body(conn);
             });
         });
-        write_empty_body(conn);
     }
 
     //save document in collection, params are collection object, document object, concurrency control object and error object
@@ -178,8 +176,7 @@ namespace collection_methods {
                 }
                 CBLError err {};
                 if(!CBLCollection_SaveDocumentWithConcurrencyControl(collection, d, concurrencyType, &err) && err.code != (int)kCBLErrorConflict) {
-                    string errMsg = to_string(CBLError_Message(&err));
-                    throw domain_error(errMsg);
+                    write_serialized_body(conn, CBLError_Message(&err));
                 }
             });
         });
@@ -190,11 +187,12 @@ namespace collection_methods {
     void collection_deleteDocument(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             with<CBLDocument *>(body, "document", [conn, collection] (CBLDocument* d) {
-                CBLError* err = new CBLError();
-                if(err->code!=0)
-                    write_serialized_body(conn, CBLError_Message(err));
+                CBLError err = {};
+                CBLCollection_DeleteDocument(collection, d, &err);
+                if(err.code!=0)
+                    write_serialized_body(conn, CBLError_Message(&err));
                 else
-                    write_serialized_body(conn, CBLCollection_DeleteDocument(collection, d, err));
+                    write_empty_body(conn);
             });
         });
     }
@@ -214,8 +212,7 @@ namespace collection_methods {
                 }
                 CBLError err {};
                 if(!CBLCollection_DeleteDocumentWithConcurrencyControl(collection, d, concurrencyType, &err) && err.code != (int)kCBLErrorConflict) {
-                    string errMsg = to_string(CBLError_Message(&err));
-                    throw domain_error(errMsg);
+                    write_serialized_body(conn, CBLError_Message(&err));
                 }
             });
         });
@@ -226,11 +223,11 @@ namespace collection_methods {
     void collection_purgeDocument(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             with<CBLDocument *>(body, "document", [conn, collection](CBLDocument* d) {
-                CBLError* err = new CBLError();
-                auto purge = CBLCollection_PurgeDocument(collection, d, err);
-                if(err->code!=0)
+                CBLError err = {};
+                auto purge = CBLCollection_PurgeDocument(collection, d, &err);
+                if(err.code!=0)
                 {
-                    write_serialized_body(conn, CBLError_Message(err));
+                    write_serialized_body(conn, CBLError_Message(&err));
                 }
                 else
                     write_serialized_body(conn, purge);
@@ -242,11 +239,11 @@ namespace collection_methods {
     void collection_purgeDocumentID(json& body, mg_connection* conn) {
         const auto docID = body["docId"];
         with<CBLCollection *>(body, "collection", [conn, &docID](CBLCollection* collection) {
-                CBLError* err = new CBLError();
-                auto purge = CBLCollection_PurgeDocumentByID(collection, flstr(docID), err);
-                if(err->code!=0)
+                CBLError err = {};
+                auto purge = CBLCollection_PurgeDocumentByID(collection, flstr(docID), &err);
+                if(err.code!=0)
                 {
-                    write_serialized_body(conn, CBLError_Message(err));
+                    write_serialized_body(conn, CBLError_Message(&err));
                 }
                 else
                     write_serialized_body(conn, purge);
@@ -257,10 +254,10 @@ namespace collection_methods {
     void collection_getDocumentExpiration(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn,&body](CBLCollection* collection) {
             const auto docId = body["docId"];
-            CBLError* err = new CBLError();
-            const auto expirateDate = CBLCollection_GetDocumentExpiration(collection, flstr(docId), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            const auto expirateDate = CBLCollection_GetDocumentExpiration(collection, flstr(docId), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else {
                 write_serialized_body(conn, CBLTimestamp(expirateDate));
             }
@@ -272,12 +269,12 @@ namespace collection_methods {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             const auto docId = body["docId"];
             const auto expiration = body["expiration"];
-            CBLError* err = new CBLError();
-            const auto setExpiration = CBLCollection_SetDocumentExpiration(collection, flstr(docId), CBLTimestamp(expiration), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            CBLCollection_SetDocumentExpiration(collection, flstr(docId), CBLTimestamp(expiration), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
-                write_serialized_body(conn, expiration);
+                write_empty_body(conn);
         });
     }
 
@@ -285,10 +282,10 @@ namespace collection_methods {
     void collection_getMutableDocument(json& body, mg_connection* conn){
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             const auto docId = body["docId"];
-            CBLError* err = new CBLError();
-            const auto document = CBLCollection_GetMutableDocument(collection, flstr(docId), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            const auto document = CBLCollection_GetMutableDocument(collection, flstr(docId), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
                 write_serialized_body(conn, memory_map::store(document, CBLCollectionDocument_EntryDelete));
         });
@@ -297,14 +294,14 @@ namespace collection_methods {
     //create value index
     void collection_createValueIndex(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
-            CBLValueIndexConfiguration *config = new CBLValueIndexConfiguration();
-            config->expressionLanguage = kCBLN1QLLanguage;
-            config->expressions = flstr(body["expression"]);
+            CBLValueIndexConfiguration config = {};
+            config.expressionLanguage = kCBLN1QLLanguage;
+            config.expressions = flstr(body["expression"]);
             const auto name = body["name"];
-            CBLError* err = new CBLError();
-            bool createValueIndex = CBLCollection_CreateValueIndex(collection, flstr(name), *config , err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            bool createValueIndex = CBLCollection_CreateValueIndex(collection, flstr(name), config , &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
                 write_serialized_body(conn, createValueIndex);
         });
@@ -314,16 +311,16 @@ namespace collection_methods {
     void collection_createFullTextIndex(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn,&body](CBLCollection* collection) {
             const auto name = flstr(body["name"]);
-            CBLError *err = new CBLError();
-            CBLFullTextIndexConfiguration *config = new CBLFullTextIndexConfiguration();
-            config->expressionLanguage = kCBLN1QLLanguage;
-            config->expressions = flstr(body["expression"]);
-            config->language = flstr(body["language"]);
+            CBLError err = {};
+            CBLFullTextIndexConfiguration config = {};
+            config.expressionLanguage = kCBLN1QLLanguage;
+            config.expressions = flstr(body["expression"]);
+            config.language = flstr(body["language"]);
             if(body["ignoreAccents"] == true)
-                config->ignoreAccents = true;
-            bool createFullTextIndex = CBLCollection_CreateFullTextIndex(collection, name, *config, err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+                config.ignoreAccents = true;
+            bool createFullTextIndex = CBLCollection_CreateFullTextIndex(collection, name, config, &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
                 write_serialized_body(conn, createFullTextIndex);
         });
@@ -333,10 +330,10 @@ namespace collection_methods {
     void collection_deleteIndex(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             auto name = body["name"];
-            CBLError* err = new CBLError();
-            auto deleteIndex = CBLCollection_DeleteIndex(collection, flstr(name), err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            auto deleteIndex = CBLCollection_DeleteIndex(collection, flstr(name), &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else
                 write_serialized_body(conn, deleteIndex);
         });
@@ -345,20 +342,12 @@ namespace collection_methods {
     //get index names
     void collection_getIndexNames(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
-            json keys(0, nullptr);
-            CBLError* err = new CBLError();
-            FLMutableArray index_names = CBLCollection_GetIndexNames(collection, err);
-            if(err->code!=0)
-                write_serialized_body(conn, CBLError_Message(err));
+            CBLError err = {};
+            FLMutableArray index_names = CBLCollection_GetIndexNames(collection, &err);
+            if(err.code!=0)
+                write_serialized_body(conn, CBLError_Message(&err));
             else {
-                FLArrayIterator i;
-                FLArrayIterator_Begin(index_names, &i);
-                do{
-                    const auto indexName = FLArrayIterator_GetValue(&i);
-                    FLStringResult jsonString = FLValue_ToString(indexName);
-                    keys.push_back(jsonString);
-                } while(FLArrayIterator_Next(&i));
-                write_serialized_body(conn, keys);
+                write_serialized_body(conn, reinterpret_cast<const FLValue>(index_names));
             }
         });
     }

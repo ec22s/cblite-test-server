@@ -454,20 +454,12 @@ namespace database_methods {
 //names of all scopes in the database
 void database_allScope(json& body, mg_connection* conn) {
     with<CBLDatabase *>(body,"database",[conn](CBLDatabase* db){
-        json scopes(0, nullptr);
-        CBLError* err = new CBLError();
-        auto scopeNames = CBLDatabase_ScopeNames(db, err);
-        if(err->code!=0)
-            write_serialized_body(conn, err->code);
+        CBLError err = {};
+        auto scopeNames = CBLDatabase_ScopeNames(db, &err);
+        if(err.code!=0)
+            write_serialized_body(conn, CBLError_Message(&err));
         else {
-            FLArrayIterator i;
-            FLArrayIterator_Begin(scopeNames, &i);
-            do {
-                const auto scopename = FLArrayIterator_GetValue(&i);
-                FLStringResult jsonString = FLValue_ToString(scopename);
-                scopes.push_back(jsonString);
-            } while(FLArrayIterator_Next(&i));
-            write_serialized_body(conn, scopes);
+            write_serialized_body(conn, reinterpret_cast<const FLValue>(scopeNames));
         }
     });
 }
@@ -476,10 +468,12 @@ void database_allScope(json& body, mg_connection* conn) {
 void database_scope(json& body, mg_connection* conn) {
     auto scopeName = body["scopeName"].get<string>();
     with<CBLDatabase *>(body,"database",[conn,&scopeName](CBLDatabase* db){
-        CBLError* err = new CBLError();
-        auto scope = CBLDatabase_Scope(db, flstr(scopeName), err);
-        if(err->code!=0)
-            write_serialized_body(conn, err->code);
+        CBLError err = {};
+        auto scope = CBLDatabase_Scope(db, flstr(scopeName), &err);
+        if(err.code!=0)
+            write_serialized_body(conn, CBLError_Message(&err));
+        else if(!scope)
+            write_serialized_body(conn, NULL);
         else
             write_serialized_body(conn, memory_map::store(scope, CBLDatabaseScope_EntryDelete));
     });
