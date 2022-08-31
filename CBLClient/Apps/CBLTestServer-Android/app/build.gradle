@@ -1,7 +1,9 @@
 apply plugin: 'com.android.application'
 
 ext {
-    DEF_VERSION = "3.0.0-178"
+    DEF_VERSION = System.getenv("MAVEN_UPLOAD_VERSION")
+    // When manually build in Android studio, replace System.getenv("MAVEN_UPLOAD_VERSION") with build version you want to build
+    // ex: DEF_VERSION = "3.1.0-353"
     COUCHBASE_LITE_VERSION = System.getProperty('version', DEF_VERSION)
 
     PROJECT_DIR = "${projectDir}"
