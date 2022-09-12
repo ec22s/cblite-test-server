@@ -16,6 +16,10 @@ using namespace nlohmann;
 static void CBLDatabase_EntryDelete(void* ptr) {
     CBLDatabase_Release(static_cast<CBLDatabase *>(ptr));
 }
+void CBLDatabaseScope_EntryDelete (void* ptr)
+{
+    CBLScope_Release(static_cast<CBLScope*>(ptr));
+}
 
 void CBLDocument_EntryDelete(void* ptr);
 
@@ -446,4 +450,32 @@ namespace database_methods {
         });
 #endif
     }
+
+//names of all scopes in the database
+void database_allScope(json& body, mg_connection* conn) {
+    with<CBLDatabase *>(body,"database",[conn](CBLDatabase* db){
+        CBLError err = {};
+        auto scopeNames = CBLDatabase_ScopeNames(db, &err);
+        if(err.code!=0)
+            write_serialized_body(conn, CBLError_Message(&err));
+        else {
+            write_serialized_body(conn, reinterpret_cast<const FLValue>(scopeNames));
+        }
+    });
+}
+
+//returns existing scope object with the given name
+void database_scope(json& body, mg_connection* conn) {
+    auto scopeName = body["scopeName"].get<string>();
+    with<CBLDatabase *>(body,"database",[conn,&scopeName](CBLDatabase* db){
+        CBLError err = {};
+        auto scope = CBLDatabase_Scope(db, flstr(scopeName), &err);
+        if(err.code!=0)
+            write_serialized_body(conn, CBLError_Message(&err));
+        else if(!scope)
+            write_serialized_body(conn, NULL);
+        else
+            write_serialized_body(conn, memory_map::store(scope, CBLDatabaseScope_EntryDelete));
+    });
+}
 }

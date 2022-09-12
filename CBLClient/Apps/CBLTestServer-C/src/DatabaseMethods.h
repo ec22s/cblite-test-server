@@ -27,4 +27,6 @@ namespace database_methods {
     void database_copy(nlohmann::json& body, mg_connection* conn);
     void database_getPreBuiltDb(nlohmann::json& body, mg_connection* conn);
     void database_changeEncryptionKey(nlohmann::json& body, mg_connection* conn);
+    void database_allScope(nlohmann::json& body, mg_connection* conn);
+    void database_scope(nlohmann::json& body, mg_connection* conn);
 }

@@ -13,6 +13,8 @@
 #include "ReplicatorConfigurationMethods.h"
 #include "ReplicatorMethods.h"
 #include "QueryMethods.h"
+#include "CollectionMethods.hpp"
+#include "ScopeMethods.hpp"
 #include "EncryptableMethods.h"
 #include <functional>
 #include <utility>
@@ -77,6 +79,8 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "database_copy", database_methods::database_copy }, 
     { "database_getPreBuiltDb", database_methods::database_getPreBuiltDb },
     { "database_changeEncryptionKey", database_methods::database_changeEncryptionKey },
+    { "database_allScope", database_methods::database_allScope},
+    { "database_scope", database_methods::database_scope},
     { "dictionary_contains", dictionary_methods::dictionary_contains },
     { "dictionary_count", dictionary_methods::dictionary_count },
     { "dictionary_create", dictionary_methods::dictionary_create },
@@ -190,6 +194,29 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "encryptable_createValue", encryptable_methods::encryptable_createValue },
     { "encryptable_createEncryptor", encryptable_methods::encryptable_createEncryptor },
     { "encryptable_isEncryptableValue", encryptable_methods::encryptable_isEncryptableValue },
+    { "collection_defaultCollection", collection_methods::collection_defaultCollection},
+    { "collection_documentCount", collection_methods::collection_documentCount},
+    { "collection_saveDocument", collection_methods::collection_saveDocument},
+    { "collection_createCollection", collection_methods::collection_createCollection},
+    { "collection_deleteCollection", collection_methods::collection_deleteCollection},
+    { "collection_collectionNames", collection_methods::collection_collectionNames},
+    { "collection_collection", collection_methods::collection_collection},
+    { "collection_collectionScope", collection_methods::collection_collectionScope},
+    { "collection_getDocument", collection_methods::collection_getDocument},
+    { "collection_deleteDocument", collection_methods::collection_deleteDocument},
+    { "collection_purgeDocument", collection_methods::collection_purgeDocument},
+    { "collection_purgeDocumentID", collection_methods::collection_purgeDocumentID},
+    { "collection_getDocumentExpiration", collection_methods::collection_getDocumentExpiration},
+    { "collection_setDocumentExpiration", collection_methods::collection_setDocumentExpiration},
+    { "collection_getMutableDocument", collection_methods::collection_getMutableDocument},
+    { "collection_createValueIndex", collection_methods::collection_createValueIndex},
+    { "collection_deleteIndex", collection_methods::collection_deleteIndex},
+    { "collection_getIndexNames", collection_methods::collection_getIndexNames},
+    { "collection_getCollectionName", collection_methods::collection_getCollectionName},
+    { "scope_scopeName", scope_methods::scope_scopeName},
+    { "scope_collection", scope_methods::scope_collection},
+    { "scope_collectionNames", scope_methods::scope_collectionNames},
+    { "scope_defaultScope", scope_methods::scope_defaultScope},
     { "release", releaseObject },
     { "flushMemory", flushMemory },
 };
