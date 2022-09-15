@@ -309,7 +309,7 @@ namespace collection_methods {
     //create full text index
     void collection_createFullTextIndex(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn,&body](CBLCollection* collection) {
-            const auto name = flstr(body["name"]);
+            const auto name = flstr(body["name"].get<string>());
             CBLError err = {};
             CBLFullTextIndexConfiguration config = {};
             config.expressionLanguage = kCBLN1QLLanguage;
