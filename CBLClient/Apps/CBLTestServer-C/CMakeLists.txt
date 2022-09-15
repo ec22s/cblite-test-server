@@ -81,6 +81,8 @@ set(
     src/ArrayMethods.cpp
     src/BasicAuthenticationMethods.cpp
     src/BlobMethods.cpp
+    src/CollectionMethods.cpp
+    src/ScopeMethods.cpp
     src/DatabaseMethods.cpp
     src/DatabaseConfigurationMethods.cpp
     src/DataTypeMethods.cpp
