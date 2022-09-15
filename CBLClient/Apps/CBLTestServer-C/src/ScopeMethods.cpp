@@ -55,7 +55,7 @@ namespace scope_methods {
     //return exisitng collection in the scope with the given name
     void scope_collection (json& body, mg_connection* conn) {
         with<CBLScope *>(body, "scope", [conn,&body](CBLScope* scope) {
-            string collectionName = body["collectionName"];
+            const auto collectionName = body["collectionName"];
             CBLError err = {};
             CBLCollection *collection = CBLScope_Collection(scope, flstr(collectionName), &err);
             if(err.code!=0)
