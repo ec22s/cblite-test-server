@@ -252,7 +252,7 @@ namespace document_methods {
         with<const CBLDocument*>(body, "document", [&key, conn](const CBLDocument* doc)
         {
             const auto* flVal = FLDict_FindValue(CBLDocument_Properties(doc), key, kFLArray);
-            write_serialized_body(conn, flVal);
+            write_serialized_body(conn, memory_map::store(flVal, nullptr));
         });
     }
 
