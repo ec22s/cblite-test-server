@@ -236,7 +236,7 @@ namespace collection_methods {
 
     //purge document by Id
     void collection_purgeDocumentID(json& body, mg_connection* conn) {
-        const auto docID = body["docId"];
+        string docID = body["docId"];
         with<CBLCollection *>(body, "collection", [conn, &docID](CBLCollection* collection) {
                 CBLError err = {};
                 auto purge = CBLCollection_PurgeDocumentByID(collection, flstr(docID), &err);
