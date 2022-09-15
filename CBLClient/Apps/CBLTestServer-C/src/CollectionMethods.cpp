@@ -1,10 +1,9 @@
 #include "CollectionMethods.hpp"
-#include "Defines.h"
 #include "MemoryMap.h"
 #include "Router.h"
 #include "FleeceHelpers.h"
 #include "DocumentMethods.h"
-#include <iostream>
+#include "Defines.h"
 
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
