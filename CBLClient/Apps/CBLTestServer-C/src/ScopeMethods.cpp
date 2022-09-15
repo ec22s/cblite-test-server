@@ -1,8 +1,9 @@
 #include "ScopeMethods.hpp"
-#include "Defines.h"
 #include "MemoryMap.h"
 #include "Router.h"
 #include "FleeceHelpers.h"
+#include "Defines.h"
+
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
 using namespace nlohmann;
