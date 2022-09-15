@@ -1,10 +1,9 @@
 #include "CollectionMethods.hpp"
-#include "Defines.h"
 #include "MemoryMap.h"
 #include "Router.h"
 #include "FleeceHelpers.h"
 #include "DocumentMethods.h"
-#include <iostream>
+#include "Defines.h"
 
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
@@ -237,7 +236,7 @@ namespace collection_methods {
 
     //purge document by Id
     void collection_purgeDocumentID(json& body, mg_connection* conn) {
-        const auto docID = body["docId"];
+        const auto docID = body["docId"].get<string>();
         with<CBLCollection *>(body, "collection", [conn, &docID](CBLCollection* collection) {
                 CBLError err = {};
                 auto purge = CBLCollection_PurgeDocumentByID(collection, flstr(docID), &err);
@@ -253,7 +252,7 @@ namespace collection_methods {
     //Document expiration time and date
     void collection_getDocumentExpiration(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn,&body](CBLCollection* collection) {
-            const auto docId = body["docId"];
+            const auto docId = body["docId"].get<string>();
             CBLError err = {};
             const auto expirateDate = CBLCollection_GetDocumentExpiration(collection, flstr(docId), &err);
             if(err.code!=0)
@@ -267,7 +266,7 @@ namespace collection_methods {
     //set document expiration
     void collection_setDocumentExpiration(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
-            const auto docId = body["docId"];
+            const auto docId = body["docId"].get<string>();
             const auto expiration = body["expiration"];
             CBLError err = {};
             CBLCollection_SetDocumentExpiration(collection, flstr(docId), CBLTimestamp(expiration), &err);
@@ -281,7 +280,7 @@ namespace collection_methods {
     //get mutuable document from the collection
     void collection_getMutableDocument(json& body, mg_connection* conn){
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
-            const auto docId = body["docId"];
+            const auto docId = body["docId"].get<string>();
             CBLError err = {};
             const auto document = CBLCollection_GetMutableDocument(collection, flstr(docId), &err);
             if(err.code!=0)
@@ -296,8 +295,8 @@ namespace collection_methods {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
             CBLValueIndexConfiguration config = {};
             config.expressionLanguage = kCBLN1QLLanguage;
-            config.expressions = flstr(body["expression"]);
-            const auto name = body["name"];
+            config.expressions = flstr(body["expression"].get<string>());
+            const auto name = body["name"].get<string>();
             CBLError err = {};
             bool createValueIndex = CBLCollection_CreateValueIndex(collection, flstr(name), config , &err);
             if(err.code!=0)
@@ -310,12 +309,12 @@ namespace collection_methods {
     //create full text index
     void collection_createFullTextIndex(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn,&body](CBLCollection* collection) {
-            const auto name = flstr(body["name"]);
+            const auto name = flstr(body["name"].get<string>());
             CBLError err = {};
             CBLFullTextIndexConfiguration config = {};
             config.expressionLanguage = kCBLN1QLLanguage;
-            config.expressions = flstr(body["expression"]);
-            config.language = flstr(body["language"]);
+            config.expressions = flstr(body["expression"].get<string>());
+            config.language = flstr(body["language"].get<string>());
             if(body["ignoreAccents"] == true)
                 config.ignoreAccents = true;
             bool createFullTextIndex = CBLCollection_CreateFullTextIndex(collection, name, config, &err);
@@ -329,7 +328,7 @@ namespace collection_methods {
     //delete index
     void collection_deleteIndex(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
-            auto name = body["name"];
+            auto name = body["name"].get<string>();
             CBLError err = {};
             auto deleteIndex = CBLCollection_DeleteIndex(collection, flstr(name), &err);
             if(err.code!=0)
@@ -363,7 +362,7 @@ namespace collection_methods {
     //add document change listener
     void collection_addDocumentChangeListener(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn,&body](CBLCollection* collection) {
-            const auto docId = body["docId"];
+            const auto docId = body["docId"].get<string>();
             CBLListenerToken* token = CBLCollection_AddDocumentChangeListener(collection, flstr(docId), CBLCollection_DummyDocumentListener, nullptr);
             write_serialized_body(conn, memory_map::store(token, nullptr));
         });

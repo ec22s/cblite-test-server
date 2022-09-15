@@ -1,8 +1,9 @@
 #include "ScopeMethods.hpp"
-#include "Defines.h"
 #include "MemoryMap.h"
 #include "Router.h"
 #include "FleeceHelpers.h"
+#include "Defines.h"
+
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
 using namespace nlohmann;
@@ -54,9 +55,9 @@ namespace scope_methods {
     //return exisitng collection in the scope with the given name
     void scope_collection (json& body, mg_connection* conn) {
         with<CBLScope *>(body, "scope", [conn,&body](CBLScope* scope) {
-            const auto collectionName = flstr(body["collectionName"]);
+            const auto collectionName = body["collectionName"].get<string>();
             CBLError err = {};
-            CBLCollection *collection = CBLScope_Collection(scope, collectionName, &err);
+            CBLCollection *collection = CBLScope_Collection(scope, flstr(collectionName), &err);
             if(err.code!=0)
                 write_serialized_body(conn, CBLError_Message(&err));
             else
