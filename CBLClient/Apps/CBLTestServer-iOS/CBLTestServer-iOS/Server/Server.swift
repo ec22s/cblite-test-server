@@ -140,7 +140,7 @@ public class Server {
                     } else if method.hasPrefix("collection") {
                         result = try self.collectionRequestHandler.handleRequest(method: method, args: args) 
                     } else if method.hasPrefix("scope") {
-                        result = try self.scopenRequestHandler.handleRequest(method: method, args: args) 
+                        result = try self.scopeRequestHandler.handleRequest(method: method, args: args) 
                     } else if method.hasPrefix("document") {
                         result = try self.documentRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("dictionary") {
