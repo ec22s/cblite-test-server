@@ -32,6 +32,8 @@ public class Server {
     let databaseRequestHandler: DatabaseRequestHandler!
     let documentRequestHandler: DocumentRequestHandler!
     let replicatorRequestHandler: ReplicatorRequestHandler!
+    let collectionRequestHandler: CollectionRequestHandler!
+    let scopeRequestHandler: ScopeRequestHandler!
     let arrayRequestHandler: ArrayRequestHandler!
     let sessionauthenticatorRequestHandler: SessionAuthenticatorRequestHandler!
     let encryptionkeyRequestHandler: EncryptionKeyRequestHandler!
@@ -68,6 +70,8 @@ public class Server {
         expressionRequestHandler = ExpressionRequestHandler()
         collationRequestHandler = CollationRequestHandler()
         dataSourceRequestHandler = DataSourceRequestHandler()
+        collectionRequestHandler = CollectionRequestHandler()
+        scopeRequestHandler = ScopeRequestHandler()
         functionRequestHandler = FunctionRequestHandler()
         selectResultRequestHandler = SelectResultRequestHandler()
         resultRequestHandler = ResultRequestHandler()
@@ -133,6 +137,10 @@ public class Server {
                         result = try self.databaseConfigurationRequestHandler.handleRequest(method: method, args: args)
                     }else if method.hasPrefix("database") {
                         result = try self.databaseRequestHandler.handleRequest(method: method, args: args)
+                    } else if method.hasPrefix("collection") {
+                        result = try self.collectionRequestHandler.handleRequest(method: method, args: args) 
+                    } else if method.hasPrefix("scope") {
+                        result = try self.scopenRequestHandler.handleRequest(method: method, args: args) 
                     } else if method.hasPrefix("document") {
                         result = try self.documentRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("dictionary") {
