@@ -17,62 +17,36 @@ public class CollectionRequestHandler {
             return collection.name
             
         case "collection_createCollection":
-            var scopeName: String = (args.get(name: "scopeName"))!
+            var scopeName: String = (args.get(name: "scopeName")) ?? "_default"
             let collectionName: String = (args.get(name: "collectionName"))!
             let database: Database = args.get(name: "database")!
-            if(scopeName.isEmpty){
-                return try database.createCollection(name: collectionName, scope: "_default")
-            }
-            else {
-                return try database.createCollection(name: collectionName, scope: scopeName)
-            }
+            return try database.createCollection(name: collectionName, scope: scopeName)
+
             
         case "collection_collectionNames":
-            var scope: String = (args.get(name:"scopeName"))!
+            var scope: String = (args.get(name:"scopeName")) ?? "_default"
             let database: Database = (args.get(name:"database"))!
             var names = [String]()
-            if(scope.isEmpty) {
-                let collectionNames = try database.collections(scope: "default")
-                for collection in collectionNames{
-                    let collectionObject: Collection = collection
-                    names.append(collectionObject.name)
-                }
-            }
-            else {
-                    let collectionNames = try database.collections(scope: scope)
-                    for collection in collectionNames{
-                        let collectionObject: Collection = collection
-                        names.append(collectionObject.name)
-                }
+            let collectionNames = try database.collections(scope: scope)
+            for collection in collectionNames{
+                let collectionObject: Collection = collection
+                names.append(collectionObject.name)
             }
             return names
             
         case "collection_collectionInstances":
-            var scope: String = (args.get(name:"scopeName"))!
+            var scope: String = (args.get(name:"scopeName")) ?? "_default"
             let database: Database = (args.get(name:"database"))!
-            if(scope.isEmpty){
-                return try database.collections(scope: "_default")
-            }
             return try database.collections(scope: scope)
         
         case "collection_deleteCollection":
-            let scopeName: String = (args.get(name:"scopeName"))!
+            let scopeName: String = (args.get(name:"scopeName")) ?? "_default"
             let database: Database = (args.get(name:"database"))!
             let collectionName: String = (args.get(name:"collectionName"))!
-            if(scopeName.isEmpty)
-            {
-                do{
-                    try database.deleteCollection(name: collectionName, scope: "_default")
-                } catch{
-                    return error
-                }
-            }
-            else {
-                do{
-                    try database.deleteCollection(name: collectionName, scope: scopeName)
-                } catch{
-                    return error
-                }
+            do{
+                try database.deleteCollection(name: collectionName, scope: scopeName)
+            } catch{
+                return error
             }
             
         
