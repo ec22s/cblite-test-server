@@ -17,14 +17,14 @@ public class CollectionRequestHandler {
             return collection.name
             
         case "collection_createCollection":
-            var scopeName: String = (args.get(name: "scopeName")) ?? "_default"
+            let scopeName: String = (args.get(name: "scopeName")) ?? "_default"
             let collectionName: String = (args.get(name: "collectionName"))!
             let database: Database = args.get(name: "database")!
             return try database.createCollection(name: collectionName, scope: scopeName)
 
             
         case "collection_collectionNames":
-            var scope: String = (args.get(name:"scopeName")) ?? "_default"
+            let scope: String = (args.get(name:"scopeName")) ?? "_default"
             let database: Database = (args.get(name:"database"))!
             var names = [String]()
             let collectionNames = try database.collections(scope: scope)
@@ -35,7 +35,7 @@ public class CollectionRequestHandler {
             return names
             
         case "collection_collectionInstances":
-            var scope: String = (args.get(name:"scopeName")) ?? "_default"
+            let scope: String = (args.get(name:"scopeName")) ?? "_default"
             let database: Database = (args.get(name:"database"))!
             return try database.collections(scope: scope)
         

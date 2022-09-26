@@ -10,9 +10,6 @@ import Foundation
 import CouchbaseLiteSwift
 
 public class ScopeRequestHandler {
-    public static let VOID: String? = nil
-    fileprivate var _pushPullReplListener:NSObjectProtocol?
-    
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
         case "scope_collectionObject":
