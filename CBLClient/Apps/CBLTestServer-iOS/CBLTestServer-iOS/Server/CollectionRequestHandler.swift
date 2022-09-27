@@ -43,22 +43,13 @@ public class CollectionRequestHandler {
             let scopeName: String = (args.get(name:"scopeName")) ?? "_default"
             let database: Database = (args.get(name:"database"))!
             let collectionName: String = (args.get(name:"collectionName"))!
-            do{
-                try database.deleteCollection(name: collectionName, scope: scopeName)
-            } catch{
-                return error
-            }
+            try database.deleteCollection(name: collectionName, scope: scopeName)
             
-        
         case "collection_saveDocument":
             let document: MutableDocument = (args.get(name:"document"))!
             let collection: Collection = (args.get(name:"collection"))!
-            do {
-                try collection.save(document: document)
-            } catch {
-                return error
-            }
-        
+            try collection.save(document: document)
+
         case "collection_getDocument":
             let docId: String = (args.get(name: "docId"))!
             let collection : Collection = (args.get(name: "collection"))!
@@ -67,30 +58,18 @@ public class CollectionRequestHandler {
         case "collection_deleteDocument":
             let document: Document = (args.get(name: "document"))!
             let collection: Collection = (args.get(name: "collection"))!
-            do {
-                try collection.delete(document: document)
-            } catch {
-                return error
-            }
-        
+            try collection.delete(document: document)
+
         case "collection_purgeDocument":
             let document: Document = (args.get(name: "document"))!
             let collection: Collection = (args.get(name: "collection"))!
-            do {
-                try collection.purge(document: document)
-            } catch {
-                return error
-            }
-        
+            try collection.purge(document: document)
+      
         case "collection_purgeDocumentID":
             let docID: String = (args.get(name: "docId"))!
             let collection: Collection = (args.get(name: "collection"))!
-            do {
-                try collection.purge(id: docID)
-            } catch {
-                return error
-            }
-        
+            try collection.purge(id: docID)
+
         case "collection_getDocumentExpiration":
             let docId: String = (args.get(name: "docId"))!
             let collection: Collection = (args.get(name: "collection"))!
@@ -100,12 +79,8 @@ public class CollectionRequestHandler {
             let docId: String = (args.get(name: "docId"))!
             let expirationTime: Date = (args.get(name: "expirationTime"))!
             let collection: Collection = (args.get(name: "collection"))!
-            do {
-                try collection.setDocumentExpiration(id: docId, expiration: expirationTime)
-            } catch {
-                return error
-            }
-            
+            try collection.setDocumentExpiration(id: docId, expiration: expirationTime)
+
         case "collection_getIndexNames":
             let collection: Collection = (args.get(name: "collection"))!
             return try collection.indexes()
@@ -113,23 +88,14 @@ public class CollectionRequestHandler {
         case "collection_deleteIndex":
             let collection: Collection = (args.get(name: "collection"))!
             let indexName: String = (args.get(name: "name"))!
-            do {
-                try collection.deleteIndex(forName: indexName)
-            } catch {
-                return error
-            }
+            try collection.deleteIndex(forName: indexName)
             
         case "collection_createValueIndex":
             let collection: Collection = (args.get(name: "collection"))!
             let name: String = (args.get(name: "name"))!
             let expression: [String] = (args.get(name: "expression"))!
             let config = ValueIndexConfiguration(expression)
-            do {
-                try collection.createIndex(withName: name, config: config)
-            } catch {
-                return error
-            }
-            
+            try collection.createIndex(withName: name, config: config)          
             
         default:
             throw RequestHandlerError.MethodNotFound(method)
