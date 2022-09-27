@@ -9,8 +9,7 @@ public class CollectionRequestHandler {
         switch method {
         case "collection_defaultCollection":
             let database: Database = (args.get(name:"database"))!
-            let collection: Collection = try (database.defaultCollection())!
-            return collection
+            return try database.defaultCollection()
             
         case "collection_getCollectionName":
             let collection: Collection = (args.get(name:"collection"))!
@@ -21,7 +20,6 @@ public class CollectionRequestHandler {
             let collectionName: String = (args.get(name: "collectionName"))!
             let database: Database = args.get(name: "database")!
             return try database.createCollection(name: collectionName, scope: scopeName)
-
             
         case "collection_collectionNames":
             let scope: String = (args.get(name:"scopeName")) ?? "_default"
