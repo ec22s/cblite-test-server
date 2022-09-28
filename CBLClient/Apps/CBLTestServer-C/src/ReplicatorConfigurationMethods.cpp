@@ -201,7 +201,82 @@ static void CBLReplicatorConfig_EntryDelete(void* ptr) {
     free(config);
 }
 
+static void CBLCollectionConfig_EntryDelete(void* ptr) {
+    auto* config = (CBLReplicationCollection *)ptr;
+    FLArray_Release(config->documentIDs);
+    FLArray_Release(config->channels);
+    free(config);
+}
+
+
 namespace replicator_configuration_methods {
+void replicatorCollectionConfiguration(json& body, mg_connection* conn) {
+    CBLReplicationCollection config = {};
+    auto collection = static_cast<CBLCollection *>(memory_map::get(body["collection"].get<string>()));
+    config.collection = collection;
+    if(body.contains("conflict_resolver")) {
+        const auto conflictResolver = body["conflict_resolver"].get<string>();
+        if(conflictResolver == "local_wins") {
+            config.conflictResolver = local_wins_conflict_resolution;
+        } else if(conflictResolver == "remote_wins") {
+            config.conflictResolver = remote_wins_conflict_resolution;
+        } else if(conflictResolver == "null") {
+            config.conflictResolver = null_conflict_resolution;
+        } else if(conflictResolver == "merge") {
+            config.conflictResolver = merge_conflict_resolution;
+        } else if(conflictResolver == "incorrect_doc_id") {
+            config.conflictResolver = incorrect_docid_conflict_resolution;
+        } else if(conflictResolver == "delayed_local_win") {
+            config.conflictResolver = delayed_local_win_conflict_resolution;
+        } else if(conflictResolver == "delete_not_win") {
+            config.conflictResolver = delete_doc_conflict_resolution;
+        } else if(conflictResolver == "exception_thrown") {
+            config.conflictResolver = exception_conflict_resolution;
+        } else {
+            config.conflictResolver = CBLDefaultConflictResolver;
+        }
+    }
+    if(body.contains("push_filter") && body["push_filter"].get<bool>()) {
+        const auto filterCallbackFunction = body["filter_callback_func"].get<string>();
+        if(filterCallbackFunction == "boolean") {
+            config.pushFilter = replicator_boolean_filter_callback;
+        } else if(filterCallbackFunction == "deleted") {
+            config.pushFilter = replicator_deleted_filter_callback;
+        } else if(filterCallbackFunction == "access_revoked") {
+            config.pushFilter = replicator_access_revoked_filter_callback;
+        }
+    }
+    
+    if(body.contains("pull_filter") && body["pull_filter"].get<bool>()) {
+        const auto filterCallbackFunction = body["filter_callback_func"].get<string>();
+        if(filterCallbackFunction == "boolean") {
+            config.pullFilter = replicator_boolean_filter_callback;
+        } else if(filterCallbackFunction == "deleted") {
+            config.pullFilter = replicator_deleted_filter_callback;
+        } else if(filterCallbackFunction == "access_revoked") {
+            config.pullFilter = replicator_access_revoked_filter_callback;
+        }
+    }
+    if(body.contains("channels")) {
+        FLMutableArray channels = FLMutableArray_New();
+        for(const auto& c : body["channels"]) {
+            writeFleece(channels, c);
+        }
+        
+        config.channels = channels;
+    }
+    
+    if(body.contains("documentIDs")) {
+        FLMutableArray docIDs = FLMutableArray_New();
+        for(const auto& c : body["documentIDs"]) {
+            writeFleece(docIDs, c);
+        }
+        
+        config.documentIDs = docIDs;
+    }
+    write_serialized_body(conn, memory_map::store(&config, CBLReplicatorConfig_EntryDelete));
+}
+
     void replicatorConfiguration_create(json& body, mg_connection* conn) {
         with<CBLDatabase *>(body, "source_db", [conn, &body](CBLDatabase* db)
         {
@@ -239,6 +314,15 @@ namespace replicator_configuration_methods {
                 }
 
                 config->channels = channels;
+            }
+            
+            if(body.contains("collections")) {
+                vector<CBLReplicationCollection> vec;
+                for(const auto& c: body["collections"]) {
+                    CBLReplicationCollection *rep_object = static_cast<CBLReplicationCollection*>(memory_map::get(c.get<string>()));
+                    vec.push_back(*rep_object);
+                }
+                config->collections = vec.data();
             }
 
             if(body.contains("documentIDs")) {
