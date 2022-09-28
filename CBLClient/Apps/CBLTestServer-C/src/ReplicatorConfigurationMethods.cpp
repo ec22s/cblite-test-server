@@ -208,7 +208,6 @@ static void CBLCollectionConfig_EntryDelete(void* ptr) {
     free(config);
 }
 
-
 namespace replicator_configuration_methods {
 void replicatorCollectionConfiguration(json& body, mg_connection* conn) {
     CBLReplicationCollection config = {};
@@ -257,12 +256,12 @@ void replicatorCollectionConfiguration(json& body, mg_connection* conn) {
             config.pullFilter = replicator_access_revoked_filter_callback;
         }
     }
+    
     if(body.contains("channels")) {
         FLMutableArray channels = FLMutableArray_New();
         for(const auto& c : body["channels"]) {
             writeFleece(channels, c);
         }
-        
         config.channels = channels;
     }
     
@@ -312,7 +311,6 @@ void replicatorCollectionConfiguration(json& body, mg_connection* conn) {
                 for(const auto& c : body["channels"]) {
                     writeFleece(channels, c);
                 }
-
                 config->channels = channels;
             }
             
