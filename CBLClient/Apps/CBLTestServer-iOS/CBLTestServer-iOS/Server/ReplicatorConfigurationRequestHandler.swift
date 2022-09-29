@@ -67,6 +67,16 @@ public class ReplicatorConfigurationRequestHandler {
             else {
                 replicatorConfiguration.addCollections((collection))
             }
+        
+        case "replicatorCollection_removeCollection":
+            let collection: Collection = args.get(name: "collection")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            replicatorConfiguration.removeCollection(collection)
+            
+        case "replicatorCollection_collectionConfig":
+            let collection: Collection = args.get(name: "collection")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            return replicatorConfiguration.collectionConfig(collection)
             
         case "replicatorConfiguration_create":
             let sourceDb: Database = args.get(name: "sourceDb")!
@@ -108,6 +118,8 @@ public class ReplicatorConfigurationRequestHandler {
             let heartbeat: String? = args.get(name: "heartbeat")
             let maxRetries: String? = args.get(name: "max_retries")
             let maxRetryWaitTime: String? = args.get(name: "max_timeout")
+            let collections: [Collection]? = args.get(name: "collections")
+            let collection_configuration: [CollectionConfiguration]? = args.get(name: "configuration")
             
             var replicatorType = ReplicatorType.pushAndPull
             
@@ -239,6 +251,21 @@ public class ReplicatorConfigurationRequestHandler {
             }
             if let auto_purge: String = args.get(name: "auto_purge") {
                 config.enableAutoPurge = auto_purge.lowercased() == "enabled"
+            }
+            if (collections != nil){
+                if(collection_configuration != nil){
+                    if(collection_configuration!.count == 1){
+                        config.addCollections(collections!, config: collection_configuration?[0])
+                    }
+                    else if(collection_configuration!.count > 1 && collection_configuration?.count == collections?.count ) {
+                        for (collection, configuration) in zip(collections!,collection_configuration!) {
+                            config.addCollection(collection, config: configuration)
+                        }
+                    }
+                }
+                else {
+                    config.addCollections(collections!)
+                }
             }
             return config
 
