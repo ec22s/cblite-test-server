@@ -24,19 +24,36 @@ public class ReplicatorConfigurationRequestHandler {
         // TODO: Change client to expect replicator config, not the builder.
         case "replicatorCollection_configure":
             let conflictResolver: ConflictResolverProtocol? = args.get(name: "conflictResolver")
-            let pushFilter: ReplicationFilter? = args.get(name: "pushFilter")
-            let pullFilter: ReplicationFilter? = args.get(name: "pullFilter")
+            let pull_filter: Bool? = args.get(name: "pull_filter")!
+            let push_filter: Bool? = args.get(name: "push_filter")!
+            let filter_callback_func: String? = args.get(name: "filter_callback_func")
             let channels: [String]? = args.get(name: "channels")
             let documentIDs: [String]? = args.get(name: "documentIDs")
             var config = CollectionConfiguration()
             if(conflictResolver != nil) {
                 config.conflictResolver = conflictResolver
             }
-            if(pushFilter != nil) {
-                config.pushFilter = pushFilter
+            if pull_filter != false {
+                if filter_callback_func == "boolean" {
+                    config.pullFilter = _replicatorBooleanFilterCallback;
+                } else if filter_callback_func == "deleted" {
+                    config.pullFilter = _replicatorDeletedFilterCallback;
+                } else if filter_callback_func == "access_revoked" {
+                    config.pullFilter = _replicatorAccessRevokedCallback;
+                } else {
+                    config.pullFilter = _defaultReplicatorFilterCallback;
+                }
             }
-            if(pullFilter != nil) {
-                config.pullFilter = pullFilter
+            if push_filter != false {
+                if filter_callback_func == "boolean" {
+                    config.pushFilter = _replicatorBooleanFilterCallback;
+                } else if filter_callback_func == "deleted" {
+                    config.pushFilter = _replicatorDeletedFilterCallback;
+                } else if filter_callback_func == "access_revoked" {
+                    config.pushFilter = _replicatorAccessRevokedCallback;
+                } else {
+                    config.pushFilter = _defaultReplicatorFilterCallback;
+                }
             }
             if(channels != nil) {
                 config.channels = channels
