@@ -30,7 +30,6 @@
 		29D15BA11FA7DCFA005DAAA3 /* ValueSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D15BA01FA7DCFA005DAAA3 /* ValueSerializer.swift */; };
 		29D15BA31FA7DE39005DAAA3 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D15BA21FA7DE39005DAAA3 /* Memory.swift */; };
 		29F77F271F9FC18D0035178F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F261F9FC18D0035178F /* AppDelegate.swift */; };
-		29F77F291F9FC18D0035178F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F281F9FC18D0035178F /* ViewController.swift */; };
 		29F77F2C1F9FC18D0035178F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29F77F2A1F9FC18D0035178F /* Main.storyboard */; };
 		29F77F2E1F9FC18D0035178F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29F77F2D1F9FC18D0035178F /* Assets.xcassets */; };
 		29F77F311F9FC18D0035178F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29F77F2F1F9FC18D0035178F /* LaunchScreen.storyboard */; };
@@ -59,6 +58,7 @@
 		7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A38237BB28E19AF3007F14ED /* CollectionRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */; };
 		A38237BD28E19B22007F14ED /* ScopeRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */; };
+		A39BFC2728E452C80090F632 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F281F9FC18D0035178F /* ViewController.swift */; };
 		FB0C46F1221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */; };
 		FB5934E0219CB6220000C958 /* Databases in Resources */ = {isa = PBXBuildFile; fileRef = FB5934DF219CB6220000C958 /* Databases */; };
 		FB5A6A5521123A9A00937927 /* ReplicatorTcpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5A6A5421123A9A00937927 /* ReplicatorTcpConnection.swift */; };
@@ -562,7 +562,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D7993E5250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift in Sources */,
-				29F77F291F9FC18D0035178F /* ViewController.swift in Sources */,
 				29F786931F9FC4180035178F /* GCDWebServerFunctions.m in Sources */,
 				299692A71FF31A590040CC32 /* SessionAuthenticatorRequestHandler.swift in Sources */,
 				29F786961F9FC4180035178F /* GCDWebServerDataRequest.m in Sources */,
@@ -596,6 +595,7 @@
 				293F38381FFD792E00497870 /* DataTypesInitiatorHandler.swift in Sources */,
 				29F786971F9FC4180035178F /* GCDWebServerFileRequest.m in Sources */,
 				A38237BB28E19AF3007F14ED /* CollectionRequestHandler.swift in Sources */,
+				A39BFC2728E452C80090F632 /* ViewController.swift in Sources */,
 				294FB20C1FEAFD9000DD0C23 /* DatabaseRequestHandler.swift in Sources */,
 				2907D16E200E7C7F00CE56EB /* DataSourceRequestHandler.swift in Sources */,
 				FB60EBDA21093383005052B6 /* ReplicatorTcpClientConnection.swift in Sources */,

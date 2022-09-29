@@ -22,6 +22,52 @@ public class ReplicatorConfigurationRequestHandler {
         /////////////////////////////
             
         // TODO: Change client to expect replicator config, not the builder.
+        case "replicatorCollection_configure":
+            let conflictResolver: ConflictResolverProtocol? = args.get(name: "conflictResolver")
+            let pushFilter: ReplicationFilter? = args.get(name: "pushFilter")
+            let pullFilter: ReplicationFilter? = args.get(name: "pullFilter")
+            let channels: [String]? = args.get(name: "channels")
+            let documentIDs: [String]? = args.get(name: "documentIDs")
+            var config = CollectionConfiguration()
+            if(conflictResolver != nil) {
+                config.conflictResolver = conflictResolver
+            }
+            if(pushFilter != nil) {
+                config.pushFilter = pushFilter
+            }
+            if(pullFilter != nil) {
+                config.pullFilter = pullFilter
+            }
+            if(channels != nil) {
+                config.channels = channels
+            }
+            if(documentIDs != nil){
+                config.documentIDs = documentIDs
+            }
+            return config
+        
+        case "replicatorCollection_addCollection":
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            let collection: Collection = args.get(name: "collections")!
+            let collectionConfiguration: CollectionConfiguration? = args.get(name: "configuration")
+            if(collectionConfiguration != nil) {
+                replicatorConfiguration.addCollection((collection), config: collectionConfiguration)
+            }
+            else {
+                replicatorConfiguration.addCollection((collection))
+            }
+        
+        case "replicatorCollection_addCollections":
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            let collection: [Collection] = args.get(name: "collections")!
+            let collectionConfiguration: CollectionConfiguration? = args.get(name: "configuration")
+            if(collectionConfiguration != nil) {
+                replicatorConfiguration.addCollections((collection), config: collectionConfiguration)
+            }
+            else {
+                replicatorConfiguration.addCollections((collection))
+            }
+            
         case "replicatorConfiguration_create":
             let sourceDb: Database = args.get(name: "sourceDb")!
             let targetURI: String? = args.get(name: "targetURI")!
