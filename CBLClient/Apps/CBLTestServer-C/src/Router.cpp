@@ -213,6 +213,7 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     { "collection_deleteIndex", collection_methods::collection_deleteIndex},
     { "collection_getIndexNames", collection_methods::collection_getIndexNames},
     { "collection_getCollectionName", collection_methods::collection_getCollectionName},
+    { "collection_saveDocuments", collection_methods:: collection_saveDocuments},
     { "scope_scopeName", scope_methods::scope_scopeName},
     { "scope_collection", scope_methods::scope_collection},
     { "scope_collectionNames", scope_methods::scope_collectionNames},
