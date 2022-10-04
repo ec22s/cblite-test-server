@@ -78,12 +78,7 @@ public class ReplicatorConfigurationRequestHandler {
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
             let collection: [Collection] = args.get(name: "collections")!
             let collectionConfiguration: CollectionConfiguration? = args.get(name: "configuration")
-            if(collectionConfiguration != nil) {
-                replicatorConfiguration.addCollections((collection), config: collectionConfiguration)
-            }
-            else {
-                replicatorConfiguration.addCollections((collection))
-            }
+            replicatorConfiguration.addCollections((collection), config: collectionConfiguration)
         
         case "replicatorCollection_removeCollection":
             let collection: Collection = args.get(name: "collection")!
