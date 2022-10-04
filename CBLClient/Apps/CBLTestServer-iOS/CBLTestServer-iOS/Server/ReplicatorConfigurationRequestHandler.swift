@@ -55,9 +55,7 @@ public class ReplicatorConfigurationRequestHandler {
                     config.pushFilter = _defaultReplicatorFilterCallback;
                 }
             }
-            if(channels != nil) {
-                config.channels = channels
-            }
+            config.channels = channels
             if(documentIDs != nil){
                 config.documentIDs = documentIDs
             }
