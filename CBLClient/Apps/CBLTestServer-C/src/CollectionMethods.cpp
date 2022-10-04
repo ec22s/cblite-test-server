@@ -367,4 +367,53 @@ namespace collection_methods {
             write_serialized_body(conn, memory_map::store(token, nullptr));
         });
     }
+    
+    void collection_saveDocuments(json& body, mg_connection* conn) {
+    const auto docDict = body["documents"];
+    with<CBLDatabase *>(body, "database", [&body, &docDict](CBLDatabase* db){
+    with<CBLCollection *>(body, "collection", [&db, &docDict](CBLCollection* collection)
+    {
+        CBLError err;
+        TRY(CBLDatabase_BeginTransaction(db, &err), err)
+
+        bool success = false;
+        DEFER {
+            TRY(CBLDatabase_EndTransaction(db, success, &err), err)
+        };
+
+        for(auto& [ key, value ] : docDict.items()) {
+            auto docBody = value;
+            docBody.erase("_id");
+            auto* doc = CBLDocument_CreateWithID(flstr(key));
+            auto* body = FLMutableDict_New();
+            for (const auto& [ bodyKey, bodyValue ] : docBody.items()) {
+                if(bodyKey == "_attachments") {
+                    for (const auto& [ blobKey, blobValue ] : bodyValue.items()) {
+                        base64_decodestate state;
+                        base64_init_decodestate(&state);
+                        auto b64 = blobValue["data"].get<string>();
+                        auto tmp = malloc(b64.size());
+                        size_t size = base64_decode_block((const uint8_t *)b64.c_str(), b64.size(), tmp, &state);
+                        auto blobContent = FLSliceResult_CreateWith(tmp, size);
+                        auto blob = CBLBlob_CreateWithData(FLSTR("application/octet-stream"), FLSliceResult_AsSlice(blobContent));
+                        auto slot = FLMutableDict_Set(body, flstr(blobKey));
+                        FLSlot_SetBlob(slot, blob);
+                        FLSliceResult_Release(blobContent);
+                    }
+                } else {
+                    writeFleece(body, bodyKey, bodyValue);
+                }
+            }
+
+            CBLDocument_SetProperties(doc, body);
+            FLMutableDict_Release(body);
+            TRY(CBLCollection_SaveDocument(collection, doc, &err), err);
+        }
+
+        success = true;
+    });
+    });
+
+    write_empty_body(conn);
+}
 }
