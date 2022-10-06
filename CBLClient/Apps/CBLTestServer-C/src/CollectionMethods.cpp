@@ -4,6 +4,10 @@
 #include "FleeceHelpers.h"
 #include "DocumentMethods.h"
 #include "Defines.h"
+#include "Defer.hh"
+extern "C" {
+    #include "cdecode.h"
+}
 
 #include INCLUDE_CBL(CouchbaseLite.h)
 using namespace std;
