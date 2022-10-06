@@ -24,16 +24,14 @@ public class ReplicatorConfigurationRequestHandler {
         // TODO: Change client to expect replicator config, not the builder.
         case "replicatorCollection_configure":
             let conflictResolver: ConflictResolverProtocol? = args.get(name: "conflictResolver")
-            let pull_filter: Bool? = args.get(name: "pull_filter")!
-            let push_filter: Bool? = args.get(name: "push_filter")!
+            let pull_filter: Bool = (args.get(name: "pull_filter") != nil)
+            let push_filter: Bool = (args.get(name: "push_filter") != nil)
             let filter_callback_func: String? = args.get(name: "filter_callback_func")
             let channels: [String]? = args.get(name: "channels")
             let documentIDs: [String]? = args.get(name: "documentIDs")
             var config = CollectionConfiguration()
-            if(conflictResolver != nil) {
-                config.conflictResolver = conflictResolver
-            }
-            if pull_filter != false {
+            config.conflictResolver = conflictResolver
+            if pull_filter {
                 if filter_callback_func == "boolean" {
                     config.pullFilter = _replicatorBooleanFilterCallback;
                 } else if filter_callback_func == "deleted" {
@@ -44,7 +42,7 @@ public class ReplicatorConfigurationRequestHandler {
                     config.pullFilter = _defaultReplicatorFilterCallback;
                 }
             }
-            if push_filter != false {
+            if push_filter {
                 if filter_callback_func == "boolean" {
                     config.pushFilter = _replicatorBooleanFilterCallback;
                 } else if filter_callback_func == "deleted" {
@@ -56,7 +54,7 @@ public class ReplicatorConfigurationRequestHandler {
                 }
             }
             config.channels = channels
-            if(documentIDs != nil){
+            if ((documentIDs) != nil) {
                 config.documentIDs = documentIDs
             }
             return config
