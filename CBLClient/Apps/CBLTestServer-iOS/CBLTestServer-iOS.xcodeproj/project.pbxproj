@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -496,7 +496,7 @@
 				};
 			};
 			buildConfigurationList = 29F77F1E1F9FC18D0035178F /* Build configuration list for PBXProject "CBLTestServer-iOS" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 11.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
