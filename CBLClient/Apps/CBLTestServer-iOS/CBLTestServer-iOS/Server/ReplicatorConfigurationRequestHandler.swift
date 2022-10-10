@@ -54,9 +54,7 @@ public class ReplicatorConfigurationRequestHandler {
                 }
             }
             config.channels = channels
-            if ((documentIDs) != nil) {
-                config.documentIDs = documentIDs
-            }
+            config.documentIDs = documentIDs
             return config
         
         case "replicatorCollection_addCollection":
