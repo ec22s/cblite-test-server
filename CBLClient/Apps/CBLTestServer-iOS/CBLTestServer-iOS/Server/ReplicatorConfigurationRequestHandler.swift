@@ -22,7 +22,7 @@ public class ReplicatorConfigurationRequestHandler {
         /////////////////////////////
             
         // TODO: Change client to expect replicator config, not the builder.
-        case "replicatorCollection_configure":
+        case "replicatorConfiguration_configure":
             let conflictResolver: ConflictResolverProtocol? = args.get(name: "conflictResolver")
             let pull_filter: Bool = (args.get(name: "pull_filter") != nil)
             let push_filter: Bool = (args.get(name: "push_filter") != nil)
@@ -57,7 +57,7 @@ public class ReplicatorConfigurationRequestHandler {
             config.documentIDs = documentIDs
             return config
         
-        case "replicatorCollection_addCollection":
+        case "replicatorConfiguration_addCollection":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
             let collection: Collection = args.get(name: "collections")!
             let collectionConfiguration: CollectionConfiguration? = args.get(name: "configuration")
@@ -68,18 +68,18 @@ public class ReplicatorConfigurationRequestHandler {
                 replicatorConfiguration.addCollection((collection))
             }
         
-        case "replicatorCollection_addCollections":
+        case "replicatorConfiguration_addCollections":
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
             let collection: [Collection] = args.get(name: "collections")!
             let collectionConfiguration: CollectionConfiguration? = args.get(name: "configuration")
             replicatorConfiguration.addCollections((collection), config: collectionConfiguration)
         
-        case "replicatorCollection_removeCollection":
+        case "replicatorConfiguration_removeCollection":
             let collection: Collection = args.get(name: "collection")!
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
             replicatorConfiguration.removeCollection(collection)
             
-        case "replicatorCollection_collectionConfig":
+        case "replicatorConfiguration_collectionConfig":
             let collection: Collection = args.get(name: "collection")!
             var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
             return replicatorConfiguration.collectionConfig(collection)
