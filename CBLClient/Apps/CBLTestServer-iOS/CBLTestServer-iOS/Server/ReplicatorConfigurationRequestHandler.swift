@@ -22,7 +22,7 @@ public class ReplicatorConfigurationRequestHandler {
         /////////////////////////////
             
         // TODO: Change client to expect replicator config, not the builder.
-        case "replicatorConfiguration_configure":
+        case "replicatorConfiguration_collection":
             let conflictResolver: ConflictResolverProtocol? = args.get(name: "conflictResolver")
             let pull_filter: Bool = (args.get(name: "pull_filter") != nil)
             let push_filter: Bool = (args.get(name: "push_filter") != nil)
@@ -258,21 +258,17 @@ public class ReplicatorConfigurationRequestHandler {
             if let auto_purge: String = args.get(name: "auto_purge") {
                 config.enableAutoPurge = auto_purge.lowercased() == "enabled"
             }
-            if (collections != nil){
-                if(collection_configuration != nil){
-                    if(collection_configuration!.count == 1){
-                        config.addCollections(collections!, config: collection_configuration?[0])
-                    }
-                    else if(collection_configuration!.count > 1 && collection_configuration?.count == collections?.count ) {
-                        for (collection, configuration) in zip(collections!,collection_configuration!) {
-                            config.addCollection(collection, config: configuration)
+            if let cols = collections {
+                if collection_configuration?.count == 1 {
+                    let colConfig = collection_configuration?[0]
+                    config.addCollections(cols, config: colConfig)
+                        } else {
+                            assert(collection_configuration?.count == cols.count)
+                            for (i, colConfig) in collection_configuration!.enumerated() {
+                                config.addCollection(cols[i], config: colConfig)
+                            }
                         }
                     }
-                }
-                else {
-                    config.addCollections(collections!)
-                }
-            }
             return config
 
         case "replicatorConfiguration_getAuthenticator":
