@@ -170,11 +170,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Couchbase.Lite.Enterprise.Support.UWP">
-      <Version>2.6.0-b0107</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.0.4</Version>
+      <Version>6.2.14</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -182,9 +179,6 @@
       <Project>{ca1db44f-9a07-40c1-b305-f0b5d797ee6a}</Project>
       <Name>TestServer</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="SimpleInjector" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Assets\certs\certs.p12" />
