@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,7 +30,6 @@
 		29D15BA11FA7DCFA005DAAA3 /* ValueSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D15BA01FA7DCFA005DAAA3 /* ValueSerializer.swift */; };
 		29D15BA31FA7DE39005DAAA3 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D15BA21FA7DE39005DAAA3 /* Memory.swift */; };
 		29F77F271F9FC18D0035178F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F261F9FC18D0035178F /* AppDelegate.swift */; };
-		29F77F291F9FC18D0035178F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F281F9FC18D0035178F /* ViewController.swift */; };
 		29F77F2C1F9FC18D0035178F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29F77F2A1F9FC18D0035178F /* Main.storyboard */; };
 		29F77F2E1F9FC18D0035178F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29F77F2D1F9FC18D0035178F /* Assets.xcassets */; };
 		29F77F311F9FC18D0035178F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29F77F2F1F9FC18D0035178F /* LaunchScreen.storyboard */; };
@@ -57,6 +56,9 @@
 		6917C7BA232C30EE00D99DA6 /* RawData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6917C7B9232C30EE00D99DA6 /* RawData.swift */; };
 		7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; };
 		7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A38237BB28E19AF3007F14ED /* CollectionRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */; };
+		A38237BD28E19B22007F14ED /* ScopeRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */; };
+		A39BFC2728E452C80090F632 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F281F9FC18D0035178F /* ViewController.swift */; };
 		FB0C46F1221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */; };
 		FB5934E0219CB6220000C958 /* Databases in Resources */ = {isa = PBXBuildFile; fileRef = FB5934DF219CB6220000C958 /* Databases */; };
 		FB5A6A5521123A9A00937927 /* ReplicatorTcpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5A6A5421123A9A00937927 /* ReplicatorTcpConnection.swift */; };
@@ -182,6 +184,8 @@
 		4DE0E3212501F24D00DEBA87 /* identity */ = {isa = PBXFileReference; lastKnownFileType = folder; path = identity; sourceTree = "<group>"; };
 		6917C7B9232C30EE00D99DA6 /* RawData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawData.swift; sourceTree = "<group>"; };
 		7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CouchbaseLiteSwift.xcframework; path = Frameworks/CouchbaseLiteSwift.xcframework; sourceTree = "<group>"; };
+		A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionRequestHandler.swift; sourceTree = "<group>"; };
+		A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeRequestHandler.swift; sourceTree = "<group>"; };
 		FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveQueriesRequestHandler.swift; sourceTree = "<group>"; };
 		FB5934DF219CB6220000C958 /* Databases */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Databases; sourceTree = SOURCE_ROOT; };
 		FB5A6A5421123A9A00937927 /* ReplicatorTcpConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplicatorTcpConnection.swift; sourceTree = "<group>"; };
@@ -263,6 +267,8 @@
 				FB72EEA42150513100B306DF /* TryCatch.swift */,
 				FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */,
 				4D7993E4250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift */,
+				A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */,
+				A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */,
 			);
 			path = Server;
 			sourceTree = "<group>";
@@ -556,7 +562,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D7993E5250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift in Sources */,
-				29F77F291F9FC18D0035178F /* ViewController.swift in Sources */,
 				29F786931F9FC4180035178F /* GCDWebServerFunctions.m in Sources */,
 				299692A71FF31A590040CC32 /* SessionAuthenticatorRequestHandler.swift in Sources */,
 				29F786961F9FC4180035178F /* GCDWebServerDataRequest.m in Sources */,
@@ -576,6 +581,7 @@
 				29917D981FA92F82006C7675 /* DictionaryRequestHandler.swift in Sources */,
 				2907D174200E7FCE00CE56EB /* ResultRequestHandler.swift in Sources */,
 				29F786991F9FC4180035178F /* GCDWebServerURLEncodedFormRequest.m in Sources */,
+				A38237BD28E19B22007F14ED /* ScopeRequestHandler.swift in Sources */,
 				FB7B1E731FDB60ED00A912BF /* Extensions.swift in Sources */,
 				2907D16C200E7BE400CE56EB /* CollationRequestHandler.swift in Sources */,
 				FB72EEA52150513100B306DF /* TryCatch.swift in Sources */,
@@ -588,6 +594,8 @@
 				29F786921F9FC4180035178F /* GCDWebServerConnection.m in Sources */,
 				293F38381FFD792E00497870 /* DataTypesInitiatorHandler.swift in Sources */,
 				29F786971F9FC4180035178F /* GCDWebServerFileRequest.m in Sources */,
+				A38237BB28E19AF3007F14ED /* CollectionRequestHandler.swift in Sources */,
+				A39BFC2728E452C80090F632 /* ViewController.swift in Sources */,
 				294FB20C1FEAFD9000DD0C23 /* DatabaseRequestHandler.swift in Sources */,
 				2907D16E200E7C7F00CE56EB /* DataSourceRequestHandler.swift in Sources */,
 				FB60EBDA21093383005052B6 /* ReplicatorTcpClientConnection.swift in Sources */,
@@ -1154,7 +1162,7 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -22,6 +22,7 @@ namespace collection_methods {
     void collection_deleteDocument(nlohmann::json& body, mg_connection* conn);
     void collection_deleteDocumentWithConcurrencyControl(nlohmann::json& body, mg_connection* conn);
     void collection_purgeDocument(nlohmann::json& body, mg_connection* conn);
+    void collection_saveDocuments(nlohmann::json& body, mg_connection* conn);
     void collection_purgeDocumentID(nlohmann::json& body, mg_connection* conn);
     void collection_getDocumentExpiration(nlohmann::json& body, mg_connection* conn);
     void collection_setDocumentExpiration(nlohmann::json& body, mg_connection* conn);

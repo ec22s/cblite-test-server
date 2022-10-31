@@ -22,6 +22,68 @@ public class ReplicatorConfigurationRequestHandler {
         /////////////////////////////
             
         // TODO: Change client to expect replicator config, not the builder.
+        case "replicatorConfiguration_collection":
+            let conflictResolver: ConflictResolverProtocol? = args.get(name: "conflictResolver")
+            let pull_filter: Bool = (args.get(name: "pull_filter") != nil)
+            let push_filter: Bool = (args.get(name: "push_filter") != nil)
+            let filter_callback_func: String? = args.get(name: "filter_callback_func")
+            let channels: [String]? = args.get(name: "channels")
+            let documentIDs: [String]? = args.get(name: "documentIDs")
+            var config = CollectionConfiguration()
+            config.conflictResolver = conflictResolver
+            if pull_filter {
+                if filter_callback_func == "boolean" {
+                    config.pullFilter = _replicatorBooleanFilterCallback;
+                } else if filter_callback_func == "deleted" {
+                    config.pullFilter = _replicatorDeletedFilterCallback;
+                } else if filter_callback_func == "access_revoked" {
+                    config.pullFilter = _replicatorAccessRevokedCallback;
+                } else {
+                    config.pullFilter = _defaultReplicatorFilterCallback;
+                }
+            }
+            if push_filter {
+                if filter_callback_func == "boolean" {
+                    config.pushFilter = _replicatorBooleanFilterCallback;
+                } else if filter_callback_func == "deleted" {
+                    config.pushFilter = _replicatorDeletedFilterCallback;
+                } else if filter_callback_func == "access_revoked" {
+                    config.pushFilter = _replicatorAccessRevokedCallback;
+                } else {
+                    config.pushFilter = _defaultReplicatorFilterCallback;
+                }
+            }
+            config.channels = channels
+            config.documentIDs = documentIDs
+            return config
+        
+        case "replicatorConfiguration_addCollection":
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            let collection: Collection = args.get(name: "collections")!
+            let collectionConfiguration: CollectionConfiguration? = args.get(name: "configuration")
+            if(collectionConfiguration != nil) {
+                replicatorConfiguration.addCollection((collection), config: collectionConfiguration)
+            }
+            else {
+                replicatorConfiguration.addCollection((collection))
+            }
+        
+        case "replicatorConfiguration_addCollections":
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            let collection: [Collection] = args.get(name: "collections")!
+            let collectionConfiguration: CollectionConfiguration? = args.get(name: "configuration")
+            replicatorConfiguration.addCollections((collection), config: collectionConfiguration)
+        
+        case "replicatorConfiguration_removeCollection":
+            let collection: Collection = args.get(name: "collection")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            replicatorConfiguration.removeCollection(collection)
+            
+        case "replicatorConfiguration_collectionConfig":
+            let collection: Collection = args.get(name: "collection")!
+            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            return replicatorConfiguration.collectionConfig(collection)
+            
         case "replicatorConfiguration_create":
             let sourceDb: Database = args.get(name: "sourceDb")!
             let targetURI: String? = args.get(name: "targetURI")!
@@ -62,6 +124,8 @@ public class ReplicatorConfigurationRequestHandler {
             let heartbeat: String? = args.get(name: "heartbeat")
             let maxRetries: String? = args.get(name: "max_retries")
             let maxRetryWaitTime: String? = args.get(name: "max_timeout")
+            let collections: [Collection]? = args.get(name: "collections")
+            let collection_configuration: [CollectionConfiguration]? = args.get(name: "configuration")
             
             var replicatorType = ReplicatorType.pushAndPull
             
@@ -194,6 +258,17 @@ public class ReplicatorConfigurationRequestHandler {
             if let auto_purge: String = args.get(name: "auto_purge") {
                 config.enableAutoPurge = auto_purge.lowercased() == "enabled"
             }
+            if let cols = collections {
+                if collection_configuration?.count == 1 {
+                    let colConfig = collection_configuration?[0]
+                    config.addCollections(cols, config: colConfig)
+                        } else {
+                            assert(collection_configuration?.count == cols.count)
+                            for (i, colConfig) in collection_configuration!.enumerated() {
+                                config.addCollection(cols[i], config: colConfig)
+                            }
+                        }
+                    }
             return config
 
         case "replicatorConfiguration_getAuthenticator":
