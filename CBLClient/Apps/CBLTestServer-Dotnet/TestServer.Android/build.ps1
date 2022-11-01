@@ -58,8 +58,8 @@ function Calculate-Version {
 
     return $version_to_use + "-b*"
 }
-#cd ..
-#Push-Location $PSScriptRoot
+cd ..
+Push-Location $PSScriptRoot
 #$VSRegistryKey = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7"
 #$VSInstall = (Get-ItemProperty -Path $VSRegistryKey -Name "15.0") | Select-Object -ExpandProperty "15.0"
 #if(-Not $VSInstall) {
