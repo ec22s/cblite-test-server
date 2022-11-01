@@ -58,15 +58,16 @@ function Calculate-Version {
 
     return $version_to_use + "-b*"
 }
-cd ..
-Push-Location $PSScriptRoot
-$VSRegistryKey = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7"
-$VSInstall = (Get-ItemProperty -Path $VSRegistryKey -Name "15.0") | Select-Object -ExpandProperty "15.0"
-if(-Not $VSInstall) {
-    throw "Unable to locate VS2017 installation"
-}
+#cd ..
+#Push-Location $PSScriptRoot
+#$VSRegistryKey = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7"
+#$VSInstall = (Get-ItemProperty -Path $VSRegistryKey -Name "15.0") | Select-Object -ExpandProperty "15.0"
+#if(-Not $VSInstall) {
+#    throw "Unable to locate VS2017 installation"
+#}
 
-$MSBuild = "$VSInstall\MSBuild\15.0\Bin\MSBuild.exe"
+#$MSBuild = "$VSInstall\MSBuild\15.0\Bin\MSBuild.exe"
+$MSbuild = "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
 
 $fullVersion = Calculate-Version
 
