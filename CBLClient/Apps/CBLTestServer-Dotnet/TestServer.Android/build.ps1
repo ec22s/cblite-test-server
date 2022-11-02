@@ -65,9 +65,10 @@ Push-Location $PSScriptRoot
 #if(-Not $VSInstall) {
 #    throw "Unable to locate VS2017 installation"
 #}
-
 #$MSBuild = "$VSInstall\MSBuild\15.0\Bin\MSBuild.exe"
-$MSbuild = "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
+
+# Add MSBuild execute file path of visual studio here
+$MSbuild = "C:\vs2022\MSBuild\Current\Bin\MSBuild.exe"
 
 $fullVersion = Calculate-Version
 
