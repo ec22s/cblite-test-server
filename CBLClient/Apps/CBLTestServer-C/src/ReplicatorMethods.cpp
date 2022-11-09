@@ -23,6 +23,9 @@ static void CBLReplicator_EntryDelete(void* ptr) {
     CBLReplicator_Release(static_cast<CBLReplicator *>(ptr));
 }
 
+static void CBLReplicatorCollection_EntryDelete(void* ptr) {
+}
+
 template<typename T>
 static void Vector_EntryDelete(void* ptr) {
     delete (std::vector<T> *)ptr;

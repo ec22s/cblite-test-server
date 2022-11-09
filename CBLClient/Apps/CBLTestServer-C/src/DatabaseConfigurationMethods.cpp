@@ -51,7 +51,7 @@ namespace database_configuration_methods {
             mg_send_http_error(conn, 501, "Not supported in CE edition");
             return;
 #else
-            CBLEncryptionKey key;
+            CBLEncryptionKey key = CBLEncryptionKey();
             if(!CBLEncryptionKey_FromPassword(&key, flstr(body["password"].get<string>()))) {
                 mg_send_http_error(conn, 501, "Error deriving key from password material");
                 return;
@@ -63,6 +63,48 @@ namespace database_configuration_methods {
 
         write_serialized_body(conn, memory_map::store(databaseConfig, CBLDatabaseConfiguration_EntryDelete));
     }
+
+void database_configuration_configure_old(json& body, mg_connection* conn) {
+    auto* databaseConfig = static_cast<CBLDatabaseConfiguration *>(calloc(1, sizeof(CBLDatabaseConfiguration)));
+    if(body.contains("directory")) {
+        const auto directory = body["directory"].get<string>();
+        char* allocated = new char[directory.size()];
+        memcpy(allocated, directory.c_str(), directory.size());
+        databaseConfig->directory = { allocated, directory.size() };
+    }
+#ifdef __ANDROID__
+    else {
+        // The default directory provided by C is not always writable
+        string internalData = GlobalApp->activity->internalDataPath;
+        if(internalData[internalData.size() - 1] != '/') {
+            internalData += "/";
+        }
+
+        internalData += "db/";
+        mkdir(internalData.c_str(), 0755);
+        char* allocated = new char[internalData.size()];
+        memcpy(allocated, internalData.c_str(), internalData.size());
+        databaseConfig->directory = { allocated, internalData.size() };
+    }
+#endif
+    
+    if(body.contains("password")) {
+#ifndef COUCHBASE_ENTERPRISE
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+        return;
+#else
+        CBLEncryptionKey key = CBLEncryptionKey();
+        if(!CBLEncryptionKey_FromPasswordOld(&key, flstr(body["password"].get<string>()))) {
+            mg_send_http_error(conn, 501, "Error deriving key from password material");
+            return;
+        }
+        
+        databaseConfig->encryptionKey = key;
+#endif
+    }
+
+    write_serialized_body(conn, memory_map::store(databaseConfig, CBLDatabaseConfiguration_EntryDelete));
+}
 
     void database_configuration_setEncryptionKey(json &body, mg_connection *conn) {
 #ifndef COUCHBASE_ENTERPRISE

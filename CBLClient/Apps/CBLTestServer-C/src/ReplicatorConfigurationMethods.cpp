@@ -201,8 +201,17 @@ static void CBLReplicatorConfig_EntryDelete(void* ptr) {
     free(config);
 }
 
+static void CBLReplicatorConfigCollection_EntryDelete(void* ptr) {
+    auto* config = (CBLReplicatorConfiguration *)ptr;
+    if(config->pinnedServerCertificate.buf) {
+        free((void *)config->pinnedServerCertificate.buf);
+    }
+    FLDict_Release(config->headers);
+    free(config);
+}
+
 static void CBLCollectionConfig_EntryDelete(void* ptr) {
-    auto* config = (CBLReplicationCollection *)ptr;
+    auto* config = (CBLReplicationCollection *) ptr;
     FLArray_Release(config->documentIDs);
     FLArray_Release(config->channels);
     free(config);
@@ -210,59 +219,60 @@ static void CBLCollectionConfig_EntryDelete(void* ptr) {
 
 namespace replicator_configuration_methods {
 void replicatorCollectionConfiguration(json& body, mg_connection* conn) {
-    CBLReplicationCollection config = {};
+    auto config = static_cast<CBLReplicationCollection *>(malloc(sizeof(CBLReplicationCollection)));
+    memset(config, 0, sizeof(CBLReplicationCollection));
     auto collection = static_cast<CBLCollection *>(memory_map::get(body["collection"].get<string>()));
-    config.collection = collection;
+    config->collection = collection;
     if(body.contains("conflict_resolver")) {
         const auto conflictResolver = body["conflict_resolver"].get<string>();
         if(conflictResolver == "local_wins") {
-            config.conflictResolver = local_wins_conflict_resolution;
+            config->conflictResolver = local_wins_conflict_resolution;
         } else if(conflictResolver == "remote_wins") {
-            config.conflictResolver = remote_wins_conflict_resolution;
+            config->conflictResolver = remote_wins_conflict_resolution;
         } else if(conflictResolver == "null") {
-            config.conflictResolver = null_conflict_resolution;
+            config->conflictResolver = null_conflict_resolution;
         } else if(conflictResolver == "merge") {
-            config.conflictResolver = merge_conflict_resolution;
+            config->conflictResolver = merge_conflict_resolution;
         } else if(conflictResolver == "incorrect_doc_id") {
-            config.conflictResolver = incorrect_docid_conflict_resolution;
+            config->conflictResolver = incorrect_docid_conflict_resolution;
         } else if(conflictResolver == "delayed_local_win") {
-            config.conflictResolver = delayed_local_win_conflict_resolution;
+            config->conflictResolver = delayed_local_win_conflict_resolution;
         } else if(conflictResolver == "delete_not_win") {
-            config.conflictResolver = delete_doc_conflict_resolution;
+            config->conflictResolver = delete_doc_conflict_resolution;
         } else if(conflictResolver == "exception_thrown") {
-            config.conflictResolver = exception_conflict_resolution;
+            config->conflictResolver = exception_conflict_resolution;
         } else {
-            config.conflictResolver = CBLDefaultConflictResolver;
+            config->conflictResolver = CBLDefaultConflictResolver;
         }
     }
     if(body.contains("push_filter") && body["push_filter"].get<bool>()) {
         const auto filterCallbackFunction = body["filter_callback_func"].get<string>();
         if(filterCallbackFunction == "boolean") {
-            config.pushFilter = replicator_boolean_filter_callback;
+            config->pushFilter = replicator_boolean_filter_callback;
         } else if(filterCallbackFunction == "deleted") {
-            config.pushFilter = replicator_deleted_filter_callback;
+            config->pushFilter = replicator_deleted_filter_callback;
         } else if(filterCallbackFunction == "access_revoked") {
-            config.pushFilter = replicator_access_revoked_filter_callback;
+            config->pushFilter = replicator_access_revoked_filter_callback;
         }
     }
     
     if(body.contains("pull_filter") && body["pull_filter"].get<bool>()) {
         const auto filterCallbackFunction = body["filter_callback_func"].get<string>();
         if(filterCallbackFunction == "boolean") {
-            config.pullFilter = replicator_boolean_filter_callback;
+            config->pullFilter = replicator_boolean_filter_callback;
         } else if(filterCallbackFunction == "deleted") {
-            config.pullFilter = replicator_deleted_filter_callback;
+            config->pullFilter = replicator_deleted_filter_callback;
         } else if(filterCallbackFunction == "access_revoked") {
-            config.pullFilter = replicator_access_revoked_filter_callback;
+            config->pullFilter = replicator_access_revoked_filter_callback;
         }
     }
-    
+
     if(body.contains("channels")) {
         FLMutableArray channels = FLMutableArray_New();
         for(const auto& c : body["channels"]) {
             writeFleece(channels, c);
         }
-        config.channels = channels;
+        config->channels = channels;
     }
     
     if(body.contains("documentIDs")) {
@@ -270,10 +280,113 @@ void replicatorCollectionConfiguration(json& body, mg_connection* conn) {
         for(const auto& c : body["documentIDs"]) {
             writeFleece(docIDs, c);
         }
-        
-        config.documentIDs = docIDs;
+        config->documentIDs = docIDs;
     }
-    write_serialized_body(conn, memory_map::store(&config, CBLReplicatorConfig_EntryDelete));
+    write_serialized_body(conn, memory_map::store(config, CBLCollectionConfig_EntryDelete));
+}
+
+void replicatorConfigurationCollection(json& body, mg_connection* conn) {
+    auto config = static_cast<CBLReplicatorConfiguration *>(malloc(sizeof(CBLReplicatorConfiguration)));
+    memset(config, 0, sizeof(CBLReplicatorConfiguration));
+    if(body.contains("target_url")) {
+        CBLError err;
+        const auto url = body["target_url"].get<string>();
+        CBLEndpoint* endpoint;
+        TRY(endpoint = CBLEndpoint_CreateWithURL(flstr(url), &err), err);
+        config->endpoint = endpoint;
+    }
+    else if(body.contains("target_db")) {
+#ifndef COUCHBASE_ENTERPRISE
+        mg_send_http_error(conn, 501, "Not supported in CE edition");
+        return;
+#else
+        with<CBLDatabase *>(body, "target_db", [config](CBLDatabase* db) {
+            config->endpoint = CBLEndpoint_CreateWithLocalDB(db);
+        });
+#endif
+    } else {
+        throw domain_error("Illegal arguments provided");
+    }
+    if(body.contains("continuous")) {
+        config->continuous = body["continuous"].get<bool>();
+    }
+    if(body.contains("configuration")) {
+        vector<CBLReplicationCollection> vec;
+        for(const auto& c: body["configuration"]) {
+            CBLReplicationCollection *rep_object = static_cast<CBLReplicationCollection*>(memory_map::get(c.get<string>()));
+            vec.push_back(*rep_object);
+        }
+        config->collections = vec.data();
+        config->collectionCount = vec.size();
+    }
+    if(body.contains("authenticator")) {
+        config->authenticator = static_cast<CBLAuthenticator*>(memory_map::get(body["authenticator"].get<string>()));
+    }
+
+    if(body.contains("headers")) {
+        FLMutableDict headers = FLMutableDict_New();
+        for(const auto& [key, value] : body["headers"].items()) {
+            writeFleece(headers, key, value);
+        }
+
+        config->headers = headers;
+    }
+
+    if(body.contains("heartbeat")) {
+        config->heartbeat = (unsigned int)stoul(body["heartbeat"].get<string>(), nullptr, 10);
+    }
+
+    if(body.contains("pinnedservercert")) {
+        // TODO: See about getting PEM version into the assets for Android too
+#ifdef __ANDROID__
+        string certFile = file_resolution::resolve_path(body["pinnedservercert"].get<string>() + ".cer", false);
+#else
+        string certFile = file_resolution::resolve_path(body["pinnedservercert"].get<string>() + ".pem", false);
+#endif
+        ifstream ifs(certFile.c_str(), ios::binary);
+        ifs.exceptions(ifs.failbit | ifs.badbit);
+        ifs.seekg(0, ios::end);
+        auto fileSize = ifs.tellg();
+        ifs.seekg(0, ios::beg);
+        FLSlice s {
+            malloc(fileSize),
+            (size_t)fileSize
+        };
+
+        ifs.read((char *)s.buf, fileSize);
+        ifs.close();
+        config->pinnedServerCertificate = s; // Leak on purpose since this has to survive between remote calls
+    }
+
+    if(body.contains("replication_type")) {
+        auto replicatorType = body["replication_type"].get<string>();
+        tolower(replicatorType);
+        if(replicatorType == "push") {
+            config->replicatorType = kCBLReplicatorTypePush;
+        } else if(replicatorType == "pull") {
+            config->replicatorType = kCBLReplicatorTypePull;
+        } else {
+            config->replicatorType = kCBLReplicatorTypePushAndPull;
+        }
+    }
+    if(body.contains("auto_purge")) {
+        auto autoPurge = body["auto_purge"].get<string>();
+        tolower(autoPurge);
+        if(autoPurge == "disabled") {
+            config->disableAutoPurge = true;
+        } else {
+            config->disableAutoPurge = false;
+        }
+    }
+#ifdef COUCHBASE_ENTERPRISE
+            if(body.contains("encryptor")) {
+                auto* context = (CryptoContext *)memory_map::get(body["encryptor"].get<string>());
+                config->propertyEncryptor = replicator_encrypt;
+                config->propertyDecryptor = replicator_decrypt;
+                config->context = context;
+            }
+#endif
+    write_serialized_body(conn, memory_map::store(config, CBLReplicatorConfigCollection_EntryDelete));
 }
 
     void replicatorConfiguration_create(json& body, mg_connection* conn) {
@@ -312,15 +425,6 @@ void replicatorCollectionConfiguration(json& body, mg_connection* conn) {
                     writeFleece(channels, c);
                 }
                 config->channels = channels;
-            }
-            
-            if(body.contains("collections")) {
-                vector<CBLReplicationCollection> vec;
-                for(const auto& c: body["collections"]) {
-                    CBLReplicationCollection *rep_object = static_cast<CBLReplicationCollection*>(memory_map::get(c.get<string>()));
-                    vec.push_back(*rep_object);
-                }
-                config->collections = vec.data();
             }
 
             if(body.contains("documentIDs")) {

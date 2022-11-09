@@ -65,7 +65,7 @@ public class ReplicatorConfigurationRequestHandler {
                 replicatorConfiguration.addCollection((collection), config: collectionConfiguration)
             }
             else {
-                replicatorConfiguration.addCollection((collection))
+                replicatorConfiguration.addCollection(collection)
             }
         
         case "replicatorConfiguration_addCollections":
@@ -81,8 +81,18 @@ public class ReplicatorConfigurationRequestHandler {
             
         case "replicatorConfiguration_collectionConfig":
             let collection: Collection = args.get(name: "collection")!
-            var replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicatorConfiguration")!
+            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicator")!
             return replicatorConfiguration.collectionConfig(collection)
+        
+        case "replicatorConfiguration_collectionNames":
+            let replicatorConfiguration: ReplicatorConfiguration = args.get(name: "replicator")!
+            let collectionNames = replicatorConfiguration.collections
+            var names = [String]()
+            for collection in collectionNames {
+                let collectionObject: Collection = collection
+                names.append(collectionObject.name)
+            }
+            return names
             
         case "replicatorConfiguration_create":
             let sourceDb: Database = args.get(name: "sourceDb")!
@@ -105,6 +115,108 @@ public class ReplicatorConfigurationRequestHandler {
             }
             
             return ReplicatorConfiguration(database: sourceDb, target: target!)
+        
+        case "replicatorConfiguration_configureCollection":
+            Database.log.console.domains = .all 
+            Database.log.console.level = .verbose
+            let target_url: String? = args.get(name: "target_url")
+            let replication_type: String? = args.get(name: "replication_type")
+            let continuous: Bool? = args.get(name: "continuous")
+            let authValue: AnyObject? = args.get(name: "authenticator")
+            let authenticator: Authenticator? = authValue as? Authenticator
+            let collections: [Collection]? = args.get(name: "collections")
+            let collectionConfigurations: [CollectionConfiguration]? = args.get(name: "configuration")
+            let headers: Dictionary<String, String>? = args.get(name: "headers")!
+            let pinnedservercert: String? = args.get(name: "pinnedservercert")!
+            let heartbeat: String? = args.get(name: "heartbeat")
+            let maxRetries: String? = args.get(name: "max_retries")
+            let maxRetryWaitTime: String? = args.get(name: "max_timeout")
+            var replicatorType = ReplicatorType.pushAndPull
+            if let type = replication_type {
+                if type == "push" {
+                    replicatorType = .push
+                } else if type == "pull" {
+                    replicatorType = .pull
+                } else {
+                    replicatorType = .pushAndPull
+                }
+            }
+            var config: ReplicatorConfiguration
+            var target: Endpoint?
+            if (target_url != nil) {
+                do {
+                    try tryCatch {
+                        target = URLEndpoint(url: URL(string: target_url!)!)
+                    }
+                } catch let error as NSError {
+                    if let exception = error.userInfo["exception"] as? NSException {
+                        if let reason = exception.reason {
+                            throw RequestHandlerError.InvalidArgument("\(reason)")
+                        } else {
+                            throw RequestHandlerError.InvalidArgument("Unknown CBL Exception")
+                        }
+                    }
+                }
+            }
+            #if COUCHBASE_ENTERPRISE
+            let targetDatabase: Database? = args.get(name: "target_db")
+            if (targetDatabase != nil) {
+                target = DatabaseEndpoint(database: targetDatabase!)
+                config = ReplicatorConfiguration(target: target!)
+            }
+            #endif
+
+            if (target == nil) {
+                throw RequestHandlerError.InvalidArgument("target url or database should be provided.")
+            }
+            config = ReplicatorConfiguration(target: target!)
+            config.replicatorType = replicatorType
+            config.authenticator = authenticator
+            if continuous != nil {
+                config.continuous = continuous!
+            } else {
+                config.continuous = false
+            }
+            if headers != nil {
+                config.headers = headers
+            }
+            if pinnedservercert != nil {
+                let path = Bundle(for: type(of:self)).path(forResource: pinnedservercert, ofType: "cer")
+                let data = try! NSData(contentsOfFile: path!, options: [])
+                let certificate = SecCertificateCreateWithData(nil, data)
+                config.pinnedServerCertificate = certificate
+            }
+            if let heartbeat = heartbeat, let heartbeatDouble = Double(heartbeat) {
+                config.heartbeat = heartbeatDouble
+            }
+            if let maxRetries = maxRetries, let maxRetryInInt = UInt(maxRetries) {
+                config.maxAttempts = maxRetryInInt
+            }
+            
+            if let maxRetryWaitTime = maxRetryWaitTime, let maxRetryWaitTimeDouble = Double(maxRetryWaitTime) {
+                config.maxAttemptWaitTime = maxRetryWaitTimeDouble
+            }
+            if let auto_purge: String = args.get(name: "auto_purge") {
+                config.enableAutoPurge = auto_purge.lowercased() == "enabled"
+            }
+            
+            if let col = collections {
+                if let colConfig = collectionConfigurations {
+                    if colConfig.count == 1 {
+                        config.addCollections(col, config: colConfig[0])
+                    }
+                    else {
+                        assert(colConfig.count == col.count)
+                        for (i, j) in colConfig.enumerated() {
+                            config.addCollection(col[i], config: j)
+                        }
+                    }
+                }
+                else {
+                    config.addCollections(col)
+                }
+            }
+            return config
             
         case "replicatorConfiguration_configure":
             let source_db: Database? = args.get(name: "source_db")
@@ -124,8 +236,6 @@ public class ReplicatorConfigurationRequestHandler {
             let heartbeat: String? = args.get(name: "heartbeat")
             let maxRetries: String? = args.get(name: "max_retries")
             let maxRetryWaitTime: String? = args.get(name: "max_timeout")
-            let collections: [Collection]? = args.get(name: "collections")
-            let collection_configuration: [CollectionConfiguration]? = args.get(name: "configuration")
             
             var replicatorType = ReplicatorType.pushAndPull
             
@@ -258,17 +368,6 @@ public class ReplicatorConfigurationRequestHandler {
             if let auto_purge: String = args.get(name: "auto_purge") {
                 config.enableAutoPurge = auto_purge.lowercased() == "enabled"
             }
-            if let cols = collections {
-                if collection_configuration?.count == 1 {
-                    let colConfig = collection_configuration?[0]
-                    config.addCollections(cols, config: colConfig)
-                        } else {
-                            assert(collection_configuration?.count == cols.count)
-                            for (i, colConfig) in collection_configuration!.enumerated() {
-                                config.addCollection(cols[i], config: colConfig)
-                            }
-                        }
-                    }
             return config
 
         case "replicatorConfiguration_getAuthenticator":
