@@ -81,7 +81,7 @@ try {
         exit 1
     }
 
-    dotnet publish -c Release -f 3.1
+    dotnet publish -c Release -f netcoreapp3.1
     if($LASTEXITCODE -ne 0) {
         Write-Error "Publish failed for TestServer.NetCore"
         exit 1
