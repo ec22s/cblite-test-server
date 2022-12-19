@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
-    <TargetFramework Condition="'$(TargetFrameworks)' == ''">netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
 
