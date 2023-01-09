@@ -123,6 +123,14 @@ public class RequestHandlerDispatcher {
                         target = BlobRequestHandler.class.getMethod(method, Args.class);
                         requestHandler = new BlobRequestHandler();
                         break;
+                    case "collection":
+                        target = CollectionRequestHandler.class.getMethod(method, Args.class);
+                        requestHandler = new CollectionRequestHandler();
+                        break;
+                    case "scope":
+                        target = ScopeRequestHandler.class.getMethod(method, Args.class);
+                        requestHandler = new ScopeRequestHandler();
+                        break;
                     default:
                         throw new IllegalArgumentException("Handler not implemented for this call");
                 }
