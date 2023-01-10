@@ -64,10 +64,20 @@ public class PeerToPeerRequestHandler {
     
         case "peerToPeer_serverStart":
             var peerToPeerListener: URLEndpointListener?
-            let database: Database = args.get(name:"database")!
+            var config: URLEndpointListenerConfiguration
+            let database: Database? = args.get(name:"database")
             let wsPort: Int = args.get(name: "port")!
             let tls_disable: Bool? = args.get(name: "tls_disable")!
-            var config = URLEndpointListenerConfiguration.init(database: [database][0])
+            let collections: [Collection]? = args.get(name: "collections")
+            if collections != nil {
+                config = URLEndpointListenerConfiguration(collections: collections!)
+            }
+            else if database != nil {
+                config = URLEndpointListenerConfiguration.init(database: [database][0]!)
+            }
+            else {
+                throw RequestHandlerError.InvalidArgument("Provide collections or database")
+            }
             let tlsAuthType: String = args.get(name:"tls_auth_type")!
             let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
             let enable_delta_sync: Bool? = args.get(name: "enable_delta_sync")!
@@ -117,6 +127,106 @@ public class PeerToPeerRequestHandler {
                 let listener_obj: URLEndpointListener = args.get(name: "listener")!
                 listener_obj.stop()
             }
+        case "peerToPeer_configureCollection":
+            let host: String = args.get(name:"host")!
+            let port: Int = args.get(name:"port")!
+            let serverDBName: String = args.get(name:"serverDBName")!
+            let continuous: Bool? = args.get(name:"continuous")!
+            let replication_type: String? = args.get(name: "replicationType")!
+            let endPointType: String = args.get(name: "endPointType")!
+            let auth: Authenticator? = args.get(name: "basic_auth")!
+            let heartbeat: String? = args.get(name: "heartbeat")
+            let collections: [Collection]? = args.get(name: "collections")
+            let collectionConfigurations: [CollectionConfiguration]? = args.get(name: "configuration")
+            let serverVerificationMode: Bool? = args.get(name: "server_verification_mode")!
+            let tls_disable: Bool? = args.get(name: "tls_disable")!
+            let tlsAuthType: String? = args.get(name: "tls_auth_type")!
+            let tlsAuthenticator: Bool? = args.get(name: "tls_authenticator")!
+            var replicatorConfig: ReplicatorConfiguration
+            var replicatorType = ReplicatorType.pushAndPull
+            var wsPort: String?
+            let maxRetries: String? = args.get(name: "max_retries")
+            let maxRetryWaitTime: String? = args.get(name: "max_timeout")
+            if let type = replication_type {
+                if type == "push" {
+                    replicatorType = .push
+                } else if type == "pull" {
+                    replicatorType = .pull
+                } else {
+                    replicatorType = .pushAndPull
+                }
+            }
+            
+            if tls_disable != true {
+               wsPort = "wss"
+            } else {
+                wsPort = "ws"
+            }
+
+            let url = URL(string: "\(wsPort ?? "ws")://\(host):\(port)/\(serverDBName)")!
+            if endPointType == "URLEndPoint"{
+                let urlEndPoint: URLEndpoint = URLEndpoint(url: url)
+                print(urlEndPoint)
+                replicatorConfig = ReplicatorConfiguration(target: urlEndPoint)
+            }
+            else{
+                let endpoint = MessageEndpoint(uid: url.absoluteString, target: url, protocolType: ProtocolType.byteStream, delegate: self)
+                replicatorConfig = ReplicatorConfiguration(target: endpoint)
+            }
+            
+            if auth != nil {
+               replicatorConfig.authenticator = auth
+            }
+            if serverVerificationMode != false {
+                replicatorConfig.acceptOnlySelfSignedServerCertificate = true
+            }
+            
+            if tlsAuthType == "self_signed" {
+                let certData = try! dataFromResource(name: "identity/certs", ofType: "p12")
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
+                let identity = try! TLSIdentity.importIdentity(withData: certData, password: "123", label: "CBL-Cert")
+                replicatorConfig.pinnedServerCertificate = identity.certs[0]
+                print("======= pinned the certs to Replicator ============")
+            }
+            if tlsAuthenticator != false {
+                let clientCertData = try dataFromResource(name: "identity/client", ofType: "p12")
+                try! TLSIdentity.deleteIdentity(withLabel: "CBL-Cert")
+                let identity = try TLSIdentity.importIdentity(withData: clientCertData, password: "123", label: "CBL-Cert")
+                replicatorConfig.authenticator = ClientCertificateAuthenticator(identity: identity)
+                print("====== Added Autheticator to Replicator ========")
+            }
+
+            if continuous != nil {
+                replicatorConfig.continuous = continuous!
+            }
+            if let heartbeat = heartbeat, let heartbeatDouble = Double(heartbeat) {
+                replicatorConfig.heartbeat = heartbeatDouble
+            }
+            if let maxRetries = maxRetries, let maxRetryInInt = UInt(maxRetries) {
+                replicatorConfig.maxAttempts = maxRetryInInt
+            }
+            if let maxRetryWaitTime = maxRetryWaitTime, let maxRetryWaitTimeDouble = Double(maxRetryWaitTime) {
+                replicatorConfig.maxAttemptWaitTime = maxRetryWaitTimeDouble
+            }
+            replicatorConfig.replicatorType = replicatorType
+            if let col = collections {
+                if let colConfig = collectionConfigurations {
+                    if colConfig.count == 1 {
+                        replicatorConfig.addCollections(col, config: colConfig[0])
+                    }
+                    else {
+                        assert(colConfig.count == col.count)
+                        for (i, j) in colConfig.enumerated() {
+                            replicatorConfig.addCollection(col[i], config: j)
+                        }
+                    }
+                }
+                else {
+                    replicatorConfig.addCollections(col)
+                }
+            }
+            let replicator: Replicator = Replicator(config: replicatorConfig)
+            return replicator
             
         case "peerToPeer_configure":
             let host: String = args.get(name:"host")!

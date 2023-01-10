@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -810,6 +810,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
@@ -839,6 +840,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
@@ -1033,6 +1035,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_SWIFT_FLAGS = "-DCOUCHBASE_ENTERPRISE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1167,6 +1170,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				OTHER_SWIFT_FLAGS = "-DCOUCHBASE_ENTERPRISE";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";

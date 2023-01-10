@@ -48,7 +48,7 @@ public class DatabaseRequestHandler {
             let document: Document = (args.get(name:"document"))!
 
             do {
-                try database.deleteDocument(document)
+                try database.defaultCollection()?.delete(document: document)
             } catch {
                 return error
             }
@@ -59,9 +59,9 @@ public class DatabaseRequestHandler {
 
             try database.inBatch {
                 for id in doc_ids {
-                    let document: Document = database.document(withID: id)!
+                    let document: Document? = try! database.defaultCollection()?.document(id: id)
                     do {
-                        try! database.deleteDocument(document)
+                        try! database.defaultCollection()?.delete(document: document!)
                     }
                 }
             }
@@ -80,7 +80,7 @@ public class DatabaseRequestHandler {
             let database: Database = (args.get(name:"database"))!
             let name: String = (args.get(name: "name"))!
             
-            try database.deleteIndex(forName: name)
+            try database.defaultCollection()?.deleteIndex(forName: name)
 
         case "database_getName":
             let database: Database = args.get(name:"database")!
@@ -90,12 +90,12 @@ public class DatabaseRequestHandler {
         case "database_getDocument":
             let database: Database = (args.get(name:"database"))!
             let id: String? = args.get(name: "id")
-            return database.document(withID: id!)
+            return try database.defaultCollection()?.document(id: id!)
             
         case "database_save":
             let database: Database = (args.get(name:"database"))!
             let document: MutableDocument = args.get(name:"document")!
-            try database.saveDocument(document)
+            try database.defaultCollection()?.save(document: document)
             
         case "database_saveWithConcurrency":
             let database: Database = (args.get(name:"database"))!
@@ -110,8 +110,8 @@ public class DatabaseRequestHandler {
                     concurrencyType = .lastWriteWins
                 }
             }
-            try! database.saveDocument(document, concurrencyControl: concurrencyType)
-
+            return try! database.defaultCollection()?.save(document: document, concurrencyControl: concurrencyType)
+            
         case "database_deleteWithConcurrency":
             let database: Database = (args.get(name:"database"))!
             let document: Document = (args.get(name:"document"))!
@@ -126,7 +126,7 @@ public class DatabaseRequestHandler {
                 }
             }
             do {
-                try database.deleteDocument(document, concurrencyControl: concurrencyType)
+                return try database.defaultCollection()?.delete(document: document, concurrencyControl: concurrencyType)
             } catch {
                 return error
             }
@@ -135,17 +135,16 @@ public class DatabaseRequestHandler {
         case "database_purge":
             let database: Database = (args.get(name:"database"))!
             let document: MutableDocument = args.get(name:"document")!
-            try! database.purgeDocument(document)
+            try! database.defaultCollection()?.purge(document: document)
             
         case "database_contains":
             let database: Database = (args.get(name:"database"))!
             let id: String = (args.get(name: "id"))!
-
-            return database.document(withID: id) != nil
+            return try database.defaultCollection()?.document(id: id) ?? nil
 
         case "database_getCount":
             let database: Database = (args.get(name:"database"))!
-            return database.count
+            return try database.defaultCollection()?.count
 
         case "database_compact":
             let database: Database = (args.get(name:"database"))!
@@ -157,7 +156,7 @@ public class DatabaseRequestHandler {
             let docId: String? = (args.get(name:"docId"))
             if (docId != nil) {
                 let changeListener = MyDocumentChangeListener()
-                token = database.addDocumentChangeListener(withID: docId!, listener: changeListener.listener)
+                token = try database.defaultCollection()?.addDocumentChangeListener(id: docId!, listener: changeListener.listener)
             } else {
                 let changeListener = MyDatabaseChangeListener()
                 token = database.addChangeListener(changeListener.listener)
