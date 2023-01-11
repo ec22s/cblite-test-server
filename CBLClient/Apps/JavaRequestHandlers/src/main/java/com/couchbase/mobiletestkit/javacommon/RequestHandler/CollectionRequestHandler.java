@@ -3,14 +3,24 @@ package com.couchbase.mobiletestkit.javacommon.RequestHandler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.couchbase.lite.Blob;
 import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.DataSource;
 import com.couchbase.lite.Database;
+import com.couchbase.lite.Expression;
 import com.couchbase.lite.IndexConfiguration;
+import com.couchbase.lite.Limit;
+import com.couchbase.lite.Meta;
+import com.couchbase.lite.Query;
+import com.couchbase.lite.QueryBuilder;
+import com.couchbase.lite.Result;
+import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.Scope;
+import com.couchbase.lite.SelectResult;
 import com.couchbase.lite.ValueIndexConfiguration;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.lite.Collection;
@@ -80,6 +90,66 @@ public class CollectionRequestHandler {
             collectionsNames.add(collectionObject.getName());
         }
         return collectionsNames;
+    }
+
+    public List<String> getDocIds(Args args) throws CouchbaseLiteException {
+        Collection collection = args.get("collection");
+        int limit = args.get("limit");
+        int offset = args.get("offset");
+        Query query = QueryBuilder
+                .select(SelectResult.expression(Meta.id))
+                .from(DataSource.collection(collection))
+                .limit(Expression.intValue(limit), Expression.intValue(offset));
+        List<String> result = new ArrayList<>();
+        ResultSet results = query.execute();
+        for (Result row : results) {
+
+            result.add(row.getString("id"));
+        }
+        return result;
+    }
+
+    public Map<String, Map<String, Object>> getDocuments(Args args) throws CouchbaseLiteException {
+        Collection collection = args.get("collection");
+        List<String> ids = args.get("ids");
+        Map<String, Map<String, Object>> documents = new HashMap<>();
+        for (String id : ids) {
+            Document document = collection.getDocument(id);
+            if (document != null) {
+                Map<String, Object> doc = document.toMap();
+                // looping through the document, replace the Blob with its properties
+                for (Map.Entry<String, Object> entry : doc.entrySet()) {
+                    if (entry.getValue() != null && entry.getValue() instanceof Map<?, ?>) {
+                        if (((Map) entry.getValue()).size() == 0) {
+                            continue;
+                        }
+                        boolean isBlob = false;
+                        Map<?, ?> value = (Map<?, ?>) entry.getValue();
+                        Map<String, Object> newVal = new HashMap<>();
+                        for (Map.Entry<?, ?> item : value.entrySet()) {
+                            if (item.getValue() != null && item.getValue() instanceof Blob) {
+                                isBlob = true;
+                                Blob b = (Blob) item.getValue();
+                                newVal.put(item.getKey().toString(), b.getProperties());
+                            }
+                        }
+                        if (isBlob) { doc.put(entry.getKey(), newVal); }
+                    }
+                }
+                documents.put(id, doc);
+            }
+        }
+        return documents;
+    }
+
+    public void updateDocument(Args args) throws CouchbaseLiteException {
+        Collection collection = args.get("collection");
+        String id = args.get("id");
+        Map<String, Object> data = args.get("data");
+        MutableDocument updatedDoc = collection.getDocument(id).toMutable();
+        Map<String, Object> new_data = this.setDataBlob(data);
+        updatedDoc.setData(new_data);
+        collection.save(updatedDoc);
     }
 
     public long documentCount(Args args) throws CouchbaseLiteException {
