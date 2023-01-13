@@ -42,7 +42,7 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         int port = args.get("port");
         String serverDBName = args.get("serverDBName");
         ArrayList<Collection> collections = args.get("collections");
-        ArrayList<CollectionConfiguration> configuration = args.get("configurations");
+        ArrayList<CollectionConfiguration> configuration = args.get("configuration");
         String replicationType = args.get("replicationType");
         Boolean continuous = args.get("continuous");
         String endPointType = args.get("endPointType");
