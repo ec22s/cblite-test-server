@@ -18,6 +18,9 @@ using namespace nlohmann;
 using namespace std;
 
 #ifdef COUCHBASE_ENTERPRISE
+static void CBLReplicator_EntryDelete(void* ptr) {
+    CBLReplicator_Release(static_cast<CBLReplicator *>(ptr));
+}
 
 static FLSliceResult replicator_encrypt(void* context, FLString documentID, FLDict properties, FLString keyPath, 
     FLSlice input, FLStringResult* algorithm, FLStringResult* kid, CBLError* error) {
@@ -386,7 +389,10 @@ void replicatorConfigurationCollection(json& body, mg_connection* conn) {
                 config->context = context;
             }
 #endif
-    write_serialized_body(conn, memory_map::store(config, CBLReplicatorConfigCollection_EntryDelete));
+    CBLError err;
+    CBLReplicator* repl;
+    TRY((repl = CBLReplicator_Create(config, &err)), err)
+    write_serialized_body(conn, memory_map::store(repl, CBLReplicator_EntryDelete));
 }
 
     void replicatorConfiguration_create(json& body, mg_connection* conn) {

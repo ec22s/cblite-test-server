@@ -218,7 +218,7 @@ public class ReplicatorConfigurationRequestHandler {
                     config.addCollections(col)
                 }
             }
-            return config
+            return Replicator(config: config)
             
         case "replicatorConfiguration_configure":
             let source_db: Database? = args.get(name: "source_db")
