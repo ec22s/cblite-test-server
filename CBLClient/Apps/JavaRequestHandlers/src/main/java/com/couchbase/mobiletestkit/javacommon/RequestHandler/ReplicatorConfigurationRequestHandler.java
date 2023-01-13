@@ -230,7 +230,6 @@ public class ReplicatorConfigurationRequestHandler {
                 throw new Exception("\"Mismatch in number of collections and configurations\"");
             }
         }
-
         return new Replicator(config);
     }
     public ReplicatorConfiguration builderCreate(Args args) throws URISyntaxException {
