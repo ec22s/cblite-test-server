@@ -18,9 +18,6 @@ using namespace nlohmann;
 using namespace std;
 
 #ifdef COUCHBASE_ENTERPRISE
-static void CBLReplicator_EntryDelete(void* ptr) {
-    CBLReplicator_Release(static_cast<CBLReplicator *>(ptr));
-}
 
 static FLSliceResult replicator_encrypt(void* context, FLString documentID, FLDict properties, FLString keyPath, 
     FLSlice input, FLStringResult* algorithm, FLStringResult* kid, CBLError* error) {
@@ -188,6 +185,10 @@ static const CBLDocument* delayed_local_win_conflict_resolution(void *context, F
     this_thread::sleep_for(10s);
 
     return localDocument;
+}
+
+static void CBLReplicator_EntryDelete(void* ptr) {
+    CBLReplicator_Release(static_cast<CBLReplicator *>(ptr));
 }
 
 static void CBLReplicatorConfig_EntryDelete(void* ptr) {
