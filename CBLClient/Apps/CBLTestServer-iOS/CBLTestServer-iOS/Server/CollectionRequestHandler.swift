@@ -7,6 +7,12 @@ import CouchbaseLiteSwift
 public class CollectionRequestHandler {
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
+        case "collection_collection":
+            let database: Database = args.get(name: "database")!
+            let scopeName: String = args.get(name: "scopeName") ?? "_default"
+            let collectionName: String = args.get(name: "collectionName")!
+            return try database.collection(name: collectionName, scope: scopeName)
+            
         case "collection_defaultCollection":
             let database: Database = (args.get(name:"database"))!
             return try database.defaultCollection()
