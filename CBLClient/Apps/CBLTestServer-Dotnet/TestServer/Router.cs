@@ -168,6 +168,8 @@ namespace Couchbase.Lite.Testing
                 ["replicatorConfiguration_setReplicatorType"] = ReplicatorConfigurationMethods.SetReplicatorType,
                 ["replicatorConfiguration_isContinuous"] = ReplicatorConfigurationMethods.IsContinuous,
                 ["replicatorConfiguration_setAutoPurge"] = ReplicatorConfigurationMethods.SetAutoPurge,
+                ["replicatorConfiguration_configureCollection"] = ReplicatorConfigurationMethods.configurationCollection,
+                ["replicatorConfiguration_collection"] = ReplicatorConfigurationMethods.collectionConfigure,
                 ["replicator_changeListenerChangesCount"] = ReplicationMethods.ChangeListenerChangesCount,
                 ["replicator_changeListenerGetChanges"] = ReplicationMethods.ChangeListenerChanges,
                 ["replicator_resetCheckpoint"] = ReplicationMethods.ResetCheckpoint,
@@ -300,6 +302,7 @@ namespace Couchbase.Lite.Testing
                 ["collection_getDocumentExpiration"] = CollectionMethods.getMutableDocument,
                 ["scope_defaultScope"] = ScopeMethods.defaultScope,
                 ["scope_scopeName"] = ScopeMethods.scopeName,
+                ["peerToPeer_configureCollection"] = P2PMethods.configureCollection,
                 ["copy_files"] = CopyFiles,
                 ["release"] = ReleaseObject,
                 ["flushMemory"] = flushMemory
