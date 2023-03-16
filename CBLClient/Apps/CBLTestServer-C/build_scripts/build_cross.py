@@ -148,8 +148,11 @@ if __name__ == '__main__':
     print(f"==== Downloading Couchbase Lite C [{args.os}] {args.version}-{args.bld_num} ====")
     build_system = args.os
     os_x86_64_list = ["debian9-x86_64", "debian10-x86_64", "ubuntu20.04_x64", "raspbian9"]
+    linux_armhf_list= ["raspios10-armhf"]
     if args.os in os_x86_64_list:
         build_system = "linux-x86_64"
+    if args.os in linux_armhf_list:
+        build_system = "linux-armhf"
     zip_filename=f'couchbase-lite-c-{args.edition}-{args.version}-{args.bld_num}-{build_system}.tar.gz'
     urllib.request.urlretrieve(f'http://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-c/{args.version}/{args.bld_num}/{zip_filename}', zip_filename, show_download_progress)
     with tarfile.open(zip_filename, 'r:gz') as tar:
