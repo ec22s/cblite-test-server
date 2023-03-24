@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-    <PackageReference Include="Couchbase.Lite.Enterprise" Version="3.1.0-b0136" />
+    <PackageReference Include="Couchbase.Lite.Enterprise" Version="3.1.0-*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 

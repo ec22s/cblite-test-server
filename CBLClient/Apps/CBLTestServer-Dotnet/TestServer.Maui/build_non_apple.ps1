@@ -1,0 +1,104 @@
+param (
+    [Parameter()][string]$Version,
+    [switch]$Community
+)
+
+function Modify-Packages {
+    $filename = $args[0]
+    $ver = $args[1]
+    $community = $args[2]
+
+    $content = [System.IO.File]::ReadAllLines($filename)
+    $checkNextLine = $false
+    for($i = 0; $i -lt $content.Length; $i++) {
+        $line = $content[$i]
+        $isMatch = $line -match ".*?<PackageReference Include=`"Couchbase\.Lite(.*?)`""
+        if($isMatch) {
+            $oldPackageName = $matches[1]
+            $packageName = $oldPackageName.Replace(".Enterprise", "")
+            if(-Not $community) {
+                $packageName = ".Enterprise" + $packageName;
+            }
+
+            $isMatch = $line -match ".*?Version=`"(.*?)`""
+            if($isMatch) {
+                $oldVersion = $matches[1]
+                $line = $line.Replace("Couchbase.Lite$oldPackageName", "Couchbase.Lite$packageName").Replace($oldVersion, $ver)
+            } else {
+                $checkNextLine = $true
+            }
+            
+            $content[$i] = $line
+        } elseif($checkNextLine) {
+            $isMatch = $line -match ".*?<Version>(.*?)</Version>"
+            if($isMatch) {
+                $oldVersion = $matches[1]
+                $line = $line.Replace($oldVersion, $ver)
+                $checkNextLine = $false
+                $content[$i] = $line
+            } else {
+                $checkNextLine = !$line.Contains("</PackageReference>")
+            }
+        }
+    }
+
+    [System.IO.File]::WriteAllLines($filename, $content)
+}
+
+function Calculate-Version {
+    $version_to_use = (($Version, $env:VERSION -ne $null) -ne '')[0]
+    if($version_to_use -eq '' -or !$version_to_use) {
+        throw "Version not defined for this script!  Either pass it in as -Version or define an environment variable named VERSION"
+    }
+
+    if($version_to_use.Contains("-")) {
+        return $version_to_use
+    }
+
+    return $version_to_use + "-b*"
+}
+
+
+Push-Location $PSScriptRoot
+$fullVersion = Calculate-Version
+$ZipPath = Resolve-Path ".\zips"
+if(-Not (Test-Path $ZipPath)) {
+    New-Item -ItemType Directory $ZipPath 
+}
+
+try {
+    Modify-Packages "$PSScriptRoot\..\TestServer\TestServer.csproj" $fullVersion $Community
+    dotnet restore
+    if($LASTEXITCODE -ne 0) {
+        Write-Error "Restore failed for TestServer.Maui"
+        exit 1
+    }
+
+    Write-Host ""
+    Write-Host "  ************************"
+    Write-Host "  **** Building WinUI ****"
+    Write-Host "  ************************"
+    Write-Host ""
+
+    dotnet build -f net6.0-windows10.0.19041.0 -c Release .\TestServer.Maui.csproj
+    Push-Location ".\bin\Release\net6.0-windows10.0.19041.0\win10-x64\AppPackages\TestServer.Maui_1.0.0.1_Test\"
+    try {
+        7z a -r ${ZipPath}\TestServer.WinUI.zip *
+        7z a ${ZipPath}\TestServer.WinUI.zip $PSScriptRoot\run.ps1
+        7z a ${ZipPath}\TestServer.WinUI.zip $PSScriptRoot\stop.ps1
+    } finally {
+        Pop-Location
+    }
+
+    Write-Host ""
+    Write-Host "  **************************"
+    Write-Host "  **** Building Android ****"
+    Write-Host "  **************************"
+    Write-Host ""
+
+    dotnet build -f net6.0-android -c Release .\TestServer.Maui.csproj
+    Push-Location ".\bin\Release\net6.0-android\publish"
+    Copy-Item *.apk $ZipPath\TestServer.Android.apk
+} finally {
+    Pop-Location
+}
