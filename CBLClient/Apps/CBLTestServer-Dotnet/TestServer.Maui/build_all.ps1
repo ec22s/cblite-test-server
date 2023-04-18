@@ -69,7 +69,7 @@ function Build-WinUI {
     Write-Host "  ************************"
     Write-Host ""
 
-    dotnet build -f net6.0-windows10.0.19041.0 -c Release TestServer.Maui.csproj
+    dotnet publish -f net6.0-windows10.0.19041.0 -c Release TestServer.Maui.csproj
     Push-Location ".\bin\Release\net6.0-windows10.0.19041.0\win10-x64\AppPackages\TestServer.Maui_1.0.0.1_Test\"
     try {
         7z a -r ${ZipPath}\TestServer.Maui.WinUI.zip *
