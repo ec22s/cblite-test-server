@@ -99,8 +99,8 @@ function Build-Ios {
     Write-Host "  **********************"
     Write-Host ""
 
-    dotnet build -f net6.0-ios -c Release TestServer.Maui.csproj
-    dotnet build -f net6.0-ios -c Release -r ios-arm64 TestServer.Maui.csproj
+    dotnet publish -f net6.0-ios -c Release TestServer.Maui.csproj
+    dotnet publish -f net6.0-ios -c Release -r ios-arm64 TestServer.Maui.csproj
     Push-Location ".\bin\Release\net6.0-ios\iossimulator-x64"
     zip -r $ZipPath/TestServer.Maui.iOS.zip TestServer.Maui.app
     Pop-Location
@@ -117,7 +117,7 @@ function Build-Mac {
     Write-Host "  *************************"
     Write-Host ""
 
-    dotnet build -f net6.0-maccatalyst -c Release TestServer.Maui.csproj
+    dotnet publish -f net6.0-maccatalyst -c Release TestServer.Maui.csproj
     Push-Location ".\bin\Release\net6.0-maccatalyst\maccatalyst-x64"
     zip -r $ZipPath/TestServer.Maui.macOS.zip TestServer.Maui.app
     Pop-Location
