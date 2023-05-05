@@ -1,12 +1,13 @@
 package com.couchbase.mobiletestkit.javacommon.RequestHandler;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.couchbase.lite.Collection;
 import com.couchbase.lite.MaintenanceType;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.Context;
@@ -33,6 +34,7 @@ import com.couchbase.lite.QueryBuilder;
 import com.couchbase.lite.Result;
 import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.SelectResult;
+import com.couchbase.lite.Scope;
 
 public class DatabaseRequestHandler {
     private static final String TAG = "DATABASE";

@@ -9,7 +9,10 @@ import java.net.URI;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import com.couchbase.lite.ClientCertificateAuthenticator;
 import com.couchbase.lite.ConflictResolver;
 import com.couchbase.lite.CouchbaseLiteException;
@@ -34,7 +37,120 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
         replicator.start();
         Log.i(TAG, "Replication started .... ");
     }
+    public Replicator configureCollection(Args args) throws Exception {
+        String ipaddress = args.get("host");
+        int port = args.get("port");
+        String serverDBName = args.get("serverDBName");
+        ArrayList<Collection> collections = args.get("collections");
+        ArrayList<CollectionConfiguration> configuration = args.get("configuration");
+        String replicationType = args.get("replicationType");
+        Boolean continuous = args.get("continuous");
+        String endPointType = args.get("endPointType");
+        Boolean disableTls = args.get("tls_disable");
+        String tlsAuthType = args.get("tls_auth_type");
+        Boolean serverVerificationMode = args.get("server_verification_mode");
+        Boolean tlsAuthenticator = args.get("tls_authenticator");
+        String heartbeat = args.get("heartbeat");
+        String maxRetries = args.get("max_retries");
+        String maxTimeout = args.get("max_timeout");
 
+        ReplicatorConfiguration config;
+        Replicator replicator;
+        URI uri;
+        if (replicationType == null) {
+            replicationType = "push_pull";
+        }
+        replicationType = replicationType.toLowerCase();
+        ReplicatorType replType;
+        if (replicationType.equals("push")) {
+            replType = ReplicatorType.PUSH;
+        } else if (replicationType.equals("pull")) {
+            replType = ReplicatorType.PULL;
+        } else {
+            replType = ReplicatorType.PUSH_AND_PULL;
+        }
+        Log.i(TAG, "serverDBName is " + serverDBName);
+        if (disableTls) {
+            uri = new URI("ws://" + ipaddress + ":" + port + "/" + serverDBName);
+        } else {
+            uri = new URI("wss://" + ipaddress + ":" + port + "/" + serverDBName);
+        }
+        if (endPointType.equals("URLEndPoint")) {
+            URLEndpoint urlEndPoint = new URLEndpoint(uri);
+            config = new ReplicatorConfiguration(urlEndPoint);
+        } else if (endPointType.equals("MessageEndPoint")) {
+            MessageEndpoint messageEndPoint = new MessageEndpoint("p2p", uri, ProtocolType.BYTE_STREAM, this);
+            config = new ReplicatorConfiguration(messageEndPoint);
+        } else {
+            throw new IllegalArgumentException("Incorrect EndPoint type");
+        }
+        config.setType(replType);
+        if (continuous != null) {
+            config.setContinuous(continuous);
+        } else {
+            config.setContinuous(false);
+        }
+        if (heartbeat != null && !heartbeat.trim().isEmpty()){
+            config.setHeartbeat(Integer.parseInt(heartbeat));
+        }
+
+        if (maxRetries != null && !maxRetries.trim().isEmpty()) {
+            config.setMaxAttempts(Integer.parseInt(maxRetries));
+        }
+
+        if (maxTimeout != null && !maxTimeout.trim().isEmpty()) {
+            config.setMaxAttemptWaitTime(Integer.parseInt(maxTimeout));
+        }
+        if (args.get("basic_auth") != null) {
+            config.setAuthenticator(args.get("basic_auth"));
+        }
+
+        if (tlsAuthType.equals("self_signed")) {
+            TLSIdentity tlsIdentity = RequestHandlerDispatcher.context.getSelfSignedIdentity();
+            if (tlsIdentity != null) {
+                List<Certificate> certs = tlsIdentity.getCerts();
+                X509Certificate cert = (X509Certificate) certs.get(0);
+                config.setPinnedServerCertificate(cert.getEncoded());
+                Log.i(TAG, "Pinned the certs ... .... ");
+            }
+        }
+
+        if (tlsAuthenticator) {
+            TLSIdentity identity = RequestHandlerDispatcher.context.getClientCertsIdentity();
+            ClientCertificateAuthenticator clientCertificateAuthenticator = new ClientCertificateAuthenticator(identity);
+            config.setAuthenticator(clientCertificateAuthenticator);
+        }
+
+        if (serverVerificationMode) {
+            config.setAcceptOnlySelfSignedServerCertificate(true);
+        }
+        if (collections != null) {
+            if (configuration != null && configuration.size()>1 && configuration.size() == collections.size()) {
+                for (int i = 0; i < collections.size(); i++) {
+                    if (i< configuration.size()) {
+                        config.addCollection(collections.get(i), configuration.get(i));
+                    }
+                    else {
+                        config.addCollection(collections.get(i), null);
+                    }
+                }
+            }
+            else if (configuration != null && configuration.size()==1 && collections.size()>1) {
+                config.addCollections(collections, configuration.get(0));
+            }
+            else if (configuration != null && configuration.size() == 1 && collections.size() ==1) {
+                config.addCollections(collections, configuration.get(0));
+            }
+            else if(configuration == null) {
+                config.addCollections(collections, null);
+            }
+            else {
+                throw new Exception("\"Mismatch in number of collections and configurations\"");
+            }
+        }
+        replicator = new Replicator(config);
+        return replicator;
+    }
     public Replicator configure(Args args) throws Exception {
         String ipaddress = args.get("host");
         int port = args.get("port");
@@ -213,8 +329,19 @@ public class PeerToPeerRequestHandler implements MessageEndpointDelegate {
 
     public URLEndpointListener serverStart(Args args) throws IOException, CouchbaseLiteException {
         int port = args.get("port");
+        URLEndpointListenerConfiguration config;
         Database sourceDb = args.get("database");
-        URLEndpointListenerConfiguration config = new URLEndpointListenerConfiguration(sourceDb);
+        ArrayList<Collection> collectionsList = args.get("collections");
+        Set<Collection> collections = new HashSet<>(collectionsList);
+        if (collections.size() != 0) {
+            config = new URLEndpointListenerConfiguration(collections);
+        }
+        else if (sourceDb != null) {
+            config = new URLEndpointListenerConfiguration(sourceDb);
+        }
+        else {
+            throw new IllegalArgumentException("Provide collections array or database");
+        }
         Boolean disableTls = args.get("tls_disable");
         Boolean tlsAuthenticator = args.get("tls_authenticator");
         String tlsAuthType = args.get("tls_auth_type");

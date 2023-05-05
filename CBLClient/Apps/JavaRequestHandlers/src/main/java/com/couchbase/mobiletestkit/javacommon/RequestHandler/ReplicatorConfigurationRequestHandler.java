@@ -7,17 +7,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import com.couchbase.lite.Collection;
+import com.couchbase.lite.CollectionConfiguration;
+import com.couchbase.lite.Endpoint;
+import com.couchbase.lite.Replicator;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.mobiletestkit.javacommon.RequestHandlerDispatcher;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
 import com.couchbase.lite.Authenticator;
 import com.couchbase.lite.Conflict;
 import com.couchbase.lite.ConflictResolver;
-import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.DatabaseEndpoint;
 import com.couchbase.lite.Document;
@@ -33,7 +38,201 @@ import static java.lang.Thread.sleep;
 
 public class ReplicatorConfigurationRequestHandler {
     private static final String TAG = "REPLCONFIGHANDLER";
+    public void addCollection(Args args) throws Exception {
+        ReplicatorConfiguration config = args.get("replicatorConfiguration");
+        Collection collection = args.get("collections");
+        CollectionConfiguration configuration = args.get("configurations");
+        if (configuration != null && collection != null) {
+            config.addCollection(collection, configuration);
+        }
+        else if (collection != null) {
+            config.addCollection(collection, null);
+        }
+        return;
+    }
 
+    public CollectionConfiguration collection(Args args) throws Exception {
+        Boolean pull_filter = args.get("pull_filter");
+        Boolean push_filter = args.get("push_filter");
+        String conflict_resolver = args.get("conflictResolver");
+        String filter_callback_func = args.get("filter_callback_func");
+        List<String> channels = args.get("channels");
+        List<String> documentIds = args.get("documentIDs");
+        CollectionConfiguration config = new CollectionConfiguration();
+        if (channels != null) {
+            config.setChannels(channels);
+        }
+        if (documentIds != null) {
+            config.setDocumentIDs(documentIds);
+        }
+        if (push_filter) {
+            switch (filter_callback_func) {
+                case "boolean":
+                    config.setPushFilter(new ReplicatorBooleanFilterCallback());
+                    break;
+                case "deleted":
+                    config.setPushFilter(new ReplicatorDeletedFilterCallback());
+                    break;
+                case "access_revoked":
+                    config.setPushFilter(new ReplicatorAccessRevokedFilterCallback());
+                    break;
+                default:
+                    config.setPushFilter(new DefaultReplicatorFilterCallback());
+                    break;
+            }
+        }
+        if (pull_filter) {
+            switch (filter_callback_func) {
+                case "boolean":
+                    config.setPullFilter(new ReplicatorBooleanFilterCallback());
+                    break;
+                case "deleted":
+                    config.setPullFilter(new ReplicatorDeletedFilterCallback());
+                    break;
+                case "access_revoked":
+                    config.setPullFilter(new ReplicatorAccessRevokedFilterCallback());
+                    break;
+                default:
+                    config.setPullFilter(new DefaultReplicatorFilterCallback());
+                    break;
+            }
+        }
+        if (conflict_resolver != null) {
+            switch (conflict_resolver) {
+                case "local_wins":
+                    config.setConflictResolver(new LocalWinsCustomConflictResolver());
+                    break;
+                case "remote_wins":
+                    config.setConflictResolver(new RemoteWinsCustomConflictResolver());
+                    break;
+                case "null":
+                    config.setConflictResolver(new NullCustomConflictResolver());
+                    break;
+                case "merge":
+                    config.setConflictResolver(new MergeCustomConflictResolver());
+                    break;
+                case "incorrect_doc_id":
+                    config.setConflictResolver(new IncorrectDocIdConflictResolver());
+                    break;
+                case "delayed_local_win":
+                    config.setConflictResolver(new DelayedLocalWinConflictResolver());
+                    break;
+                case "delete_not_win":
+                    config.setConflictResolver(new DeleteDocConflictResolver());
+                    break;
+                case "exception_thrown":
+                    config.setConflictResolver(new ExceptionThrownConflictResolver());
+                    break;
+                default:
+                    config.setConflictResolver(ConflictResolver.DEFAULT);
+                    break;
+            }
+        }
+        else {
+            config.setConflictResolver(ConflictResolver.DEFAULT);
+        }
+        return config;
+    }
+
+    public Replicator configureCollection(Args args) throws Exception {
+        Boolean continuous = args.get("continuous");
+        URI target_url = null;
+        String max_retries = args.get("max_retries");
+        String max_timeout = args.get("max_timeout");
+        String heartbeat = args.get("heartbeat");
+        Authenticator authenticator = args.get("authenticator");
+        String replication_type = args.get("replication_type");
+        Map<String, String> headers = args.get("headers");
+        target_url = new URI((String) args.get("target_url"));
+        Database target_db = null;
+        if (args.get("target_db") != null) {
+            target_db = args.get("target_db");
+        }
+        String auto_purge = args.get("auto_purge");
+        String pinnedservercert = args.get("pinnedservercert");
+        List<com.couchbase.lite.Collection> collections = args.get("collections");
+        List<CollectionConfiguration> configuration = args.get("configuration");
+        if (replication_type == null) {
+            replication_type = "push_pull";
+        }
+        replication_type = replication_type.toLowerCase();
+        ReplicatorType replType;
+        if (replication_type.equals("push")) {
+            replType = ReplicatorType.PUSH;
+        }
+        else if (replication_type.equals("pull")) {
+            replType = ReplicatorType.PULL;
+        }
+        else {
+            replType = ReplicatorType.PUSH_AND_PULL;
+        }
+        ReplicatorConfiguration config = null;
+        Endpoint target = new URLEndpoint((target_url));
+        if (target_db != null) {
+            target = new DatabaseEndpoint(target_db);
+            config = new ReplicatorConfiguration(target);
+        }
+        if (target == null) {
+            throw new Exception("\"Target Url or Target Database is required\"");
+        }
+        config = new ReplicatorConfiguration(target);
+        config.setType(replType);
+        if( continuous != null) {
+            config.setContinuous(continuous);
+        }
+        else {
+            config.setContinuous((false));
+        }
+        if (headers != null) {
+            config.setHeaders(headers);
+        }
+        if(authenticator != null) {
+            config.setAuthenticator(authenticator);
+        }
+        if(heartbeat != null) {
+            Integer heartBeat = Integer.parseInt(heartbeat);
+            config.setHeartbeat(heartBeat);
+        }
+        if (max_retries != null) {
+            config.setMaxAttempts(Integer.parseInt(max_retries));
+        }
+        if (auto_purge != null) {
+            boolean autoPurge = auto_purge.toLowerCase() == "enabled";
+            config.setAutoPurgeEnabled(autoPurge);
+        }
+        if (max_timeout != null) {
+            Integer maxTimeout = Integer.parseInt(max_timeout);
+            config.setMaxAttemptWaitTime(maxTimeout);
+        }
+        Integer size_collection = collections.size();
+        Integer size_configuration = configuration.size();
+        if (collections != null) {
+            if (configuration.size()>1 && configuration.size() == collections.size()) {
+                for (int i = 0; i < collections.size(); i++) {
+                    if (i< configuration.size()) {
+                        config.addCollection(collections.get(i), configuration.get(i));
+                    }
+                    else {
+                        config.addCollection(collections.get(i), null);
+                    }
+                }
+            }
+            else if (configuration.size()==1 && collections.size()>1) {
+                config.addCollections(collections, configuration.get(0));
+            }
+            else if (configuration.size() == 1 && collections.size() ==1) {
+                config.addCollections(collections, configuration.get(0));
+            }
+            else if(configuration == null) {
+                config.addCollections(collections, null);
+            }
+            else {
+                throw new Exception("\"Mismatch in number of collections and configurations\"");
+            }
+        }
+        return new Replicator(config);
+    }
+    
     public ReplicatorConfiguration builderCreate(Args args) throws URISyntaxException {
         Database sourceDb = args.get("sourceDb");
         Database targetDb = args.get("targetDb");

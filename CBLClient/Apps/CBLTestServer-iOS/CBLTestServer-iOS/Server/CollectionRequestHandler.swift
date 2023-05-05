@@ -7,6 +7,12 @@ import CouchbaseLiteSwift
 public class CollectionRequestHandler {
     public func handleRequest(method: String, args: Args) throws -> Any? {
         switch method {
+        case "collection_collection":
+            let database: Database = args.get(name: "database")!
+            let scopeName: String = args.get(name: "scopeName") ?? "_default"
+            let collectionName: String = args.get(name: "collectionName")!
+            return try database.collection(name: collectionName, scope: scopeName)
+            
         case "collection_defaultCollection":
             let database: Database = (args.get(name:"database"))!
             return try database.defaultCollection()
@@ -32,6 +38,14 @@ public class CollectionRequestHandler {
             }
             return names
             
+        case "collection_documentCount":
+            let collection: Collection = (args.get(name: "collection"))!
+            return collection.count
+            
+        case "collection_collectionScope":
+            let collection: Collection = args.get(name: "collection")!
+            return collection.scope
+            
         case "collection_collectionInstances":
             let scope: String = (args.get(name:"scopeName")) ?? "_default"
             let database: Database = (args.get(name:"database"))!
@@ -53,10 +67,62 @@ public class CollectionRequestHandler {
             let collection : Collection = (args.get(name: "collection"))!
             return try collection.document(id: docId)
         
+        case "collection_getDocuments":
+            let collection: Collection = args.get(name:"collection")!
+            let ids: [String] = args.get(name:"ids")!
+            var documents = [String: [String: Any]]()
+
+            for id in ids {
+                let document: Document? = try collection.document(id: id)
+                if document != nil{
+                    var dict = document!.toDictionary()
+                    for (key, value) in dict {
+                        if let list = value as? Dictionary<String, Blob> {
+                            var item = Dictionary<String, Any>()
+                            for (k, v) in list {
+                                item[k] = v.properties
+                            }
+                            dict[key] = item
+                        }
+                    }
+                    documents[id] = dict
+                }
+            }
+
+            return documents
+        
+        case "collection_updateDocument":
+            let collection: Collection = args.get(name: "collection")!
+            let data: Dictionary<String, Any> = args.get(name: "data")!
+            let docId: String = args.get(name: "id")!
+            let updated_doc = try collection.document(id: docId)!.toMutable()
+            let new_data: Dictionary<String, Any> = setDataBlob(data)
+            
+            updated_doc.setData(new_data)
+            try! collection.save(document: updated_doc)
+            
         case "collection_deleteDocument":
             let document: Document = (args.get(name: "document"))!
             let collection: Collection = (args.get(name: "collection"))!
             try collection.delete(document: document)
+            
+        case "collection_getDocIds":
+            let collection: Collection = args.get(name:"collection")!
+            let limit: Int = args.get(name:"limit")!
+            let offset: Int = args.get(name:"offset")!
+            let query = QueryBuilder
+                .select(SelectResult.expression(Meta.id))
+                .from(DataSource.collection(collection))
+                .limit(Expression.int(limit), offset:Expression.int(offset))
+
+            var result: [String] = []
+            do {
+                for row in try query.execute() {
+                    result.append(row.string(forKey: "id")!)
+                }
+            }
+
+            return result
 
         case "collection_purgeDocument":
             let document: Document = (args.get(name: "document"))!

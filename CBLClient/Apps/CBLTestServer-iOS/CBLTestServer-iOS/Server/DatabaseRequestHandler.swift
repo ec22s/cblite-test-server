@@ -90,7 +90,7 @@ public class DatabaseRequestHandler {
         case "database_getDocument":
             let database: Database = (args.get(name:"database"))!
             let id: String? = args.get(name: "id")
-            return database.document(withID: id!)
+            return try database.document(withID: id!)
             
         case "database_save":
             let database: Database = (args.get(name:"database"))!
@@ -111,7 +111,7 @@ public class DatabaseRequestHandler {
                 }
             }
             try! database.saveDocument(document, concurrencyControl: concurrencyType)
-
+            
         case "database_deleteWithConcurrency":
             let database: Database = (args.get(name:"database"))!
             let document: Document = (args.get(name:"document"))!
@@ -140,12 +140,11 @@ public class DatabaseRequestHandler {
         case "database_contains":
             let database: Database = (args.get(name:"database"))!
             let id: String = (args.get(name: "id"))!
-
-            return database.document(withID: id) != nil
+            return try database.document(withID: id) != nil
 
         case "database_getCount":
             let database: Database = (args.get(name:"database"))!
-            return database.count
+            return try database.count
 
         case "database_compact":
             let database: Database = (args.get(name:"database"))!
@@ -157,7 +156,7 @@ public class DatabaseRequestHandler {
             let docId: String? = (args.get(name:"docId"))
             if (docId != nil) {
                 let changeListener = MyDocumentChangeListener()
-                token = database.addDocumentChangeListener(withID: docId!, listener: changeListener.listener)
+                token = try database.addDocumentChangeListener(withID: docId!, listener: changeListener.listener)
             } else {
                 let changeListener = MyDatabaseChangeListener()
                 token = database.addChangeListener(changeListener.listener)
