@@ -16,7 +16,7 @@ ext {
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
-    ndkVersion "25.0.8775105"
+    ndkVersion "25.1.8937393"
 
     defaultConfig {
         applicationId "com.couchbase.TestServerApp"
@@ -60,7 +60,14 @@ android {
 
 
     buildTypes {
+        debug {
+            debuggable true
+        }
+        customDebuggableBuildType {
+            debuggable true
+        }
         release {
+            debuggable true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config

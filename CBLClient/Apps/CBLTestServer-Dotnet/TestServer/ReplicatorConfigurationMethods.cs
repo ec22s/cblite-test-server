@@ -43,6 +43,240 @@ namespace Couchbase.Lite.Testing
 {
     public class ReplicatorConfigurationMethods
     {
+
+        public static void collectionConfigure([NotNull] NameValueCollection args,
+                                                     [NotNull] IReadOnlyDictionary<string, object> postBody,
+                                                     [NotNull] HttpListenerResponse response)
+        {
+            CollectionConfiguration config = new CollectionConfiguration();
+            String filter_callback_func = postBody["filter_callback_func"].ToString();
+            if (postBody["push_filter"].Equals(true))
+            {
+                switch (filter_callback_func)
+                {
+                    case "boolean":
+                        config.PushFilter = _replicator_boolean_filter_callback;
+                        break;
+                    case "deleted":
+                        config.PushFilter = _replicator_deleted_filter_callback;
+                        break;
+                    case "access_revoked":
+                        config.PushFilter = _replicator_access_revoked_filter_callback;
+                        break;
+                    default:
+                        config.PushFilter = _default_replicator_filter_callback;
+                        break;
+                }
+            }
+            if (postBody["pull_filter"].Equals(true))
+            {
+                switch (filter_callback_func)
+                {
+                    case "boolean":
+                        config.PullFilter = _replicator_boolean_filter_callback;
+                        break;
+                    case "deleted":
+                        config.PullFilter = _replicator_deleted_filter_callback;
+                        break;
+                    case "access_revoked":
+                        config.PullFilter = _replicator_access_revoked_filter_callback;
+                        break;
+                    default:
+                        config.PullFilter = _default_replicator_filter_callback;
+                        break;
+                }
+            }
+            switch (postBody["conflict_resolver"].ToString())
+            {
+                
+                case "local_wins":
+                    config.ConflictResolver = new LocalWinsCustomConflictResolver();
+                    break;
+                case "remote_wins":
+                    config.ConflictResolver = new RemoteWinsCustomConflictResolver();
+                    break;
+                case "null":
+                    config.ConflictResolver = new NullCustomConflictResolver();
+                    break;
+                case "merge":
+                    config.ConflictResolver = new MergeCustomConflictResolver();
+                    break;
+                case "incorrect_doc_id":
+                    config.ConflictResolver = new IncorrectDocIdConflictResolver();
+                    break;
+                case "delayed_local_win":
+                    config.ConflictResolver = new DelayedLocalWinConflictResolver();
+                    break;
+                case "delete_not_win":
+                    config.ConflictResolver = new DeleteDocConflictResolver();
+                    break;
+                case "exception_thrown":
+                    config.ConflictResolver = new ExceptionThrownConflictResolver();
+                    break;
+                default:
+                    config.ConflictResolver = ConflictResolver.Default;
+                    break;
+
+            }
+            if (postBody.ContainsKey("channels"))
+            {
+                List<object> channels = (List<object>)postBody["channels"];
+                config.Channels = channels.Cast<string>().ToList();
+            }
+            if (postBody.ContainsKey("documentIDs"))
+            {
+                List<object> documentIDs = (List<object>)postBody["documentIDs"];
+                config.DocumentIDs = documentIDs.Cast<string>().ToList();
+            }
+            response.WriteBody(MemoryMap.Store(config));
+        }
+
+        public static void configurationCollection([NotNull] NameValueCollection args,
+                                                     [NotNull] IReadOnlyDictionary<string, object> postBody,
+                                                     [NotNull] HttpListenerResponse response)
+        {
+            ReplicatorConfiguration config = null;
+            Assembly _assembly;
+            Stream imageStream;
+            StreamReader _textStreamReader;
+            var collections_list = (List<object>)postBody["collections"];
+            List<String> collections_string = collections_list.Cast<string>().ToList();
+            List<Collection> collections= new List<Collection>();
+            foreach(var col in collections_string)
+            {
+                collections.Add(MemoryMap.Get<Collection>(col));
+            }
+            List<CollectionConfiguration> configurations = null;
+            if (postBody.ContainsKey("configuration"))
+            {
+                List<object> configuration_list = (List<object>)postBody["configuration"];
+                List<String> configuration_string = configuration_list.Cast<string>().ToList();
+                foreach(var conf in configuration_string)
+                {
+                    configurations.Add(MemoryMap.Get<CollectionConfiguration>(conf));
+                }
+            }
+            if (postBody.ContainsKey("target_url"))
+            {
+                Uri uri = new Uri(postBody["target_url"].ToString());
+                URLEndpoint targetUrl = new URLEndpoint(uri);
+                config = new ReplicatorConfiguration(targetUrl);
+            }
+            if (postBody.ContainsKey("continuous"))
+            {
+                config.Continuous = Convert.ToBoolean(postBody["continuous"]);
+            }
+            if (postBody.ContainsKey("authenticator"))
+            {
+                Authenticator authenticator = MemoryMap.Get<Authenticator>(postBody["authenticator"].ToString());
+                config.Authenticator = authenticator;
+            }
+            if (postBody.ContainsKey("headers"))
+            {
+                Dictionary<String, String> headers = new Dictionary<string, string>();
+                Dictionary<String, object> header_object = (Dictionary<String, Object>)postBody["headers"];
+                foreach (KeyValuePair<string, object> keyValuePair in header_object)
+                {
+                    headers.Add(keyValuePair.Key, keyValuePair.Value.ToString());
+                }
+                config.Headers = headers;
+            }
+            if (postBody.ContainsKey("heartbeat"))
+            {
+                String heartbeat = postBody["heartbeat"].ToString();
+
+                if (!String.IsNullOrEmpty(heartbeat.Trim()))
+                {
+                    config.Heartbeat = new System.TimeSpan(long.Parse(heartbeat) * 10000000);
+                }
+            }
+
+            if (postBody.ContainsKey("max_retries"))
+            {
+                String maxRetries = postBody["max_retries"].ToString();
+
+                if (!String.IsNullOrEmpty(maxRetries.Trim()))
+                {
+                    config.MaxAttempts = int.Parse(maxRetries);
+                }
+            }
+
+            if (postBody.ContainsKey("max_timeout"))
+            {
+                String maxRetryWaitTime = postBody["max_timeout"].ToString();
+                if (!String.IsNullOrEmpty(maxRetryWaitTime.Trim()))
+                {
+                    config.MaxAttemptsWaitTime = new System.TimeSpan(long.Parse(maxRetryWaitTime) * 10000000);
+                }
+            }
+            if (postBody.ContainsKey("auto_purge"))
+            {
+                String auto_purge = postBody["auto_purge"].ToString();
+                if (auto_purge.Equals("disabled", StringComparison.OrdinalIgnoreCase))
+                {
+                    config.EnableAutoPurge = false;
+                }
+                if (auto_purge.Equals("enabled", StringComparison.OrdinalIgnoreCase))
+                {
+                    config.EnableAutoPurge = true;
+                }
+                // leave CBLite default if no proper value set
+            }
+
+            if (postBody.ContainsKey("pinnedservercert"))
+            {
+                var cert_file = postBody["pinnedservercert"].ToString();
+                _assembly = Assembly.GetExecutingAssembly();
+                _textStreamReader = new StreamReader(_assembly.GetManifestResourceStream("TestServer." + cert_file + ".pem"));
+
+                byte[] cert = System.Text.Encoding.UTF8.GetBytes(_textStreamReader.ReadToEnd());
+                config.PinnedServerCertificate = new X509Certificate2(cert);
+            }
+
+            if (postBody.ContainsKey("replication_type"))
+            {
+                var replicatorType = postBody["replication_type"].ToString().ToLower();
+                if (replicatorType == "push")
+                {
+                    config.ReplicatorType = ReplicatorType.Push;
+                }
+                else if (replicatorType == "pull")
+                {
+                    config.ReplicatorType = ReplicatorType.Pull;
+                }
+                else
+                {
+                    config.ReplicatorType = ReplicatorType.PushAndPull;
+                }
+            }
+            if (collections.Count() > 0)
+            {
+                if(configurations.Count() != 0)
+                {
+                    if(collections.Count() == configurations.Count() && collections.Count()>1)
+                    {
+                        for ( int i=0;i<collections.Count();i++)
+                        {
+                            config.AddCollection(collections[i], configurations[i]);
+                        }
+                    }
+                    else if(collections.Count() == 1 && configurations.Count() ==1)
+                    {
+                        config.AddCollection(collections[0], configurations[0]);
+                    }
+                    else
+                    {
+                        throw new Exception("illegal number of collections and configuration combination");
+                    }
+                }
+                else
+                {
+                    config.AddCollections(collections);
+                }
+            }
+            Replicator repl = new Replicator(config);
+            response.WriteBody(MemoryMap.Store(repl));
+        }
         public static void Create([NotNull] NameValueCollection args,
                                                      [NotNull] IReadOnlyDictionary<string, object> postBody,
                                                      [NotNull] HttpListenerResponse response)

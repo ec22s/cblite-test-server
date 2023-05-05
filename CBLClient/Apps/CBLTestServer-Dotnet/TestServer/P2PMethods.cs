@@ -47,10 +47,28 @@ namespace Couchbase.Lite.Testing
                                 [NotNull] HttpListenerResponse response)
         {
             ResetStatus();
+            URLEndpointListenerConfiguration urlEndpointListenerConfig = null;
+            List<Collection> collections = new List<Collection>();
+            if (postBody.ContainsKey("collections"))
+            {
+                var collections_list = (List<object>)postBody["collections"];
+                List<String> collections_string = collections_list.Cast<string>().ToList();
+                foreach (var col in collections_string)
+                {
+                    collections.Add(MemoryMap.Get<Collection>(col));
+                }
+            }
             
             Database db = MemoryMap.Get<Database>(postBody["database"].ToString());
             int port = (int)postBody["port"];
-            URLEndpointListenerConfiguration urlEndpointListenerConfig = new URLEndpointListenerConfiguration(db);
+            if (collections.Count() > 0)
+            {
+                urlEndpointListenerConfig = new URLEndpointListenerConfiguration(collections);
+            }
+            else
+            {
+                urlEndpointListenerConfig = new URLEndpointListenerConfiguration(db);
+            }
             string tlsAuthType = postBody["tls_auth_type"].ToString();
             Boolean disableTls = Convert.ToBoolean(postBody[V].ToString());
             Boolean tls_authenticator = Convert.ToBoolean(postBody["tls_authenticator"].ToString());
@@ -145,6 +163,139 @@ namespace Couchbase.Lite.Testing
             response.WriteBody((int)port);
         }
 
+        public static void configureCollection([NotNull] NameValueCollection args,
+                                 [NotNull] IReadOnlyDictionary<string, object> postBody,
+                                 [NotNull] HttpListenerResponse response)
+        {
+      
+            string targetIP = postBody["host"].ToString();
+            int port = (int)postBody["port"];
+            string remote_DBName = postBody["serverDBName"].ToString();
+            string replicationType = postBody["replicationType"].ToString();
+            string endPointType = postBody["endPointType"].ToString();
+            Boolean tls_disable = Convert.ToBoolean(postBody["tls_disable"].ToString());
+            ReplicatorConfiguration config = null;
+            string tlsAuthType = postBody["tls_auth_type"].ToString();
+            Boolean tls_authenticator = Convert.ToBoolean(postBody["tls_authenticator"].ToString());
+            Boolean server_verification_mode = Convert.ToBoolean(postBody["server_verification_mode"].ToString());
+
+            Uri host;
+            if (tls_disable == true)
+            {
+                host = new Uri("ws://" + targetIP + ":" + port);
+            }
+            else
+            {
+                host = new Uri("wss://" + targetIP + ":" + port);  
+            }
+            var dbUrl = new Uri(host, remote_DBName);
+            AddStatus("Connecting " + host + "...");
+            if (endPointType == "URLEndPoint")
+            {
+                var _endpoint = new URLEndpoint(dbUrl);
+                config = new ReplicatorConfiguration(_endpoint);
+
+            }
+            else
+            {
+                TcpMessageEndpointDelegate endpointDelegate = new TcpMessageEndpointDelegate();
+                var _endpoint = new MessageEndpoint(dbUrl.AbsoluteUri, dbUrl, ProtocolType.ByteStream, endpointDelegate);
+                config = new ReplicatorConfiguration(_endpoint);
+            }
+            if (replicationType == "push")
+            {
+                config.ReplicatorType = ReplicatorType.Push;
+            }
+            else if (replicationType == "pull")
+            {
+                config.ReplicatorType = ReplicatorType.Pull;
+            }
+            else
+            {
+                config.ReplicatorType = ReplicatorType.PushAndPull;
+            }
+
+            if (postBody.ContainsKey("basic_auth"))
+            {
+                config.Authenticator = MemoryMap.Get<Authenticator>(postBody["basic_auth"].ToString());
+            }
+            if (tlsAuthType == "self_signed")
+            {
+                _store = new X509Store(StoreName.My);
+                TLSIdentity.DeleteIdentity(_store, ClientCertLabel, null);
+                string certLocation = TestServer.FilePathResolver("certs/certs.p12", false);
+                byte[] certsData = File.ReadAllBytes(certLocation);
+                TLSIdentity identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ClientCertLabel, null);
+                config.PinnedServerCertificate = identity.Certs[0];
+            }
+            if (tls_authenticator)
+            {
+                _store = new X509Store(StoreName.My);
+                TLSIdentity.DeleteIdentity(_store, ClientCertLabel, null);
+                string certLocation = TestServer.FilePathResolver("certs/client.p12", false);
+                byte[] certsData = File.ReadAllBytes(certLocation);
+                var identity = TLSIdentity.ImportIdentity(_store, certsData, "123", ClientCertLabel, null);
+                config.Authenticator = new ClientCertificateAuthenticator(identity);
+
+            }
+            if (server_verification_mode)
+            {
+                config.AcceptOnlySelfSignedServerCertificate = true;
+
+                AddStatus(config.ToString().ToString());
+                System.Console.WriteLine(config.ToString());
+            }
+
+            if (server_verification_mode != false)
+            {
+                config.AcceptOnlySelfSignedServerCertificate = true;
+            }
+            var collections_list = (List<object>)postBody["collections"];
+            List<String> collections_string = collections_list.Cast<string>().ToList();
+            List<Collection> collections = new List<Collection>();
+            foreach (var col in collections_string)
+            {
+                collections.Add(MemoryMap.Get<Collection>(col));
+            }
+            List<CollectionConfiguration> configurations = new List<CollectionConfiguration>();
+            if (postBody.ContainsKey("configuration"))
+            {
+                List<object> configuration_list = (List<object>)postBody["configuration"];
+                List<String> configuration_string = configuration_list.Cast<string>().ToList();
+                foreach (var conf in configuration_string)
+                {
+                    configurations.Add(MemoryMap.Get<CollectionConfiguration>(conf));
+                }
+            }
+            
+            if (collections.Count() > 0)
+            {
+                if (configurations.Count() != 0)
+                {
+                    if (collections.Count() == configurations.Count() && collections.Count() > 1)
+                    {
+                        for (int i = 0; i < collections.Count(); i++)
+                        {
+                            config.AddCollection(collections[i], configurations[i]);
+                        }
+                    }
+                    else if (collections.Count() == 1 && configurations.Count() == 1)
+                    {
+                        config.AddCollection(collections[0], configurations[0]);
+                    }
+                    else
+                    {
+                        throw new Exception("illegal number of collections and configuration combination");
+                    }
+                }
+                else
+                {
+                    config.AddCollections(collections);
+                }
+            }
+            Replicator replicator = new Replicator(config);
+            response.WriteBody(MemoryMap.Store(replicator));
+        }
         public static void Configure([NotNull] NameValueCollection args,
                                  [NotNull] IReadOnlyDictionary<string, object> postBody,
                                  [NotNull] HttpListenerResponse response)
