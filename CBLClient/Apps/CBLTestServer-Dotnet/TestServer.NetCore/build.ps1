@@ -81,7 +81,7 @@ try {
         exit 1
     }
 
-    dotnet publish -c Release -f netcoreapp3.1
+    dotnet publish -c Release -f net6.0
     if($LASTEXITCODE -ne 0) {
         Write-Error "Publish failed for TestServer.NetCore"
         exit 1
@@ -97,7 +97,7 @@ try {
     
     $ZipPath = Resolve-Path ".\zips"
 
-    Push-Location bin\Release\netcoreapp3.1\publish
+    Push-Location bin\Release\net6.0\publish
     try {
         7z a -r ${ZipPath}\TestServer.NetCore.zip *
     } finally {
