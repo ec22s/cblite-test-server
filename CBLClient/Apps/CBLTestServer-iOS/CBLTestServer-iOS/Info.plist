@@ -42,5 +42,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
+        <string>Exchange data with nearby devices running the Yourapp.</string>
 </dict>
 </plist>
