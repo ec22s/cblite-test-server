@@ -41,7 +41,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSAllowsArbitraryLoads</key>
-        <string>No</string>
 </dict>
 </plist>
