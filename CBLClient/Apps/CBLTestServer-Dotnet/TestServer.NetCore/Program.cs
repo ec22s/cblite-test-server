@@ -24,6 +24,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Couchbase.Lite;
+using Couchbase.Lite.Extensions;
 
 using HandlerAction = System.Action<System.Collections.Specialized.NameValueCollection, 
     System.Collections.Generic.IReadOnlyDictionary<string, object>, 
@@ -49,6 +51,7 @@ namespace Couchbase.Lite.Testing.NetCore
 
         static void Main(string[] args)
         {
+            Extension.Load(new VectorSearchExtension());
             Extend();
 
             Database.Log.Console.Level = Logging.LogLevel.None;

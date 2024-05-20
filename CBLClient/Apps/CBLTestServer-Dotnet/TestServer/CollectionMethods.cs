@@ -33,7 +33,7 @@ namespace Couchbase.Lite.Testing
             });
         }
 
-        public static void createColelction([NotNull] NameValueCollection args,
+        public static void createCollection([NotNull] NameValueCollection args,
                                             [NotNull] IReadOnlyDictionary<string, object> postBody,
                                             [NotNull] HttpListenerResponse response)
         {
@@ -173,7 +173,7 @@ namespace Couchbase.Lite.Testing
             With<Collection>(postBody, "collection", collection =>
             {
                 String docId = postBody["docId"].ToString();
-                response.WriteBody(collection.GetDocument(docId));
+                response.WriteBody(MemoryMap.Store(collection.GetDocument(docId)));
             });
         }
 

@@ -85,7 +85,7 @@ namespace Couchbase.Lite.Testing
                 ["database_updateDocuments"] = DatabaseMethods.DatabaseUpdateDocuments,
                 ["database_exists"] = DatabaseMethods.DatabaseExists,
                 ["database_changeEncryptionKey"] = DatabaseMethods.DatabaseChangeEncryptionKey,
-                ["database_copy"] = DatabaseMethods.DatabaseCopy, 
+                ["database_copy"] = DatabaseMethods.DatabaseCopy,
                 ["database_getPreBuiltDb"] = DatabaseMethods.DatabaseGetPreBuiltDb,
                 ["dictionary_contains"] = DictionaryMethods.DictionaryContains,
                 ["dictionary_count"] = DictionaryMethods.DictionaryCount,
@@ -282,8 +282,9 @@ namespace Couchbase.Lite.Testing
                 ["blob_hashCode"] = BlobMethods.HashCode,
                 ["blob_length"] = BlobMethods.Length,
                 ["collection_defaultCollection"] = CollectionMethods.defaultCollection,
-                ["collection_createCollection"] = CollectionMethods.createColelction,
+                ["collection_createCollection"] = CollectionMethods.createCollection,
                 ["collection_deleteCollection"] = CollectionMethods.deleteCollection,
+                ["collection_deleteDocument"] = CollectionMethods.deleteDocument,
                 ["collection_collectionNames"] = CollectionMethods.collectionNames,
                 ["collection_getCollectionName"] = CollectionMethods.collectionName,
                 ["collection_collection"] = CollectionMethods.collectionObject,
@@ -294,7 +295,7 @@ namespace Couchbase.Lite.Testing
                 ["collection_getDocument"] = CollectionMethods.getDocument,
                 ["collection_getDocuments"] = CollectionMethods.getDocuments,
                 ["collection_updateDocument"] = CollectionMethods.updateDocument,
-                ["collection_deleteDocument"] = CollectionMethods.deleteCollection,
+                ["collection_deleteDocument"] = CollectionMethods.deleteDocument,
                 ["collection_purgeDocument"] = CollectionMethods.purgeDocument,
                 ["collection_purgeDocumentID"] = CollectionMethods.purgeDocumentById,
                 ["collection_saveDocuments"] = CollectionMethods.saveDocuments,
@@ -305,14 +306,19 @@ namespace Couchbase.Lite.Testing
                 ["peerToPeer_configureCollection"] = P2PMethods.configureCollection,
                 ["copy_files"] = CopyFiles,
                 ["release"] = ReleaseObject,
-                ["flushMemory"] = flushMemory
+                ["flushMemory"] = flushMemory,
+                ["vectorSearch_createIndex"] = VectorSearchMethods.CreateIndex,
+                ["vectorSearch_registerModel"] = VectorSearchMethods.RegisterModel,
+                ["vectorSearch_loadDatabase"] = VectorSearchMethods.LoadDatabase,
+                ["vectorSearch_query"] = VectorSearchMethods.Query,
+                ["vectorSearch_getEmbedding"] = VectorSearchMethods.GetEmbedding
             };
 
         #endregion
 
         #region Public Methods
 
-        public static void Extend([NotNull]IDictionary<string, HandlerAction> extensions)
+        public static void Extend([NotNull] IDictionary<string, HandlerAction> extensions)
         {
             foreach (var pair in extensions)
             {
@@ -327,7 +333,7 @@ namespace Couchbase.Lite.Testing
 
         #region Internal Methods
 
-        internal static void Handle([NotNull]Uri endpoint, [NotNull]Stream body, [NotNull]HttpListenerResponse response)
+        internal static void Handle([NotNull] Uri endpoint, [NotNull] Stream body, [NotNull] HttpListenerResponse response)
         {
             if (!RouteMap.TryGetValue(endpoint.AbsolutePath?.TrimStart('/'), out HandlerAction action))
             {
@@ -373,26 +379,26 @@ namespace Couchbase.Lite.Testing
 
         #region Private Methods
 
-        private static void ReleaseObject([NotNull]NameValueCollection args,
-            [NotNull]IReadOnlyDictionary<string, object> postBody,
-            [NotNull]HttpListenerResponse response)
+        private static void ReleaseObject([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
         {
             var id = postBody["object"].ToString();
             MemoryMap.Release(id);
         }
 
-        private static void flushMemory([NotNull]NameValueCollection args,
-            [NotNull]IReadOnlyDictionary<string, object> postBody,
-            [NotNull]HttpListenerResponse response)
+        private static void flushMemory([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
         {
             MemoryMap.Clear();
             response.WriteEmptyBody(HttpStatusCode.OK);
             return;
         }
 
-        private static void CopyFiles([NotNull]NameValueCollection args,
-            [NotNull]IReadOnlyDictionary<string, object> postBody,
-            [NotNull]HttpListenerResponse response)
+        private static void CopyFiles([NotNull] NameValueCollection args,
+            [NotNull] IReadOnlyDictionary<string, object> postBody,
+            [NotNull] HttpListenerResponse response)
         {
             string sourcePath = postBody["source_path"].ToString();
             string destinationPath = postBody["destination_path"].ToString();

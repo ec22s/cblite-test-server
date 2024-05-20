@@ -1,29 +1,42 @@
 param (
     [string]$Version,
+    [string]$VectorSearchVersion,
     [switch]$Community
 )
 
 function Modify-Packages {
     $filename = $args[0]
     $ver = $args[1]
-    $community = $args[2]
+    $vsver = $args[2]
+    $community = $args[3]
+
+    $enterprisePackageString = ".Enterprise"
 
     $content = [System.IO.File]::ReadAllLines($filename)
     $checkNextLine = $false
     for($i = 0; $i -lt $content.Length; $i++) {
         $line = $content[$i]
-        $isMatch = $line -match ".*?<PackageReference Include=`"Couchbase\.Lite(.*?)`""
+        $isMatch = $line -match "<PackageReference Include=`"Couchbase\.Lite(.*?)`""
         if($isMatch) {
             $oldPackageName = $matches[1]
-            $packageName = $oldPackageName.Replace(".Enterprise", "")
-            if(-Not $community) {
-                $packageName = ".Enterprise" + $packageName;
+            if ($oldPackageName -eq $enterprisePackageString) {
+                $packageName = $oldPackageName.Replace($enterprisePackageString, "")
+                if(-Not $community) {
+                    $packageName = $enterprisePackageString + $packageName;
+                }
             }
 
             $isMatch = $line -match ".*?Version=`"(.*?)`""
             if($isMatch) {
                 $oldVersion = $matches[1]
-                $line = $line.Replace("Couchbase.Lite$oldPackageName", "Couchbase.Lite$packageName").Replace($oldVersion, $ver)
+                switch ($oldPackageName) {
+                    $enterprisePackageString {
+                        $line = $line.Replace("Couchbase.Lite$oldPackageName", "Couchbase.Lite$packageName").Replace($oldVersion, $ver)
+                    }
+                    ".VectorSearch" {
+                        $line = $line.Replace($oldVersion, $vsver)
+                    }
+                }
             } else {
                 $checkNextLine = $true
             }
@@ -45,6 +58,15 @@ function Modify-Packages {
     [System.IO.File]::WriteAllLines($filename, $content)
 }
 
+# Vector search version should be mandatory, so we don't cases where a build was built against an unintended version.
+function Get-Vector-Search-Version {
+    $vectorSearchVersion = (($VectorSearchVersion, $env:VECTOR_SEARCH_VERSION -ne $null) -ne '')[0]
+    if($vectorSearchVersion -eq '' -or !$vectorSearchVersion) {
+        throw "VectorSearchVersion not defined for this script!  Either pass it in as -VECTOR_SEARCH_VERSION or define an environment variable named VERSION"
+    }
+    return $vectorSearchVersion
+}
+
 function Calculate-Version {
     $version_to_use = (($Version, $env:VERSION -ne $null) -ne '')[0]
     if($version_to_use -eq '' -or !$version_to_use) {
@@ -60,11 +82,13 @@ function Calculate-Version {
 
 Push-Location $PSScriptRoot
 
+
 $fullVersion = Calculate-Version
+$vectorSearchVersion = Get-Vector-Search-Version
 
 try {
-    Modify-Packages "$PSScriptRoot\TestServer.NetCore.csproj" $fullVersion $Community
-    Modify-Packages "$PSScriptRoot\..\TestServer\TestServer.csproj" $fullVersion $Community
+    Modify-Packages "$PSScriptRoot\TestServer.NetCore.csproj" $fullVersion $vectorSearchVersion $Community
+    Modify-Packages "$PSScriptRoot\..\TestServer\TestServer.csproj" $fullVersion $vectorSearchVersion $Community
 
     Push-Location ..\TestServer
     dotnet restore
