@@ -2,6 +2,7 @@
 
 #define STRINGIFY(X) STRINGIFY2(X)
 #define STRINGIFY2(X) #X
+#define APP_EXTENSIONS_DIR "Extensions"
 
 // Thanks Apple, this sorcery is needed to use frameworks include paths
 // (i.e. CouchbaseLite/<path>) work as well as normal include paths

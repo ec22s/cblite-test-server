@@ -17,6 +17,7 @@ SCRIPT_DIR=os.path.dirname(os.path.realpath(__file__))
 DOWNLOAD_DIR=f'{SCRIPT_DIR}/../downloaded'
 BUILD_DIR=f'{SCRIPT_DIR}/../build'
 ZIPS_DIR=f'{SCRIPT_DIR}/../zips'
+EXTENSIONS_DIR=f'{DOWNLOAD_DIR}/extensions'
 
 json_data={}
 def read_manifest():
@@ -26,7 +27,6 @@ def read_manifest():
             data=fin.read()
         
         json_data=json.loads(data)
-
     return json_data
 
 def copy_and_overwrite(from_path, to_path):
@@ -115,6 +115,14 @@ def check_sysroot(name: str):
 
     os.remove("sysroot.tar.gz")
 
+def copy_vector_search_files():
+    os.mkdir('out/bin/Extensions')
+    for lib_file in glob.glob(f'{EXTENSIONS_DIR}/lib/*.so*'):
+        if lib_file.endswith("libgomp.so.1"): # libgomp.so.1 is a symblink to libgomp.so.1.0.0
+            continue
+        else:
+            shutil.copy2(lib_file, 'out/bin/Extensions', follow_symlinks=False)
+
 if __name__ == '__main__':
     print("Downloading latest cross compilation manifest...")
     os.chdir(SCRIPT_DIR)
@@ -126,6 +134,8 @@ if __name__ == '__main__':
     parser.add_argument('edition', type=str, choices=["community", "enterprise"], help='The edition to build (community or enterprise)')
     parser.add_argument('os', type=str, help="The target OS to compile for")
     parser.add_argument('toolchain', type=str, help='The CMake toolchain file to use for building')
+    parser.add_argument('vs_version', type=str, help='The vector search versrion')
+    parser.add_argument('vs_bld_num', type=int, help='The vector search build')
     args = parser.parse_args()
     
     toolchain_path = check_toolchain(args.os)
@@ -159,6 +169,12 @@ if __name__ == '__main__':
         tar.extractall(DOWNLOAD_DIR)
     os.remove(zip_filename)
 
+    vector_search_zip_name = f'couchbase-lite-vector-search-{args.vs_version}-{args.vs_bld_num}-linux-x86_64.zip'
+    urllib.request.urlretrieve(f'https://latestbuilds.service.couchbase.com/builds/latestbuilds/couchbase-lite-vector-search/{args.vs_version}/{args.vs_bld_num}/{vector_search_zip_name}', vector_search_zip_name, show_download_progress)
+    with zipfile.ZipFile(vector_search_zip_name) as zip:
+        zip.extractall(path=EXTENSIONS_DIR)
+    os.remove(vector_search_zip_name)
+
     os.makedirs(BUILD_DIR, 0o755, True)
     os.chdir(BUILD_DIR)
 
@@ -174,7 +190,8 @@ if __name__ == '__main__':
 
     for lib_file in glob.glob(f'{DOWNLOAD_DIR}/libcblite-{args.version}/lib/**/libcblite.so*'):
         shutil.copy2(lib_file, 'out/bin')
-   
+    
+    copy_vector_search_files()
     print("==== Copying resources to output folder ====")
     zip_filename=f'testserver_{args.os}_{args.edition}.zip'
     shutil.copy2(f'{SCRIPT_DIR}/../../CBLTestServer-Dotnet/TestServer/sg_cert.pem', 'out/bin')

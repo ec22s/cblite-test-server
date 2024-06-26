@@ -37,6 +37,10 @@ static void CBLCollection_DummyDocumentListener(void* context, const CBLDocument
     
 }
 
+static void FLMutableDict_EntryDelete(void* ptr) {
+    FLMutableDict_Release(static_cast<FLMutableDict>(ptr));
+}
+
 namespace collection_methods {
     //default collection object
     void collection_defaultCollection(json& body, mg_connection* conn){
@@ -150,6 +154,33 @@ namespace collection_methods {
         });
     }
 
+   void collection_getDocuments(json& body, mg_connection* conn) {
+        const auto ids = body["ids"];
+        FLMutableDict retVal = FLMutableDict_New();
+
+        DEFER {
+            FLMutableDict_Release(retVal);
+        };
+
+        with<CBLCollection *>(body, "collection", [retVal, &ids](CBLCollection* collection)
+        {
+            for(const auto& idJson : ids) {
+                const auto id = idJson.get<string>();
+                const CBLDocument* doc;
+                CBLError err;
+                TRY((doc = CBLCollection_GetDocument(collection, flstr(id), &err)), err);
+                if(!doc) {
+                    continue;
+                }
+
+                auto* slot = FLMutableDict_Set(retVal, flstr(id));
+                FLSlot_SetValue(slot, reinterpret_cast<FLValue>(CBLDocument_Properties(doc)));
+            }
+        });
+
+        write_serialized_body(conn, reinterpret_cast<FLValue>(retVal));
+   }
+
     //save document to the collection, parameters are collection object, document object and error object
     void collection_saveDocument(json& body, mg_connection* conn) {
         with<CBLCollection *>(body, "collection", [conn, &body](CBLCollection* collection) {
@@ -198,6 +229,31 @@ namespace collection_methods {
                     write_empty_body(conn);
             });
         });
+    }
+
+     void collection_updateDocument(json& body, mg_connection* conn) {
+        const auto id = body["id"].get<string>();
+        const auto data = body["data"];
+        with<CBLCollection *>(body, "collection", [&id, &data](CBLCollection* collection)
+        {
+            CBLDocument* doc;
+            CBLError err;
+            TRY(doc = CBLCollection_GetMutableDocument(collection, flstr(id), &err), err)
+            DEFER {
+                CBLDocument_Release(doc);
+            };
+
+            FLMutableDict newContent = FLMutableDict_New();
+            for(auto& [key, value] : data.items()) {
+                writeFleece(newContent, key, value);
+            }
+
+            CBLDocument_SetProperties(doc, newContent);
+            FLMutableDict_Release(newContent);
+            TRY(CBLCollection_SaveDocument(collection, doc, &err), err)
+        });
+
+        write_empty_body(conn);
     }
 
     //delete document in collection with concurrency control
@@ -374,50 +430,49 @@ namespace collection_methods {
     
     void collection_saveDocuments(json& body, mg_connection* conn) {
     const auto docDict = body["documents"];
-    with<CBLDatabase *>(body, "database", [&body, &docDict](CBLDatabase* db){
-    with<CBLCollection *>(body, "collection", [&db, &docDict](CBLCollection* collection)
-    {
-        CBLError err;
-        TRY(CBLDatabase_BeginTransaction(db, &err), err)
+        with<CBLDatabase *>(body, "database", [&body, &docDict](CBLDatabase* db){
+            with<CBLCollection *>(body, "collection", [&db, &docDict](CBLCollection* collection)
+            {
+                CBLError err;
+                TRY(CBLDatabase_BeginTransaction(db, &err), err)
 
-        bool success = false;
-        DEFER {
-            TRY(CBLDatabase_EndTransaction(db, success, &err), err)
-        };
+                bool success = false;
+                DEFER {
+                    TRY(CBLDatabase_EndTransaction(db, success, &err), err)
+                };
 
-        for(auto& [ key, value ] : docDict.items()) {
-            auto docBody = value;
-            docBody.erase("_id");
-            auto* doc = CBLDocument_CreateWithID(flstr(key));
-            auto* body = FLMutableDict_New();
-            for (const auto& [ bodyKey, bodyValue ] : docBody.items()) {
-                if(bodyKey == "_attachments") {
-                    for (const auto& [ blobKey, blobValue ] : bodyValue.items()) {
-                        base64_decodestate state;
-                        base64_init_decodestate(&state);
-                        auto b64 = blobValue["data"].get<string>();
-                        auto tmp = malloc(b64.size());
-                        size_t size = base64_decode_block((const uint8_t *)b64.c_str(), b64.size(), tmp, &state);
-                        auto blobContent = FLSliceResult_CreateWith(tmp, size);
-                        auto blob = CBLBlob_CreateWithData(FLSTR("application/octet-stream"), FLSliceResult_AsSlice(blobContent));
-                        auto slot = FLMutableDict_Set(body, flstr(blobKey));
-                        FLSlot_SetBlob(slot, blob);
-                        FLSliceResult_Release(blobContent);
+                for(auto& [ key, value ] : docDict.items()) {
+                    auto docBody = value;
+                    docBody.erase("_id");
+                    auto* doc = CBLDocument_CreateWithID(flstr(key));
+                    auto* body = FLMutableDict_New();
+                    for (const auto& [ bodyKey, bodyValue ] : docBody.items()) {
+                        if(bodyKey == "_attachments") {
+                            for (const auto& [ blobKey, blobValue ] : bodyValue.items()) {
+                                base64_decodestate state;
+                                base64_init_decodestate(&state);
+                                auto b64 = blobValue["data"].get<string>();
+                                auto tmp = malloc(b64.size());
+                                size_t size = base64_decode_block((const uint8_t *)b64.c_str(), b64.size(), tmp, &state);
+                                auto blobContent = FLSliceResult_CreateWith(tmp, size);
+                                auto blob = CBLBlob_CreateWithData(FLSTR("application/octet-stream"), FLSliceResult_AsSlice(blobContent));
+                                auto slot = FLMutableDict_Set(body, flstr(blobKey));
+                                FLSlot_SetBlob(slot, blob);
+                                FLSliceResult_Release(blobContent);
+                            }
+                        }
+                        else {
+                            writeFleece(body, bodyKey, bodyValue);
+                        }
                     }
-                } else {
-                    writeFleece(body, bodyKey, bodyValue);
+
+                    CBLDocument_SetProperties(doc, body);
+                    FLMutableDict_Release(body);
+                    TRY(CBLCollection_SaveDocument(collection, doc, &err), err);
                 }
-            }
-
-            CBLDocument_SetProperties(doc, body);
-            FLMutableDict_Release(body);
-            TRY(CBLCollection_SaveDocument(collection, doc, &err), err);
-        }
-
-        success = true;
-    });
-    });
-
-    write_empty_body(conn);
-}
+                success = true;
+            });
+         });
+        write_empty_body(conn);
+    }
 }

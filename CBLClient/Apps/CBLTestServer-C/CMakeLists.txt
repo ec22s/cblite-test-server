@@ -94,6 +94,7 @@ set(
     src/ReplicatorConfigurationMethods.cpp
     src/SessionAuthenticationMethods.cpp
     src/QueryMethods.cpp
+    src/VectorSearchMethods.cpp
     src/cdecode.c
 )
 
