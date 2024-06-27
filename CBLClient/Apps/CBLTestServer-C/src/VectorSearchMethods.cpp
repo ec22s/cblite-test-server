@@ -29,9 +29,14 @@ FLMutableDict getPrediction(FLDict input, string key) {
     return predictResult;
 }
 
-FLSliceResult predictFunction(void* context, FLDict input) {
-    auto embbedingsVector =  FLMutableArray_New();
+FLMutableDict predictFunction(void* context, FLDict input) {
     const FLValue inputWord = FLDict_Get(input, flstr("word"));
+    auto embbedingsVector =  FLMutableArray_New();
+    FLMutableDict predictResult =  FLMutableDict_New();
+    DEFER {
+        FLMutableDict_Release(predictResult);
+        FLMutableArray_Release(embbedingsVector);
+    };
     if (inputWord) {
         const FLValue tempVector = FLDict_Get(wordMap, FLValue_AsString(inputWord));
         FLArrayIterator iter;
@@ -42,15 +47,10 @@ FLSliceResult predictFunction(void* context, FLDict input) {
             FLArrayIterator_Next(&iter);
         }
     }
-    FLEncoder enc = FLEncoder_New();
     if (embbedingsVector) {
-        FLEncoder_BeginDict(enc, 1);
-        FLEncoder_WriteKey(enc, FLStr("vector"));
-        FLEncoder_WriteValue(enc, FLValue(embbedingsVector));
-        FLEncoder_EndDict(enc);
+        FLMutableDict_SetArray(predictResult, flstr("vector"), embbedingsVector);
     }
-    FLMutableArray_Release(embbedingsVector);
-    return FLEncoder_Finish(enc, nullptr); 
+    return predictResult; 
 }
 
 static void CBLDatabase_EntryDelete(void* ptr) {
@@ -204,7 +204,7 @@ namespace vectorSearch_methods
         cbl_getcwd(cwd, 1024);
         const auto databasePath = string(cwd) + DIRECTORY_SEPARATOR + dbPath;
         const auto extensionsPath = string(cwd) + DIRECTORY_SEPARATOR + APP_EXTENSIONS_DIR;
-        CBL_SetExtensionPath(flstr(extensionsPath));
+        CBL_EnableVectorSearch(flstr(extensionsPath));
         CBLDatabaseConfiguration* databaseConfig = nullptr;
         CBLError err;
         CBLDatabase* db;
