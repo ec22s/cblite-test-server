@@ -3,7 +3,7 @@ cmake_policy(VERSION 3.11)
 cmake_policy(SET CMP0077 NEW)
 
 # Mac/apple setup -- must appear before the first "project()" line"
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "12.7")
 if(NOT DEFINED CMAKE_OSX_SYSROOT)
     # Tells Mac builds to use the current SDK's headers & libs, not what's in the OS.
     set(CMAKE_OSX_SYSROOT macosx)
