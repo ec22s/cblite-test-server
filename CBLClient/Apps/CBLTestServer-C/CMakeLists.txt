@@ -98,6 +98,12 @@ set(
     src/cdecode.c
 )
 
+if(BUILD_ENTERPRISE)
+    add_definitions(
+        -DCOUCHBASE_ENTERPRISE
+    )
+endif()
+
 if(ANDROID)
     add_library(testserver SHARED ${TESTSERVER_COMMON_SRC})
 

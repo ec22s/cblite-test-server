@@ -226,11 +226,13 @@ static const unordered_map<string, endpoint_handler> ROUTE_MAP = {
     {"scope_collection", scope_methods::scope_collection},
     {"scope_collectionNames", scope_methods::scope_collectionNames},
     {"scope_defaultScope", scope_methods::scope_defaultScope},
+    #ifdef COUCHBASE_ENTERPRISE
     {"vectorSearch_createIndex", vectorSearch_methods::vectorSearch_createIndex},
     {"vectorSearch_loadDatabase", vectorSearch_methods::vectorSearch_loadDatabase},
     {"vectorSearch_registerModel", vectorSearch_methods::vectorSearch_registerModel},
     {"vectorSearch_query", vectorSearch_methods::vectorSearch_query},
     {"vectorSearch_getEmbedding", vectorSearch_methods::vectorSearch_getEmbedding},
+    #endif
     {"release", releaseObject},
     {"flushMemory", flushMemory},
 };

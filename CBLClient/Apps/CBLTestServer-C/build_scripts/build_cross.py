@@ -184,6 +184,9 @@ if __name__ == '__main__':
         cmake_args.append('-DCBL_STATIC_CXX=ON')
     elif args.os == "raspios10-arm64":
         cmake_args.append('-D64_BIT=ON')
+    if args.edition == "enterprise":
+        cmake_args.append('-DBUILD_ENTERPRISE=ON')
+
 
     subprocess.run(cmake_args)
     subprocess.run(['make', '-j8', 'install'])
