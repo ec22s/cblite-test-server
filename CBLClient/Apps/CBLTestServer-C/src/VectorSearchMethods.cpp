@@ -34,7 +34,6 @@ FLMutableDict predictFunction(void* context, FLDict input) {
     auto embbedingsVector =  FLMutableArray_New();
     FLMutableDict predictResult =  FLMutableDict_New();
     DEFER {
-        FLMutableDict_Release(predictResult);
         FLMutableArray_Release(embbedingsVector);
     };
     if (inputWord) {
