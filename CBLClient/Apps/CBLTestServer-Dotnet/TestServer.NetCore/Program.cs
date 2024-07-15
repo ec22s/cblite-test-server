@@ -51,7 +51,7 @@ namespace Couchbase.Lite.Testing.NetCore
 
         static void Main(string[] args)
         {
-            Extension.Load(new VectorSearchExtension());
+            Extension.Enable(new VectorSearchExtension());
             Extend();
 
             Database.Log.Console.Level = Logging.LogLevel.None;
