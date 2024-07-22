@@ -200,13 +200,13 @@ namespace vectorSearch_methods
     void vectorSearch_loadDatabase(json& body, mg_connection* conn) {
         const auto dbPath = "Databases" + string(1, DIRECTORY_SEPARATOR) + InMemoryDbName  + ".cblite2";
         const auto dbName = InMemoryDbName;
+        CBLError err;
         char cwd[1024];
         cbl_getcwd(cwd, 1024);
         const auto databasePath = string(cwd) + DIRECTORY_SEPARATOR + dbPath;
         const auto extensionsPath = string(cwd) + DIRECTORY_SEPARATOR + APP_EXTENSIONS_DIR;
-        CBL_EnableVectorSearch(flstr(extensionsPath));
+        TRY(CBL_EnableVectorSearch(flstr(extensionsPath), &err), err);
         CBLDatabaseConfiguration* databaseConfig = nullptr;
-        CBLError err;
         CBLDatabase* db;
         TRY(CBL_CopyDatabase(flstr(databasePath), flstr(dbName), databaseConfig, &err), err);
         wordMap = getWordMap();
