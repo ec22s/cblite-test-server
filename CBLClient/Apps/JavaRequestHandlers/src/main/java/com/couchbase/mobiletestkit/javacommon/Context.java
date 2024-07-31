@@ -11,6 +11,7 @@ public interface Context {
     File getFilesDir();
     File getExternalFilesDir(String filetype);
     InputStream getAsset(String name);
+    File getAssetAsFile(String name);
     String getPlatform();
     String getLocalIpAddress();
     TLSIdentity getCreateIdentity();

@@ -131,6 +131,10 @@ public class RequestHandlerDispatcher {
                         target = ScopeRequestHandler.class.getMethod(method, Args.class);
                         requestHandler = new ScopeRequestHandler();
                         break;
+                    case "vectorSearch":
+                        target = VectorSearchRequestHandler.class.getMethod(method, Args.class);
+                        requestHandler = new VectorSearchRequestHandler();
+                        break;
                     default:
                         throw new IllegalArgumentException("Handler not implemented for this call");
                 }

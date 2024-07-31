@@ -34,6 +34,8 @@ import java.security.NoSuchProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.net.URL;
+import java.net.URISyntaxException;
 
 
 import android.util.Base64;
@@ -46,6 +48,18 @@ public class TestServerContext implements Context {
     @Override
     public InputStream getAsset(String name) {
         return getClass().getResourceAsStream("/" + name);
+    }
+
+    @Override
+    public File getAssetAsFile(String name) {
+        URL resource  = getClass().getResource("/" + name);
+        try {
+            return new File(resource.toURI());
+        }
+        catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -225,4 +239,3 @@ public class TestServerContext implements Context {
         return bos.toByteArray();
     }
 }
-

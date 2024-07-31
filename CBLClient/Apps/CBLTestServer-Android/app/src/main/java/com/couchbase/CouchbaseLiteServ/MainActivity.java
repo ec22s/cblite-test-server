@@ -2,8 +2,8 @@ package com.couchbase.CouchbaseLiteServ;
 
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import com.couchbase.mobiletestkit.javacommon.util.Log;
 
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MAIN";
     private Server server;
     private final static int PORT = 8080;

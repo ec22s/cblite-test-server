@@ -1,6 +1,10 @@
 package com.couchbase.mobiletestkit.javacommon.RequestHandler;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +39,8 @@ import com.couchbase.lite.Result;
 import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.SelectResult;
 import com.couchbase.lite.Scope;
+import com.couchbase.lite.internal.utils.FileUtils;
+import com.couchbase.mobiletestkit.javacommon.Memory;
 
 public class DatabaseRequestHandler {
     private static final String TAG = "DATABASE";
@@ -49,12 +55,12 @@ public class DatabaseRequestHandler {
         if (config != null) {
             String dbDir = config.getDirectory();
              /*
-                dbDir is obtained from cblite database configuration
-                1. dbDir shouldn't be null unless a bad situation happen.
-                2. while TestServer app running as a daemon service,
-                cblite core sets dbDir "/", which will cause due permission issues.
-                set dbDir to wherever the application context points to
-                */
+             * dbDir is obtained from cblite database configuration
+             * 1. dbDir shouldn't be null unless a bad situation happen.
+             * 2. while TestServer app running as a daemon service,
+             * cblite core sets dbDir "/", which will cause due permission issues.
+             * set dbDir to wherever the application context points to
+             */
             if (dbDir == null || dbDir.equals("/")) {
                 config.setDirectory(RequestHandlerDispatcher.context.getFilesDir().getAbsolutePath());
                 Log.i(TAG, "database_create directory=" + config.getDirectory());
@@ -126,7 +132,9 @@ public class DatabaseRequestHandler {
                                 newVal.put(item.getKey().toString(), b.getProperties());
                             }
                         }
-                        if (isBlob) { doc.put(entry.getKey(), newVal); }
+                        if (isBlob) {
+                            doc.put(entry.getKey(), newVal); 
+                        }
                     }
                 }
                 documents.put(id, doc);
@@ -201,10 +209,10 @@ public class DatabaseRequestHandler {
         Database database = args.get("database");
         MutableDocument document = args.get("document");
         String concurrencyControlType = args.get("concurrencyControlType");
-        ConcurrencyControl concurrencyType
-            = ((concurrencyControlType != null) && (concurrencyControlType.equals("failOnConflict")))
-            ? ConcurrencyControl.FAIL_ON_CONFLICT
-            : ConcurrencyControl.LAST_WRITE_WINS;
+        ConcurrencyControl concurrencyType = ((concurrencyControlType != null) 
+            && (concurrencyControlType.equals("failOnConflict")))
+                ? ConcurrencyControl.FAIL_ON_CONFLICT
+                : ConcurrencyControl.LAST_WRITE_WINS;
         database.save(document, concurrencyType);
     }
 
@@ -218,10 +226,10 @@ public class DatabaseRequestHandler {
         Database database = args.get("database");
         Document document = args.get("document");
         String concurrencyControlType = args.get("concurrencyControlType");
-        ConcurrencyControl concurrencyType
-            = ((concurrencyControlType != null) && (concurrencyControlType.equals("failOnConflict")))
-            ? ConcurrencyControl.FAIL_ON_CONFLICT
-            : ConcurrencyControl.LAST_WRITE_WINS;
+        ConcurrencyControl concurrencyType = ((concurrencyControlType != null) 
+            && (concurrencyControlType.equals("failOnConflict")))
+                ? ConcurrencyControl.FAIL_ON_CONFLICT
+                : ConcurrencyControl.LAST_WRITE_WINS;
 
         database.delete(document, concurrencyType);
     }
@@ -241,8 +249,12 @@ public class DatabaseRequestHandler {
         Database database = args.get("database");
         String password = args.get("password");
         EncryptionKey encryptionKey;
-        if (password.equals("nil")) { encryptionKey = null; }
-        else { encryptionKey = new EncryptionKey(password); }
+        if (password.equals("nil")) { 
+            encryptionKey = null; 
+        }
+        else { 
+            encryptionKey = new EncryptionKey(password); 
+        }
         database.changeEncryptionKey(encryptionKey);
     }
 
@@ -349,10 +361,34 @@ public class DatabaseRequestHandler {
         String dbFileName = new File(dbPath).getName();
         dbFileName = dbFileName.substring(0, dbFileName.lastIndexOf("."));
         Context context = RequestHandlerDispatcher.context;
-
         ZipUtils zipper = new ZipUtils();
         zipper.unzip(context.getAsset(dbPath), context.getFilesDir());
         return context.getFilesDir().getAbsolutePath() + "/" + dbFileName;
+    }
+
+    public String getVectorSearchDb(Args args) throws IOException {
+        String dbPath = args.get("dbPath");
+        String dbFileName = new File(dbPath).getName();
+        dbFileName = dbFileName.substring(0, dbFileName.lastIndexOf("."));
+        Context context = RequestHandlerDispatcher.context;
+        // The zip utility erorrs when unziping the archive, as a workaround we copy the files to the location
+        String filesFolder = context.getFilesDir().getAbsolutePath() + "/vsTestDatabase.cblite2";
+        InputStream dbsqlite = context.getAsset("vsTestDatabase.cblite2/db.sqlite3");
+        InputStream dbsqliteshm = context.getAsset("vsTestDatabase.cblite2/db.sqlite3-shm");
+        InputStream dbsqlwal = context.getAsset("vsTestDatabase.cblite2/db.sqlite3-wal");
+        new File(filesFolder).mkdirs();
+        copyDbFile(dbsqlite, new FileOutputStream(new File(filesFolder + "/db.sqlite3")));
+        copyDbFile(dbsqliteshm, new FileOutputStream(new File(filesFolder + "/db.sqlite3-shm")));
+        copyDbFile(dbsqlwal, new FileOutputStream(new File(filesFolder + "/db.sqlite3-wal")));
+        return filesFolder;
+    }
+
+    private void copyDbFile(InputStream source, OutputStream target) throws IOException {
+        byte[] buf = new byte[8192];
+        int length;
+        while ((length = source.read(buf)) != -1) {
+            target.write(buf, 0, length);
+        }
     }
 
     private Map<String, Object> setDataBlob(Map<String, Object> data) {
@@ -366,7 +402,7 @@ public class DatabaseRequestHandler {
         for (Map.Entry<String, Object> attItem : attachment_items.entrySet()) {
             String attItemKey = attItem.getKey();
             HashMap<String, String> attItemValue = (HashMap<String, String>) attItem.getValue();
-            if (attItemValue.get("data") != null){
+            if (attItemValue.get("data") != null) {
                 String contentType = attItemKey.endsWith(".png") ? "image/jpeg": "text/plain";
                 Blob blob = new Blob(contentType,
                         RequestHandlerDispatcher.context.decodeBase64(attItemValue.get("data")));
@@ -392,8 +428,12 @@ public class DatabaseRequestHandler {
 class MyDatabaseChangeListener implements DatabaseChangeListener {
     private List<DatabaseChange> changes;
 
-    public List<DatabaseChange> getChanges() { return changes; }
+    public List<DatabaseChange> getChanges() { 
+        return changes;
+    }
 
     @Override
-    public void changed(DatabaseChange change) { changes.add(change); }
+    public void changed(DatabaseChange change) { 
+        changes.add(change); 
+    }
 }

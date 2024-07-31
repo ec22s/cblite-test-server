@@ -38,6 +38,9 @@ export PATH=$PATH:$JAVA_HOME
 # Build TestServer
 echo ./gradlew clean -Dversion=${MAVEN_UPLOAD_VERSION} assemble
 ./gradlew clean -Dversion=${MAVEN_UPLOAD_VERSION} assemble
+if [ $? -ne 0 ]; then
+    exit 1
+fi
 
 cp "./build/libs/CBLTestServer-Java-Desktop-${MAVEN_UPLOAD_VERSION}-${EDITION}.jar" "CBLTestServer-Java-Desktop-${MAVEN_UPLOAD_VERSION}-${EDITION}.jar"
 
@@ -45,4 +48,3 @@ zip "CBLTestServer-Java-Desktop-${MAVEN_UPLOAD_VERSION}-${EDITION}.zip" "./CBLTe
 
 TESTSERVER_ZIP="CBLTestServer-Java-Desktop-${MAVEN_UPLOAD_VERSION}-${EDITION}.zip"
 cp -f ${TESTSERVER_ZIP} ${ARTIFACTS_DIR}/CBLTestServer-Java-Desktop-${MAVEN_UPLOAD_VERSION}-${EDITION}.zip
-

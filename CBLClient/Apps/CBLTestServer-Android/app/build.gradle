@@ -1,10 +1,12 @@
 apply plugin: 'com.android.application'
 
 ext {
-    DEF_VERSION = System.getenv("MAVEN_UPLOAD_VERSION")
+    DEF_VERSION = System.getenv('MAVEN_UPLOAD_VERSION')
+    VS_VERSION = System.getenv('VS_VERSION')
     // When manually build in Android studio, replace System.getenv("MAVEN_UPLOAD_VERSION") with build version you want to build
     // ex: DEF_VERSION = "3.1.0-353"
     COUCHBASE_LITE_VERSION = System.getProperty('version', DEF_VERSION)
+    VECTOR_SEARCH_VERSION = System.getProperty('vs_version', VS_VERSION)
 
     PROJECT_DIR = "${projectDir}"
     ROOT_DIR = "${PROJECT_DIR}/../../"
@@ -13,18 +15,22 @@ ext {
     JAVA_SERVER_DIR = "${ROOT_DIR}/JavaRequestListener"
 }
 
+println "BUILDING TEST SERVER WITH CBL VERSION ${COUCHBASE_LITE_VERSION}"
+println "BUILDING TEST SERVER WITH VS VERSION ${VECTOR_SEARCH_VERSION}"
+
 android {
-    compileSdkVersion 30
+    namespace 'com.couchbase.CouchbaseLiteServ'
+    compileSdkVersion 33
     buildToolsVersion "29.0.3"
     ndkVersion "25.1.8937393"
 
     defaultConfig {
-        applicationId "com.couchbase.TestServerApp"
+        applicationId 'com.couchbase.TestServerApp'
         minSdkVersion 22
         targetSdkVersion 30
         versionCode 1
         versionName DEF_VERSION
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
         multiDexEnabled true
     }
 
@@ -45,13 +51,13 @@ android {
     sourceSets {
         main {
             java.srcDirs = [
-                    "src/main/java/",                                   // android specific codes
+                    'src/main/java/',                                   // android specific codes
                     "${JAVA_COMMON_DIR}/src/main/java",
                     "${JAVA_SERVER_DIR}/src/main/java"
 
             ]
             resources.srcDirs = [
-                    "src/main/res/",                                    // android resource files
+                    'src/main/res/',                                    // android resource files
                     ASSET_DIR
             ]
 
@@ -62,6 +68,7 @@ android {
     buildTypes {
         debug {
             debuggable true
+            packagingOptions.jniLibs.useLegacyPackaging = true
         }
         customDebuggableBuildType {
             debuggable true
@@ -71,36 +78,44 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+            packagingOptions.jniLibs.useLegacyPackaging = true
         }
     }
 }
 
 repositories {
-    // for build version < 3.0.0-160, use below maven url
-    // maven { url "http://proget.build.couchbase.com/maven2/internalmaven" }
-    maven { url "http://mobile.nuget.couchbase.com/maven2/internalmaven/"}
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    google()
-    jcenter()
-}
+        // legacy maven for build version < 3.0.0-160
+        // maven { url "http://proget.build.couchbase.com/maven2/internalmaven" }
+        // external maven
+        maven { url 'https://mobile.maven.couchbase.com/maven2/dev/' }
+        // internal maven
+        maven { url 'https://proget.sc.couchbase.com/maven2/internalmaven' }
+        // where nanohttpd lives
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        google()
+        jcenter()
+    }
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
-
     implementation 'com.google.code.gson:gson:2.8.5'
 
     // Using snapshot code to validate our product is incredibly dubious...
     implementation 'org.nanohttpd:nanohttpd:2.3.2-SNAPSHOT'
-
+    // Couchbase Lite:
+    implementation "com.couchbase.lite:couchbase-lite-android-ee:${COUCHBASE_LITE_VERSION}"
+    implementation "com.couchbase.lite:couchbase-lite-android-vector-search-arm64:${VECTOR_SEARCH_VERSION}"
+    
     // for build version < 3.0.0-160, use below package name
     // implementation "com.couchbase.lite:couchbase-lite-android-ee:${COUCHBASE_LITE_VERSION}"
-    // for build version > 3.0.0-160 but < 3.0.0-177, use below package name
-    // implementation "com.couchbase.lite:couchbase-lite-kt-android-ee:${COUCHBASE_LITE_VERSION}"
-    implementation "com.couchbase.lite:couchbase-lite-android-ee-ktx:${COUCHBASE_LITE_VERSION}"
-    testImplementation 'junit:junit:4.12'
+    // Android SDK:
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

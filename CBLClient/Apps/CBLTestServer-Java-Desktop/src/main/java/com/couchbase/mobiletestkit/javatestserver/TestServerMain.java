@@ -8,6 +8,8 @@ import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javalistener.Server;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
 import com.couchbase.lite.CouchbaseLite;
+import com.couchbase.lite.CouchbaseLiteException;
+
 import org.nanohttpd.protocols.http.NanoHTTPD;
 
 import java.io.File;
@@ -126,9 +128,15 @@ public class TestServerMain implements Daemon {
         notifyAll();
     }
 
-    private void initCouchbaseLite(){
+    private void initCouchbaseLite() {
         Log.init(new TestServerLogger());
         CouchbaseLite.init();
+        try {
+            CouchbaseLite.enableVectorSearch();
+        }
+        catch (CouchbaseLiteException e) {
+            Log.i(TAG, "Warning: vector search was not loaded, the vector serach tests are expected to fail");
+        }
         Log.i(TAG, "CouchbaseLite is initialized.");
     }
 

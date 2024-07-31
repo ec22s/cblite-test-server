@@ -3,8 +3,6 @@ import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.mobiletestkit.javacommon.Context;
 import com.couchbase.mobiletestkit.javacommon.util.Log;
 
-import java.io.File;
-import java.io.InputStream;
 import java.net.*;
 import java.security.UnrecoverableEntryException;
 import java.util.Collections;
@@ -13,8 +11,6 @@ import java.util.Base64;
 
 import com.couchbase.lite.TLSIdentity;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +52,18 @@ public class TestServerContext implements Context {
     @Override
     public InputStream getAsset(String name) {
         return TestServerMain.class.getResourceAsStream("/" + name);
+    }
+
+    @Override
+    public File getAssetAsFile(String name) {
+        URL resource  = TestServerMain.class.getResource("/" + name);
+        try {
+            return new File(resource.toURI());
+        }
+        catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
