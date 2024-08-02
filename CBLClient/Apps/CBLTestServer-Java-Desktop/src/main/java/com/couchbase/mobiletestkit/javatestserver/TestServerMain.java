@@ -131,12 +131,12 @@ public class TestServerMain implements Daemon {
     private void initCouchbaseLite() {
         Log.init(new TestServerLogger());
         CouchbaseLite.init();
-        try {
-            CouchbaseLite.enableVectorSearch();
-        }
-        catch (CouchbaseLiteException e) {
-            Log.i(TAG, "Warning: vector search was not loaded, the vector serach tests are expected to fail");
-        }
+       // try {
+       //     CouchbaseLite.enableVectorSearch();
+       // }
+       // catch (CouchbaseLiteException e) {
+       //     Log.i(TAG, "Warning: vector search was not loaded, the vector serach tests are expected to fail");
+       // }
         Log.i(TAG, "CouchbaseLite is initialized.");
     }
 
