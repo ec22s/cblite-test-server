@@ -12,6 +12,7 @@ import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.DataSource;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.Expression;
+import com.couchbase.lite.Index;
 import com.couchbase.lite.IndexConfiguration;
 import com.couchbase.lite.Limit;
 import com.couchbase.lite.Meta;
@@ -21,6 +22,7 @@ import com.couchbase.lite.Result;
 import com.couchbase.lite.ResultSet;
 import com.couchbase.lite.Scope;
 import com.couchbase.lite.SelectResult;
+import com.couchbase.lite.QueryIndex;
 import com.couchbase.lite.ValueIndexConfiguration;
 import com.couchbase.mobiletestkit.javacommon.Args;
 import com.couchbase.lite.Collection;
@@ -240,6 +242,12 @@ public class CollectionRequestHandler {
         IndexConfiguration expressionConfig = new ValueIndexConfiguration(expression);
         collection.createIndex(name, expressionConfig);
         return;
+    }
+
+    public QueryIndex getIndex(Args args) throws CouchbaseLiteException {
+        Collection collection = args.get("collection");
+        String name = args.get("indexName");
+        return collection.getIndex(name);
     }
 
     public void deleteIndex(Args args) throws CouchbaseLiteException {

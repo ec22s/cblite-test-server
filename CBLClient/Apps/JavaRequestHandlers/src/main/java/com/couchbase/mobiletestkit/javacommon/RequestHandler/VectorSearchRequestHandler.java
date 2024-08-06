@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
+
 import com.couchbase.mobiletestkit.javacommon.*;
 import com.couchbase.lite.*;
 import com.couchbase.lite.internal.utils.FileUtils;
@@ -111,9 +113,11 @@ public class VectorSearchRequestHandler {
         if (maxTrainingSize != null) {
             config.setMaxTrainingSize(maxTrainingSize);
         }
-    /*    if (isLazy != null) {
-            config.isLazy = isLazy;
-        }*/
+
+        if (isLazy != null) {
+            config.setLazy(isLazy);
+        }
+
         try {
             collection.createIndex(indexName, config);
             return String.format("Created index with name %s on collection %s", indexName, collectionName);
@@ -122,12 +126,27 @@ public class VectorSearchRequestHandler {
         }
     }
 
-   /*  public String updateIndex(Args args) {
-        String collection = args.get("collection");
-        String indexName = args.get("indexName");
-        QueryIndex config = new QueryIndex(collection, indexName);
+    public String updateQueryIndex(Args args) throws CouchbaseLiteException {
+        Integer documentUpdateLimit = Integer.parseInt(args.get("loopNumber"));
+        QueryIndex index = args.get("indexName");
+        IndexUpdater updater = index.beginUpdate(documentUpdateLimit);
+        for (int updaterIndex=0;  updaterIndex < updater.count(); updaterIndex++) {
+            String word = updater.getString(updaterIndex);
+            if (wordMap.containsKey(word)) {
+                Array embeddingsObj = wordMap.get(word);
+                List<Float> embeddingsVector = new ArrayList<Float>(embeddingsObj.count());
+                for (int i=0; i< embeddingsObj.count(); i++) {
+                    embeddingsVector.add(embeddingsObj.getFloat(i));
+                }
+                updater.setVector(embeddingsVector, updaterIndex);
+            }
+            else {
+                updater.skipVector(updaterIndex);
+            }
+        }
+        updater.finish();
         return "Temp dummy return";
-    }*/
+    }
 
     public String registerModel(Args args) {
         String key = args.get("key");
