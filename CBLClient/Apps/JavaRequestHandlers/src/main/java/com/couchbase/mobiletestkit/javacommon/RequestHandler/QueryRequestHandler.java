@@ -894,7 +894,7 @@ public class QueryRequestHandler {
         // register a query change listener to capture live resultset changes
         final Executor exec = Executors.newSingleThreadExecutor();
         ListenerToken token = query.addChangeListener(exec, change -> {
-            final long curMillis = new Long(System.currentTimeMillis());
+            final long curMillis = Long.valueOf(System.currentTimeMillis());
             liveQueryActivities.add(curMillis);
 
             int count = 0;

@@ -114,13 +114,13 @@ public class ValueSerializer {
             return (T) value.substring(1, value.length() - 1);
         }
         else if (value.startsWith("I")) {
-            return (T) new Integer(value.substring(1));
+            return (T) Integer.valueOf(value.substring(1));
         }
         else if (value.startsWith("L")) {
-            return (T) new Long(value.substring(1));
+            return (T) Long.valueOf(value.substring(1));
         }
         else if ((value.startsWith("F")) || (value.startsWith("D"))) {
-            return (T) new Double(value.substring(1));
+            return (T) Double.valueOf(value.substring(1));
         }
         else {
             throw new IllegalArgumentException("Invalid value type" + value);
