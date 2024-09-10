@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CouchbaseLiteSwift
 
 public class ValueSerializer {
 
@@ -114,6 +115,25 @@ public class ValueSerializer {
                 } else {
                     return Int(value!) as? T
                 }
+        } else if (value!.hasPrefix("S")) {
+            // for vector search scalar quantizer type
+            let start = value!.index(value!.startIndex, offsetBy: 0)
+            let end = value!.index(value!.endIndex, offsetBy: 0)
+            let quantizerType = value![start..<end]
+            switch quantizerType {
+            #if COUCHBASE_ENTERPRISE
+            case "SQ4":
+                return ScalarQuantizerType.SQ4 as? T
+            
+            case "SQ6":
+                return ScalarQuantizerType.SQ6 as? T
+                
+            case "SQ8":
+                return ScalarQuantizerType.SQ8 as? T
+            #endif    
+            default:
+                throw ValueSerializerError.DeSerializerError("Invalid Scalar Quantizer option")
+            }
         } else if (value == "true") {
             return true as? T
         } else if (value == "false") {

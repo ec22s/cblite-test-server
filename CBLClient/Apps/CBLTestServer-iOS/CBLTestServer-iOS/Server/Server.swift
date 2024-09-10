@@ -17,6 +17,7 @@ enum RequestHandlerError: Error {
     case MethodNotFound(String)
     case InvalidArgument(String)
     case IOException(String)
+    case VectorPredictionError(String)
 }
 
 enum ValueSerializerError: Error {
@@ -52,6 +53,9 @@ public class Server {
     let listenerAuthenticatorRequestHandler: ListenerAuthenticatorRequestHandler!
     let predictiveQueryRequestHandler: PredictiveQueriesRequestHandler!
     let fileLoggingRequestHandler: FileLoggingRequestHandler!
+    #if COUCHBASE_ENTERPRISE
+    let vectorSearchRequestHandler: VectorSearchRequestHandler!
+    #endif
     let memory = Memory()
     
     public init() {
@@ -81,11 +85,13 @@ public class Server {
         listenerAuthenticatorRequestHandler = ListenerAuthenticatorRequestHandler()
         predictiveQueryRequestHandler = PredictiveQueriesRequestHandler()
         fileLoggingRequestHandler = FileLoggingRequestHandler()
+        #if COUCHBASE_ENTERPRISE
+        vectorSearchRequestHandler = VectorSearchRequestHandler()
+        #endif
         server = GCDWebServer()
         Database.log.console.level = LogLevel.verbose
-        server.addDefaultHandler(forMethod: "POST", request: GCDWebServerDataRequest.self) {
-            (request) -> GCDWebServerResponse? in
-            
+        
+        @Sendable func handlePostRequest (request: GCDWebServerRequest, completion: @escaping GCDWebServerCompletionBlock) async throws {
             var rawArgs = [String: Any]()
             
             var method = ""
@@ -138,9 +144,9 @@ public class Server {
                     }else if method.hasPrefix("database") {
                         result = try self.databaseRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("collection") {
-                        result = try self.collectionRequestHandler.handleRequest(method: method, args: args) 
+                        result = try self.collectionRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("scope") {
-                        result = try self.scopeRequestHandler.handleRequest(method: method, args: args) 
+                        result = try self.scopeRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("document") {
                         result = try self.documentRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("dictionary") {
@@ -181,6 +187,15 @@ public class Server {
                             result = try self.predictiveQueryRequestHandler.handleRequest(method: method, args: args)
                     } else if method.hasPrefix("logging") {
                         result = try self.fileLoggingRequestHandler.handleRequest(method: method, args: args)
+                    } else if method.hasPrefix("vectorSearch") {
+                        #if COUCHBASE_ENTERPRISE
+                        let taskMethod = method
+                        let taskResult = Task {
+                            try await self.vectorSearchRequestHandler.handleRequest(method: taskMethod, args: args)
+                        }
+                        result = try await taskResult.value
+                        #endif
+                        throw ServerError.MethodNotImplemented(method)
                     } else {
                         throw ServerError.MethodNotImplemented(method)
                     }
@@ -194,14 +209,13 @@ public class Server {
                         guard let dataObj = body as? RawData else {
                             fatalError("type should be a raw data")
                         }
-                        return GCDWebServerDataResponse(data: dataObj.data,
-                                                        contentType: dataObj.contentType)
+                        completion(GCDWebServerDataResponse(data: dataObj.data, contentType: dataObj.contentType))
                     } else {
-                        return GCDWebServerDataResponse(text: body as! String)
+                        completion(GCDWebServerDataResponse(text: body as! String))
                     }
                 } else {
                     // Send 200 code and close
-                    return GCDWebServerDataResponse(text: "I-1")
+                    completion(GCDWebServerDataResponse(text: "I-1"))
                 }
             } catch let error as RequestHandlerError {
                 var reason = "Unknown Request Handler Error"
@@ -212,16 +226,37 @@ public class Server {
                     reason = r
                 case .MethodNotFound(let r):
                     reason = r
+                default:
+                    break
                 }
                 let response = GCDWebServerDataResponse(text: reason)!
                 response.statusCode = 432
                 response.contentType = "text/plain"
-                return response
+                completion(response)
             } catch let error as NSError {
                 let response = GCDWebServerDataResponse(text: error.localizedDescription)!
-                return response
+                completion(response)
             }
         }
+        
+        server.addDefaultHandler(forMethod: "POST", request: GCDWebServerDataRequest.self) {
+            (request, completion) in
+            Task {
+                do {
+                    try await handlePostRequest(request: request, completion: completion)
+                } catch {
+                    throw RequestHandlerError.IOException("Couldn't handle request")
+                }
+            }
+        }
+        #if COUCHBASE_ENTERPRISE
+        do {
+            try Extension.enableVectorSearch()
+        }
+        catch {
+            print("The vetor search extension was not loaded")
+        }
+        #endif
         server.start(withPort: kPort, bonjourName: nil)
     }
 }

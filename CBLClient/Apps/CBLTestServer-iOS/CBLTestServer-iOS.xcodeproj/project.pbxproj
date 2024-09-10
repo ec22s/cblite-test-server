@@ -48,14 +48,19 @@
 		29F7869B1F9FC4180035178F /* GCDWebServerErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F7868C1F9FC4180035178F /* GCDWebServerErrorResponse.m */; };
 		29F7869C1F9FC4180035178F /* GCDWebServerFileResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F7868E1F9FC4180035178F /* GCDWebServerFileResponse.m */; };
 		29F7869D1F9FC4180035178F /* GCDWebServerStreamedResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 29F786901F9FC4180035178F /* GCDWebServerStreamedResponse.m */; };
-		2E8631EF229F2C8C00859424 /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 2E8631EE229F2C8C00859424 /* Files */; };
 		4D7993E5250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7993E4250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift */; };
 		4D8175C625CB71CC0020B14B /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 4D8175C525CB71CC0020B14B /* Zip */; };
 		4D9BFA2625EEE6F6008CAB78 /* sg_cert.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4D9BFA2525EEE6F6008CAB78 /* sg_cert.cer */; };
 		4DE0E3222501F24D00DEBA87 /* identity in Resources */ = {isa = PBXBuildFile; fileRef = 4DE0E3212501F24D00DEBA87 /* identity */; };
 		6917C7BA232C30EE00D99DA6 /* RawData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6917C7B9232C30EE00D99DA6 /* RawData.swift */; };
+		73015D9C2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */; };
+		73015D9D2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		73015DA12B85193E0062E7F4 /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 2E8631EE229F2C8C00859424 /* Files */; };
+		737CB8912B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737CB8902B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift */; };
+		737CB8942B7F8A5200BF0A32 /* Transformers in Frameworks */ = {isa = PBXBuildFile; productRef = 737CB8932B7F8A5200BF0A32 /* Transformers */; };
 		7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; };
 		7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		74D04CB02C87A8FF003D2B1A /* float32_model.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 74D04CAF2C87A8FF003D2B1A /* float32_model.mlpackage */; };
 		A38237BB28E19AF3007F14ED /* CollectionRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */; };
 		A38237BD28E19B22007F14ED /* ScopeRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */; };
 		A39BFC2728E452C80090F632 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F281F9FC18D0035178F /* ViewController.swift */; };
@@ -97,6 +102,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				73015D9D2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Embed Frameworks */,
 				7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -183,7 +189,10 @@
 		4D9BFA2525EEE6F6008CAB78 /* sg_cert.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = sg_cert.cer; sourceTree = "<group>"; };
 		4DE0E3212501F24D00DEBA87 /* identity */ = {isa = PBXFileReference; lastKnownFileType = folder; path = identity; sourceTree = "<group>"; };
 		6917C7B9232C30EE00D99DA6 /* RawData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawData.swift; sourceTree = "<group>"; };
+		73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CouchbaseLiteVectorSearch.xcframework; path = Frameworks/CouchbaseLiteVectorSearch.xcframework; sourceTree = "<group>"; };
+		737CB8902B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorSearchRequestHandler.swift; sourceTree = "<group>"; };
 		7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CouchbaseLiteSwift.xcframework; path = Frameworks/CouchbaseLiteSwift.xcframework; sourceTree = "<group>"; };
+		74D04CAF2C87A8FF003D2B1A /* float32_model.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; name = float32_model.mlpackage; path = "../../../../latestbuilds.service.couchbase.com/buildteam/mirror/huggingface/gte-small/coreml/feature-extraction/float32_model.mlpackage"; sourceTree = "<group>"; };
 		A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionRequestHandler.swift; sourceTree = "<group>"; };
 		A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeRequestHandler.swift; sourceTree = "<group>"; };
 		FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveQueriesRequestHandler.swift; sourceTree = "<group>"; };
@@ -206,8 +215,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73015D9C2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Frameworks */,
 				4D8175C625CB71CC0020B14B /* Zip in Frameworks */,
 				7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */,
+				737CB8942B7F8A5200BF0A32 /* Transformers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +277,7 @@
 				FB72EEA221504FC800B306DF /* TryCatch.m */,
 				FB72EEA42150513100B306DF /* TryCatch.swift */,
 				FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */,
+				737CB8902B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift */,
 				4D7993E4250ED4B4004CDBA6 /* ListenerAuthenticatorRequestHandler.swift */,
 				A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */,
 				A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */,
@@ -276,6 +288,7 @@
 		29F77F1A1F9FC18D0035178F = {
 			isa = PBXGroup;
 			children = (
+				74D04CAF2C87A8FF003D2B1A /* float32_model.mlpackage */,
 				29F77F251F9FC18D0035178F /* CBLTestServer-iOS */,
 				29F77F3A1F9FC18D0035178F /* CBLTestServer-iOSTests */,
 				29F77F451F9FC18D0035178F /* CBLTestServer-iOSUITests */,
@@ -403,6 +416,7 @@
 		29F7869E1F9FC4850035178F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */,
 				7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */,
 			);
 			name = Frameworks;
@@ -428,6 +442,7 @@
 			name = "CBLTestServer-iOS";
 			packageProductDependencies = (
 				4D8175C525CB71CC0020B14B /* Zip */,
+				737CB8932B7F8A5200BF0A32 /* Transformers */,
 			);
 			productName = "CBLTestServer-iOS";
 			productReference = 29F77F231F9FC18D0035178F /* CBLTestServer-iOS.app */;
@@ -513,6 +528,7 @@
 			mainGroup = 29F77F1A1F9FC18D0035178F;
 			packageReferences = (
 				4D8175C425CB71CC0020B14B /* XCRemoteSwiftPackageReference "Zip" */,
+				737CB8922B7F8A5200BF0A32 /* XCRemoteSwiftPackageReference "swift-transformers" */,
 			);
 			productRefGroup = 29F77F241F9FC18D0035178F /* Products */;
 			projectDirPath = "";
@@ -530,12 +546,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73015DA12B85193E0062E7F4 /* Files in Resources */,
 				29F77F311F9FC18D0035178F /* LaunchScreen.storyboard in Resources */,
 				29F77F2E1F9FC18D0035178F /* Assets.xcassets in Resources */,
 				4D9BFA2625EEE6F6008CAB78 /* sg_cert.cer in Resources */,
 				4DE0E3222501F24D00DEBA87 /* identity in Resources */,
 				29F77F2C1F9FC18D0035178F /* Main.storyboard in Resources */,
-				2E8631EF229F2C8C00859424 /* Files in Resources */,
 				FB5934E0219CB6220000C958 /* Databases in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -567,6 +583,7 @@
 				29F786961F9FC4180035178F /* GCDWebServerDataRequest.m in Sources */,
 				2907D170200E7D0300CE56EB /* FunctionRequestHandler.swift in Sources */,
 				29F7869D1F9FC4180035178F /* GCDWebServerStreamedResponse.m in Sources */,
+				737CB8912B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift in Sources */,
 				299692A91FF31D0D0040CC32 /* EncryptionKeyRequestHandler.swift in Sources */,
 				299692A51FF30B1A0040CC32 /* ArrayRequesthandler.swift in Sources */,
 				299692B11FF35B630040CC32 /* BlobRequestHandler.swift in Sources */,
@@ -575,6 +592,7 @@
 				FB60EBD421069D5A005052B6 /* PeerToPeerRequestHandler.swift in Sources */,
 				294FB2081FEAF51F00DD0C23 /* QueryRequestHandler.swift in Sources */,
 				6917C7BA232C30EE00D99DA6 /* RawData.swift in Sources */,
+				74D04CB02C87A8FF003D2B1A /* float32_model.mlpackage in Sources */,
 				FB5A86762017E672008127FC /* DatabaseConfigurationRequestHandler.swift in Sources */,
 				2907D176200E860A00CE56EB /* BasicAuthenticatorRequestHandler.swift in Sources */,
 				29F77F271F9FC18D0035178F /* AppDelegate.swift in Sources */,
@@ -788,6 +806,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -805,7 +824,7 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 1;
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -825,6 +844,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -835,7 +855,7 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1013,6 +1033,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1030,7 +1051,7 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 1;
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1155,6 +1176,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1165,7 +1187,7 @@
 					"$(PROJECT_DIR)/Frameworks",
 				);
 				INFOPLIST_FILE = "CBLTestServer-iOS/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1287,6 +1309,14 @@
 				minimumVersion = 2.1.0;
 			};
 		};
+		737CB8922B7F8A5200BF0A32 /* XCRemoteSwiftPackageReference "swift-transformers" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/huggingface/swift-transformers.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1294,6 +1324,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4D8175C425CB71CC0020B14B /* XCRemoteSwiftPackageReference "Zip" */;
 			productName = Zip;
+		};
+		737CB8932B7F8A5200BF0A32 /* Transformers */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 737CB8922B7F8A5200BF0A32 /* XCRemoteSwiftPackageReference "swift-transformers" */;
+			productName = Transformers;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

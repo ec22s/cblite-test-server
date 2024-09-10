@@ -3,6 +3,7 @@
 EDITION=$1
 VERSION=$2
 BLD_NUM=$3
+VECTOR_SEARCH_VERSION=$4
 cd ${WORKSPACE}/mobile-testapps/CBLClient/Apps/CBLTestServer-iOS
 set -x
 set -e
@@ -27,14 +28,21 @@ pushd ${FRAMEWORK_DIR}
 pwd
 echo ${WORKSPACE}
 IOS_ZIP=${WORKSPACE}/artifacts/couchbase-lite-swift_xc_${EDITION}_${VERSION}-${BLD_NUM}.zip
+VECTOR_SEARCH_ZIP=${WORKSPACE}/artifacts/couchbase-lite-vector-search_xcframework_${VECTOR_SEARCH_VERSION}.zip
 if [[ -f ${IOS_ZIP} ]]; then
     unzip ${IOS_ZIP}
 else
     echo "Required file ${IOS_ZIP} not found!"
     exit 1
 fi
-popd
+if [[ -f ${VECTOR_SEARCH_ZIP} ]]; then
+    unzip -o ${VECTOR_SEARCH_ZIP}
+else
+    echo "Required file ${VECTOR_SEARCH_ZIP} not found!"
+    exit 1
+fi
 
+popd
 # Build CBLTestServer-iOS
 
 TESTSERVER_APP=CBLTestServer-iOS.app
