@@ -194,8 +194,9 @@ public class Server {
                             try await self.vectorSearchRequestHandler.handleRequest(method: taskMethod, args: args)
                         }
                         result = try await taskResult.value
-                        #endif
+                        #else
                         throw ServerError.MethodNotImplemented(method)
+                        #endif
                     } else {
                         throw ServerError.MethodNotImplemented(method)
                     }
