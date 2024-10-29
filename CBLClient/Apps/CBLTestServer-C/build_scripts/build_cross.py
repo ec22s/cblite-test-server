@@ -191,6 +191,8 @@ if __name__ == '__main__':
     subprocess.run(cmake_args)
     subprocess.run(['make', '-j8', 'install'])
 
+    os.makedirs('out/bin', exist_ok=True)
+
     for lib_file in glob.glob(f'{DOWNLOAD_DIR}/libcblite-{args.version}/lib/**/libcblite.so*'):
         shutil.copy2(lib_file, 'out/bin')
     
