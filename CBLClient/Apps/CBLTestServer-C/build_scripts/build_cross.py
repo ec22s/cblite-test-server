@@ -126,7 +126,7 @@ def copy_vector_search_files():
 if __name__ == '__main__':
     print("Downloading latest cross compilation manifest...")
     os.chdir(SCRIPT_DIR)
-    urllib.request.urlretrieve('https://raw.githubusercontent.com/couchbase/couchbase-lite-C/release/3.2/jenkins/cross_manifest.json', 'cross_manifest.json', show_download_progress)
+    urllib.request.urlretrieve('https://raw.githubusercontent.com/couchbase/couchbase-lite-C/release/3.1/jenkins/cross_manifest.json', 'cross_manifest.json', show_download_progress)
 
     parser = argparse.ArgumentParser(description='Perform a cross compilation of Couchbase Lite C')
     parser.add_argument('version', type=str, help='The version of the build')
