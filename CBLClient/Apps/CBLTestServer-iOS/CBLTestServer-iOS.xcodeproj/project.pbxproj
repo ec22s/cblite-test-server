@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -53,17 +53,13 @@
 		4D9BFA2625EEE6F6008CAB78 /* sg_cert.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4D9BFA2525EEE6F6008CAB78 /* sg_cert.cer */; };
 		4DE0E3222501F24D00DEBA87 /* identity in Resources */ = {isa = PBXBuildFile; fileRef = 4DE0E3212501F24D00DEBA87 /* identity */; };
 		6917C7BA232C30EE00D99DA6 /* RawData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6917C7B9232C30EE00D99DA6 /* RawData.swift */; };
-		73015D9C2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */; };
-		73015D9D2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		73015DA12B85193E0062E7F4 /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 2E8631EE229F2C8C00859424 /* Files */; };
 		737CB8912B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737CB8902B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift */; };
 		737CB8942B7F8A5200BF0A32 /* Transformers in Frameworks */ = {isa = PBXBuildFile; productRef = 737CB8932B7F8A5200BF0A32 /* Transformers */; };
-		7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; };
-		7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		74D04CB02C87A8FF003D2B1A /* float32_model.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 74D04CAF2C87A8FF003D2B1A /* float32_model.mlpackage */; };
 		A38237BB28E19AF3007F14ED /* CollectionRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */; };
 		A38237BD28E19B22007F14ED /* ScopeRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */; };
 		A39BFC2728E452C80090F632 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F77F281F9FC18D0035178F /* ViewController.swift */; };
+		CEB24AAA2DAFA4B60008F9C2 /* CouchbaseLiteSwift in Frameworks */ = {isa = PBXBuildFile; productRef = CEB24AA92DAFA4B60008F9C2 /* CouchbaseLiteSwift */; };
 		FB0C46F1221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */; };
 		FB5934E0219CB6220000C958 /* Databases in Resources */ = {isa = PBXBuildFile; fileRef = FB5934DF219CB6220000C958 /* Databases */; };
 		FB5A6A5521123A9A00937927 /* ReplicatorTcpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB5A6A5421123A9A00937927 /* ReplicatorTcpConnection.swift */; };
@@ -96,18 +92,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		416AF9AD22D5CD9400395483 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				73015D9D2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Embed Frameworks */,
-				7494704F25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		4DE0E3232501F6CC00DEBA87 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -189,10 +173,7 @@
 		4D9BFA2525EEE6F6008CAB78 /* sg_cert.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = sg_cert.cer; sourceTree = "<group>"; };
 		4DE0E3212501F24D00DEBA87 /* identity */ = {isa = PBXFileReference; lastKnownFileType = folder; path = identity; sourceTree = "<group>"; };
 		6917C7B9232C30EE00D99DA6 /* RawData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawData.swift; sourceTree = "<group>"; };
-		73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CouchbaseLiteVectorSearch.xcframework; path = Frameworks/CouchbaseLiteVectorSearch.xcframework; sourceTree = "<group>"; };
 		737CB8902B7BA26E00BF0A32 /* VectorSearchRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorSearchRequestHandler.swift; sourceTree = "<group>"; };
-		7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CouchbaseLiteSwift.xcframework; path = Frameworks/CouchbaseLiteSwift.xcframework; sourceTree = "<group>"; };
-		74D04CAF2C87A8FF003D2B1A /* float32_model.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; name = float32_model.mlpackage; path = "../../../../latestbuilds.service.couchbase.com/buildteam/mirror/huggingface/gte-small/coreml/feature-extraction/float32_model.mlpackage"; sourceTree = "<group>"; };
 		A38237BA28E19AF3007F14ED /* CollectionRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionRequestHandler.swift; sourceTree = "<group>"; };
 		A38237BC28E19B22007F14ED /* ScopeRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeRequestHandler.swift; sourceTree = "<group>"; };
 		FB0C46F0221DE1F6002550CC /* PredictiveQueriesRequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictiveQueriesRequestHandler.swift; sourceTree = "<group>"; };
@@ -215,9 +196,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73015D9C2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework in Frameworks */,
+				CEB24AAA2DAFA4B60008F9C2 /* CouchbaseLiteSwift in Frameworks */,
 				4D8175C625CB71CC0020B14B /* Zip in Frameworks */,
-				7494704E25C4DEB600355244 /* CouchbaseLiteSwift.xcframework in Frameworks */,
 				737CB8942B7F8A5200BF0A32 /* Transformers in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -288,7 +268,6 @@
 		29F77F1A1F9FC18D0035178F = {
 			isa = PBXGroup;
 			children = (
-				74D04CAF2C87A8FF003D2B1A /* float32_model.mlpackage */,
 				29F77F251F9FC18D0035178F /* CBLTestServer-iOS */,
 				29F77F3A1F9FC18D0035178F /* CBLTestServer-iOSTests */,
 				29F77F451F9FC18D0035178F /* CBLTestServer-iOSUITests */,
@@ -416,8 +395,6 @@
 		29F7869E1F9FC4850035178F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				73015D9B2B84E93D0062E7F4 /* CouchbaseLiteVectorSearch.xcframework */,
-				7494704A25C4DEAF00355244 /* CouchbaseLiteSwift.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -432,7 +409,6 @@
 				29F77F1F1F9FC18D0035178F /* Sources */,
 				29F77F201F9FC18D0035178F /* Frameworks */,
 				29F77F211F9FC18D0035178F /* Resources */,
-				416AF9AD22D5CD9400395483 /* Embed Frameworks */,
 				4DE0E3232501F6CC00DEBA87 /* CopyFiles */,
 			);
 			buildRules = (
@@ -443,6 +419,7 @@
 			packageProductDependencies = (
 				4D8175C525CB71CC0020B14B /* Zip */,
 				737CB8932B7F8A5200BF0A32 /* Transformers */,
+				CEB24AA92DAFA4B60008F9C2 /* CouchbaseLiteSwift */,
 			);
 			productName = "CBLTestServer-iOS";
 			productReference = 29F77F231F9FC18D0035178F /* CBLTestServer-iOS.app */;
@@ -490,13 +467,13 @@
 		29F77F1B1F9FC18D0035178F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = "Raghu Sarangapani";
 				TargetAttributes = {
 					29F77F221F9FC18D0035178F = {
 						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = N2Q372V7W2;
 						LastSwiftMigration = 0930;
 						ProvisioningStyle = Automatic;
 					};
@@ -518,10 +495,9 @@
 			};
 			buildConfigurationList = 29F77F1E1F9FC18D0035178F /* Build configuration list for PBXProject "CBLTestServer-iOS" */;
 			compatibilityVersion = "Xcode 11.0";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
@@ -529,6 +505,8 @@
 			packageReferences = (
 				4D8175C425CB71CC0020B14B /* XCRemoteSwiftPackageReference "Zip" */,
 				737CB8922B7F8A5200BF0A32 /* XCRemoteSwiftPackageReference "swift-transformers" */,
+				CEB24AA72DAF96D00008F9C2 /* XCRemoteSwiftPackageReference "couchbase-lite-vector-search-spm" */,
+				CEB24AA82DAF97390008F9C2 /* XCRemoteSwiftPackageReference "couchbase-lite-swift-ee" */,
 			);
 			productRefGroup = 29F77F241F9FC18D0035178F /* Products */;
 			projectDirPath = "";
@@ -592,7 +570,6 @@
 				FB60EBD421069D5A005052B6 /* PeerToPeerRequestHandler.swift in Sources */,
 				294FB2081FEAF51F00DD0C23 /* QueryRequestHandler.swift in Sources */,
 				6917C7BA232C30EE00D99DA6 /* RawData.swift in Sources */,
-				74D04CB02C87A8FF003D2B1A /* float32_model.mlpackage in Sources */,
 				FB5A86762017E672008127FC /* DatabaseConfigurationRequestHandler.swift in Sources */,
 				2907D176200E860A00CE56EB /* BasicAuthenticatorRequestHandler.swift in Sources */,
 				29F77F271F9FC18D0035178F /* AppDelegate.swift in Sources */,
@@ -689,6 +666,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -710,6 +688,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -720,6 +699,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -736,7 +716,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -750,6 +730,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -771,6 +752,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -781,6 +763,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -791,7 +774,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -807,7 +790,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = N2Q372V7W2;
+				DEVELOPMENT_TEAM = TAFC2PM76F;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -829,8 +812,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ec22s.cblite-test-server-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -845,7 +828,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = N2Q372V7W2;
+				DEVELOPMENT_TEAM = TAFC2PM76F;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -860,8 +843,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ec22s.cblite-test-server-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -872,7 +855,6 @@
 		29F77F4F1F9FC18D0035178F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -897,7 +879,6 @@
 		29F77F501F9FC18D0035178F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -922,7 +903,6 @@
 		29F77F521F9FC18D0035178F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -946,7 +926,6 @@
 		29F77F531F9FC18D0035178F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -971,6 +950,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -992,6 +972,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1002,6 +983,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1018,7 +1000,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1034,7 +1016,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = N2Q372V7W2;
+				DEVELOPMENT_TEAM = TAFC2PM76F;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1056,9 +1038,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_SWIFT_FLAGS = "-DCOUCHBASE_ENTERPRISE";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ec22s.cblite-test-server-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1070,7 +1052,6 @@
 		FB605934203F8D8400567750 /* Debug-EE */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1095,7 +1076,6 @@
 		FB605935203F8D8400567750 /* Debug-EE */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1120,6 +1100,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1141,6 +1122,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1151,6 +1133,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1161,7 +1144,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1177,7 +1160,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = N2Q372V7W2;
+				DEVELOPMENT_TEAM = TAFC2PM76F;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1192,9 +1175,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_SWIFT_FLAGS = "-DCOUCHBASE_ENTERPRISE";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.couchbase.CBLTestServer-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ec22s.cblite-test-server-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CBLTestServer-iOS/CBLTestServer-iOS-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -1205,7 +1188,6 @@
 		FB605938203F8D9100567750 /* Release-EE */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1230,7 +1212,6 @@
 		FB605939203F8D9100567750 /* Release-EE */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = N2Q372V7W2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1317,6 +1298,22 @@
 				minimumVersion = 0.1.5;
 			};
 		};
+		CEB24AA72DAF96D00008F9C2 /* XCRemoteSwiftPackageReference "couchbase-lite-vector-search-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/couchbase/couchbase-lite-vector-search-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		CEB24AA82DAF97390008F9C2 /* XCRemoteSwiftPackageReference "couchbase-lite-swift-ee" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/couchbase/couchbase-lite-swift-ee";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1329,6 +1326,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 737CB8922B7F8A5200BF0A32 /* XCRemoteSwiftPackageReference "swift-transformers" */;
 			productName = Transformers;
+		};
+		CEB24AA92DAFA4B60008F9C2 /* CouchbaseLiteSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB24AA82DAF97390008F9C2 /* XCRemoteSwiftPackageReference "couchbase-lite-swift-ee" */;
+			productName = CouchbaseLiteSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

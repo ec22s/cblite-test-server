@@ -21,7 +21,6 @@ println "BUILDING TEST SERVER WITH VS VERSION ${VECTOR_SEARCH_VERSION}"
 android {
     namespace 'com.couchbase.CouchbaseLiteServ'
     compileSdkVersion 34
-    buildToolsVersion "29.0.3"
     ndkVersion "25.1.8937393"
 
     defaultConfig {

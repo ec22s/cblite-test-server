@@ -19,7 +19,7 @@ public class SelectResultRequestHandler {
         // selectResult //
         //////////////////
         case "selectResult_expressionCreate":
-            let expression: Expression = args.get(name: "expression")!
+            let expression: CouchbaseLiteSwift.Expression = args.get(name: "expression")!
             
             return SelectResult.expression(expression as! ExpressionProtocol)
             
