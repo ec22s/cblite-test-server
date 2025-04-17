@@ -40,13 +40,13 @@ public class QueryRequestHandler {
         // ArrayFunction //
         ///////////////////
         case "query_ArrayFunction_arrayContains":
-            let expression: Expression = args.get(name: "expression")!
+            let expression: CouchbaseLiteSwift.Expression = args.get(name: "expression")!
             let value: String = args.get(name: "value")!
 
             return ArrayFunction.contains(expression as! ExpressionProtocol, value: Expression.property(value))
 
         case "query_ArrayFunction_arrayLength":
-            let expression: Expression = args.get(name: "expression")!
+            let expression: CouchbaseLiteSwift.Expression = args.get(name: "expression")!
             return ArrayFunction.length(expression as! ExpressionProtocol)
 
         ///////////
@@ -89,7 +89,7 @@ public class QueryRequestHandler {
         // Only does select FirstName from test_db where City = "MV"
             let select_prop: SelectResult = args.get(name: "select_prop")!
             let from_prop: DataSource = args.get(name: "from_prop")!
-            let whr_key_prop: Expression = args.get(name: "whr_key_prop")!
+            let whr_key_prop: CouchbaseLiteSwift.Expression = args.get(name: "whr_key_prop")!
 
             let query = QueryBuilder
                 .select(select_prop as! SelectResultProtocol)

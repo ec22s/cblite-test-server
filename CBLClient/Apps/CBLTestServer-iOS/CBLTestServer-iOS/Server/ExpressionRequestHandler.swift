@@ -34,11 +34,11 @@ public class ExpressionRequestHandler {
             return Expression.parameter(parameter)
             
         case "expression_negated":
-            let expression: Expression = args.get(name: "expression")!
+            let expression: CouchbaseLiteSwift.Expression = args.get(name: "expression")!
             return Expression.negated(expression as! ExpressionProtocol)
             
         case "expression_not":
-            let expression: Expression = args.get(name: "expression")!
+            let expression: CouchbaseLiteSwift.Expression = args.get(name: "expression")!
             return Expression.not(expression as! ExpressionProtocol)
         
         case "expression_createEqualTo":
